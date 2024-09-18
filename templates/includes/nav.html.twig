@@ -1,11 +1,12 @@
 <nav>
     {# liens sans connexion #}
     <a href="">Rechercher</a>
-    <a href="">+ Objet</a>
-
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
+        <a href="">+ Objet</a>
         <a href="">Profil</a>
+    {% else %}
+        <a href=" {{ path ('register')}} ">S'inscrire</a>
     {% endif %}
 
     {# liens pour tout user#}
