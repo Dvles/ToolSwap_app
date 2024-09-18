@@ -1,0 +1,18 @@
+<nav>
+    {# liens sans connexion #}
+    <a href="">categories</a>
+    <a href="">preter objet</a>
+
+    {# liens pour l'admin #}
+    {% if is_granted('ROLE_USER') %}
+        <a href="">profil</a>
+    {% endif %}
+
+    {# liens pour tout user#}
+    {% if app.user %}
+        <a href=" {{ path ('app_logout')}} ">logout</a>
+    {% else %}
+        <a href=" {{ path ('app_login')}} ">login</a>
+    {% endif %}
+    
+</nav>
