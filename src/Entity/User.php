@@ -31,6 +31,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 150)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 150)]
+    private ?string $lastName = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    private ?string $phoneNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $community = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $rewards = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,5 +122,77 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): static
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getCommunity(): ?string
+    {
+        return $this->community;
+    }
+
+    public function setCommunity(string $community): static
+    {
+        $this->community = $community;
+
+        return $this;
+    }
+
+    public function getRewards(): ?int
+    {
+        return $this->rewards;
+    }
+
+    public function setRewards(?int $rewards): static
+    {
+        $this->rewards = $rewards;
+
+        return $this;
     }
 }
