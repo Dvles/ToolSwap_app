@@ -22,8 +22,13 @@ class RegistrationFormType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('community', TextType::class)
-            ->add('image', FileType::class)
-            ->add('phoneNumber', TextType::class)
+            ->add('image', FileType::class, [
+                'required' => false,  // This makes the field optional
+                'mapped' => false,    // Set to false if this field should not be mapped to the entity
+            ])
+            ->add('phoneNumber', TextType::class, [
+                'required' => false,  // This makes the field optional
+            ])            
             ->add('email')
             // ->add('agreeTerms', CheckboxType::class, [
             //     'mapped' => false,
