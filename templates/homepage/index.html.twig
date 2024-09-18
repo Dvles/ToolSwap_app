@@ -3,5 +3,10 @@
 {% block title %}ToolSwap{% endblock %}
 
 {% block body %}
-Welcome friend!
+<h1>Bievenue à ToolSwap</h1>
+
+{% if app.user %}
+    <p>Bonjour, {{ app.user.firstName }}!</p>
+{% endif %}
+
 {% endblock %}

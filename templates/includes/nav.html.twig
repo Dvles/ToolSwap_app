@@ -1,18 +1,18 @@
 <nav>
     {# liens sans connexion #}
-    <a href="">categories</a>
-    <a href="">preter objet</a>
+    <a href="">Rechercher</a>
+    <a href="">+ Objet</a>
 
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
-        <a href="">profil</a>
+        <a href="">Profil</a>
     {% endif %}
 
     {# liens pour tout user#}
     {% if app.user %}
-        <a href=" {{ path ('app_logout')}} ">logout</a>
+        <a href=" {{ path ('app_logout')}} ">Déconnexion</a>
     {% else %}
-        <a href=" {{ path ('app_login')}} ">login</a>
+        <a href=" {{ path ('app_login')}} ">Connexion</a>
     {% endif %}
     
 </nav>
