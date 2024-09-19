@@ -18,13 +18,13 @@ class ToolCategoryFixtures extends Fixture
             'Outils utilisés pour les travaux de construction et de rénovation',
         ];
         
-        for ($i = 1; $i < 4; $i++){
+        for ($i = 0; $i < 3; $i++){
             $toolCategory = new ToolCategory();
             $toolCategory->setName($toolCategories[$i]);
             $toolCategory->setDescription($toolCatDescriptions[$i]);
             $manager->persist($toolCategory);
         }
-        
+
         $manager->flush();
     }
 }
