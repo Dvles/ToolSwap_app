@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ToolRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +37,17 @@ class Tool
     #[ORM\ManyToOne(inversedBy: 'ToolOfUser')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $UserOfTool = null;
+
+    /**
+     * @var Collection<int, BorrowTool>
+     */
+    #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
+    private Collection $toolBorrowed;
+
+    public function __construct()
+    {
+        $this->toolBorrowed = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +134,36 @@ class Tool
     public function setUserOfTool(?User $UserOfTool): static
     {
         $this->UserOfTool = $UserOfTool;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BorrowTool>
+     */
+    public function getToolBorrowed(): Collection
+    {
+        return $this->toolBorrowed;
+    }
+
+    public function addToolBorrowed(BorrowTool $toolBorrowed): static
+    {
+        if (!$this->toolBorrowed->contains($toolBorrowed)) {
+            $this->toolBorrowed->add($toolBorrowed);
+            $toolBorrowed->setToolBeingBorrowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolBorrowed(BorrowTool $toolBorrowed): static
+    {
+        if ($this->toolBorrowed->removeElement($toolBorrowed)) {
+            // set the owning side to null (unless already changed)
+            if ($toolBorrowed->getToolBeingBorrowed() === $this) {
+                $toolBorrowed->setToolBeingBorrowed(null);
+            }
+        }
 
         return $this;
     }
