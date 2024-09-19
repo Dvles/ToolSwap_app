@@ -65,12 +65,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'UserOfReview', orphanRemoval: true)]
     private Collection $userReviews;
 
+    /**
+     * @var Collection<int, BorrowTool>
+     */
+    #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'userBorrower')]
+    private Collection $borrowTool;
+
     public function __construct()
     {
         // Set default role for all new users
         $this->roles[] = 'ROLE_USER';
         $this->ToolOfUser = new ArrayCollection();
         $this->userReviews = new ArrayCollection();
+        $this->borrowTool = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,6 +281,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($userReview->getUserOfReview() === $this) {
                 $userReview->setUserOfReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BorrowTool>
+     */
+    public function getBorrowTool(): Collection
+    {
+        return $this->borrowTool;
+    }
+
+    public function addBorrowTool(BorrowTool $borrowTool): static
+    {
+        if (!$this->borrowTool->contains($borrowTool)) {
+            $this->borrowTool->add($borrowTool);
+            $borrowTool->setUserBorrower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBorrowTool(BorrowTool $borrowTool): static
+    {
+        if ($this->borrowTool->removeElement($borrowTool)) {
+            // set the owning side to null (unless already changed)
+            if ($borrowTool->getUserBorrower() === $this) {
+                $borrowTool->setUserBorrower(null);
             }
         }
 

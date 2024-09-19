@@ -24,6 +24,10 @@ class BorrowTool
     #[ORM\Column(enumType: ToolStatusEnum::class)]
     private ?ToolStatusEnum $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'borrowTool')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $userBorrower = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,18 @@ class BorrowTool
     public function setStatus(ToolStatusEnum $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getUserBorrower(): ?User
+    {
+        return $this->userBorrower;
+    }
+
+    public function setUserBorrower(?User $userBorrower): static
+    {
+        $this->userBorrower = $userBorrower;
 
         return $this;
     }
