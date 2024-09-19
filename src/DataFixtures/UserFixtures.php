@@ -57,7 +57,7 @@ class UserFixtures extends Fixture
 
         // 'realistic users' for display purposes 
         // conditional to generate diverse country with multiple nationalities
-        for ($i = 1; $i < 50; $i++){
+        for ($i = 1; $i < 150; $i++){
             if($i % 5 === 0 && $i % 7 !== 0 && $i % 11 !== 0){
                 $firstName = $fakerNl->firstName();
                 $lastName = $fakerNl->lastName();
