@@ -8,4 +8,5 @@ symfony console doctrine:database:create
 symfony console make:migration --no-interaction
 @REM lancer la migration
 symfony console doctrine:migrations:migrate --no-interaction
-@REM lancer fixtures -- symfony console doctrine:fixtures:load
+@REM lancer fixtures -- 
+symfony console doctrine:fixtures:load --no-interaction
