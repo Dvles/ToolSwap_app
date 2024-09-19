@@ -32,6 +32,10 @@ class Tool
     #[ORM\Column(length: 255)]
     private ?string $imageTool = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ToolOfUser')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $UserOfTool = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +109,18 @@ class Tool
     public function setImageTool(string $imageTool): static
     {
         $this->imageTool = $imageTool;
+
+        return $this;
+    }
+
+    public function getUserOfTool(): ?User
+    {
+        return $this->UserOfTool;
+    }
+
+    public function setUserOfTool(?User $UserOfTool): static
+    {
+        $this->UserOfTool = $UserOfTool;
 
         return $this;
     }

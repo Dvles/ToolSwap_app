@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -51,10 +53,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $rewards = null;
 
+    /**
+     * @var Collection<int, Tool>
+     */
+    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'UserOfTool', orphanRemoval: true)]
+    private Collection $ToolOfUser;
+
     public function __construct()
     {
         // Set default role for all new users
         $this->roles[] = 'ROLE_USER';
+        $this->ToolOfUser = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,6 +209,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRewards(?int $rewards): static
     {
         $this->rewards = $rewards;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tool>
+     */
+    public function getToolOfUser(): Collection
+    {
+        return $this->ToolOfUser;
+    }
+
+    public function addToolOfUser(Tool $toolOfUser): static
+    {
+        if (!$this->ToolOfUser->contains($toolOfUser)) {
+            $this->ToolOfUser->add($toolOfUser);
+            $toolOfUser->setUserOfTool($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolOfUser(Tool $toolOfUser): static
+    {
+        if ($this->ToolOfUser->removeElement($toolOfUser)) {
+            // set the owning side to null (unless already changed)
+            if ($toolOfUser->getUserOfTool() === $this) {
+                $toolOfUser->setUserOfTool(null);
+            }
+        }
 
         return $this;
     }
