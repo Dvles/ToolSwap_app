@@ -81,15 +81,21 @@ class UserFixtures extends Fixture
                 $city = $bxlMunicipalities[mt_rand(0,12)];
             }
 
+            // email treatment
             $email = strtolower($email);
+            $cleanEmail = str_replace(' ', '', $email);
+
+
+
             $user = new User();
-            $user->setEmail($email);
+            $user->setEmail($cleanEmail);
             $user->setFirstName($firstName);
             $user->setLastName($lastName);
             $hashedPassword = $this->passwordHasher->hashPassword($user, '0000');
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
             $user->setCommunity($city);
+            $user->setImage('https://via.placeholder.com/200x200');
             $manager->persist($user);
         }
 
