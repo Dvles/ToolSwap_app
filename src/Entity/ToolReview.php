@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ToolReviwRepository;
+use App\Repository\ToolReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ToolReviwRepository::class)]
-class ToolReviw
+#[ORM\Entity(repositoryClass: ToolReviewRepository::class)]
+class ToolReview
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
