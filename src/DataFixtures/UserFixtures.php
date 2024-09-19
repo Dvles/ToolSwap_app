@@ -24,6 +24,23 @@ class UserFixtures extends Fixture
         $fakerRw = Factory::create("rw_RW");
         $fakerIt = Factory::create("it_IT");
         $fakerNl = Factory::create("nl_BE");
+        $bxlMunicipalities = [
+            "ixelles",        
+            "schaerbeek",     
+            "woluwe-saint-lambert", 
+            "woluwe-saint-pierre",  
+            "bruxelles-centre",     
+            "anderlecht",    
+            "etterbeke",    
+            "forest",        
+            "molenbeek-saint-jean", 
+            "saint-gilles",  
+            "saint-josse-ten-noode", 
+            "saint-michel",  
+            "uccle"       
+        ];
+
+
 
         // 'users' to test web application
         for ($i = 1; $i < 6; $i++){
@@ -34,7 +51,7 @@ class UserFixtures extends Fixture
             $hashedPassword = $this->passwordHasher->hashPassword($user, '0000');
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
-            $user->setCommunity("Ixelles");
+            $user->setCommunity("ixelles");
             $manager->persist($user);
         }
 
@@ -45,18 +62,23 @@ class UserFixtures extends Fixture
                 $firstName = $fakerNl->firstName();
                 $lastName = $fakerNl->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
+                $city = $bxlMunicipalities[mt_rand(0,12)];
             } elseif ($i % 7 === 0){
                 $firstName = $fakerRw->firstName();
                 $lastName = $fakerRw->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
+                $city = $bxlMunicipalities[mt_rand(0,12)];
+
             } elseif ($i % 11 === 0 ) {
                 $firstName = $fakerIt->firstName();
                 $lastName = $fakerIt->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
+                $city = $bxlMunicipalities[mt_rand(0,12)];
             } else {
                 $firstName = $fakerBe->firstName();
                 $lastName = $fakerBe->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
+                $city = $bxlMunicipalities[mt_rand(0,12)];
             }
 
             $email = strtolower($email);
@@ -67,7 +89,7 @@ class UserFixtures extends Fixture
             $hashedPassword = $this->passwordHasher->hashPassword($user, '0000');
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
-            $user->setCommunity($fakerBe->city());
+            $user->setCommunity($city);
             $manager->persist($user);
         }
 
