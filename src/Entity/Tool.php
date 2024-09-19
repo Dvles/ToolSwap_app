@@ -47,6 +47,10 @@ class Tool
     #[ORM\OneToOne(inversedBy: 'toolOfCalendar', cascade: ['persist', 'remove'])]
     private ?ToolCalendar $ToolCalendar = null;
 
+    #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ToolCategory $toolCategory = null;
+
     public function __construct()
     {
         $this->toolBorrowed = new ArrayCollection();
@@ -179,6 +183,18 @@ class Tool
     public function setToolCalendar(?ToolCalendar $ToolCalendar): static
     {
         $this->ToolCalendar = $ToolCalendar;
+
+        return $this;
+    }
+
+    public function getToolCategory(): ?ToolCategory
+    {
+        return $this->toolCategory;
+    }
+
+    public function setToolCategory(?ToolCategory $toolCategory): static
+    {
+        $this->toolCategory = $toolCategory;
 
         return $this;
     }
