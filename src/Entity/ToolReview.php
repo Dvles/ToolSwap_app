@@ -20,6 +20,10 @@ class ToolReview
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\ManyToOne(inversedBy: 'userReviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $UserOfReview = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class ToolReview
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getUserOfReview(): ?User
+    {
+        return $this->UserOfReview;
+    }
+
+    public function setUserOfReview(?User $UserOfReview): static
+    {
+        $this->UserOfReview = $UserOfReview;
 
         return $this;
     }

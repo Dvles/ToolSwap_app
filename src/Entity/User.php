@@ -59,11 +59,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'UserOfTool', orphanRemoval: true)]
     private Collection $ToolOfUser;
 
+    /**
+     * @var Collection<int, ToolReview>
+     */
+    #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'UserOfReview', orphanRemoval: true)]
+    private Collection $userReviews;
+
     public function __construct()
     {
         // Set default role for all new users
         $this->roles[] = 'ROLE_USER';
         $this->ToolOfUser = new ArrayCollection();
+        $this->userReviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -237,6 +244,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($toolOfUser->getUserOfTool() === $this) {
                 $toolOfUser->setUserOfTool(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToolReview>
+     */
+    public function getUserReviews(): Collection
+    {
+        return $this->userReviews;
+    }
+
+    public function addUserReview(ToolReview $userReview): static
+    {
+        if (!$this->userReviews->contains($userReview)) {
+            $this->userReviews->add($userReview);
+            $userReview->setUserOfReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserReview(ToolReview $userReview): static
+    {
+        if ($this->userReviews->removeElement($userReview)) {
+            // set the owning side to null (unless already changed)
+            if ($userReview->getUserOfReview() === $this) {
+                $userReview->setUserOfReview(null);
             }
         }
 
