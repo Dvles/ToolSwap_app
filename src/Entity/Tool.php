@@ -44,6 +44,9 @@ class Tool
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
     private Collection $toolBorrowed;
 
+    #[ORM\OneToOne(inversedBy: 'toolOfCalendar', cascade: ['persist', 'remove'])]
+    private ?ToolCalendar $ToolCalendar = null;
+
     public function __construct()
     {
         $this->toolBorrowed = new ArrayCollection();
@@ -164,6 +167,18 @@ class Tool
                 $toolBorrowed->setToolBeingBorrowed(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getToolCalendar(): ?ToolCalendar
+    {
+        return $this->ToolCalendar;
+    }
+
+    public function setToolCalendar(?ToolCalendar $ToolCalendar): static
+    {
+        $this->ToolCalendar = $ToolCalendar;
 
         return $this;
     }
