@@ -24,6 +24,10 @@ class ToolReview
     #[ORM\JoinColumn(nullable: false)]
     private ?User $UserOfReview = null;
 
+    #[ORM\ManyToOne(inversedBy: 'toolReview')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tool $toolOfReview = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,18 @@ class ToolReview
     public function setUserOfReview(?User $UserOfReview): static
     {
         $this->UserOfReview = $UserOfReview;
+
+        return $this;
+    }
+
+    public function getToolOfReview(): ?Tool
+    {
+        return $this->toolOfReview;
+    }
+
+    public function setToolOfReview(?Tool $toolOfReview): static
+    {
+        $this->toolOfReview = $toolOfReview;
 
         return $this;
     }

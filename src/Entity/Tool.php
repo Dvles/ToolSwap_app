@@ -51,9 +51,16 @@ class Tool
     #[ORM\JoinColumn(nullable: false)]
     private ?ToolCategory $toolCategory = null;
 
+    /**
+     * @var Collection<int, ToolReview>
+     */
+    #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'toolOfReview', orphanRemoval: true)]
+    private Collection $toolReview;
+
     public function __construct()
     {
         $this->toolBorrowed = new ArrayCollection();
+        $this->toolReview = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +202,36 @@ class Tool
     public function setToolCategory(?ToolCategory $toolCategory): static
     {
         $this->toolCategory = $toolCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToolReview>
+     */
+    public function getToolReview(): Collection
+    {
+        return $this->toolReview;
+    }
+
+    public function addToolReview(ToolReview $toolReview): static
+    {
+        if (!$this->toolReview->contains($toolReview)) {
+            $this->toolReview->add($toolReview);
+            $toolReview->setToolOfReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolReview(ToolReview $toolReview): static
+    {
+        if ($this->toolReview->removeElement($toolReview)) {
+            // set the owning side to null (unless already changed)
+            if ($toolReview->getToolOfReview() === $this) {
+                $toolReview->setToolOfReview(null);
+            }
+        }
 
         return $this;
     }
