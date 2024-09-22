@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\ToolReviw;
+use App\Entity\ToolReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ToolReviw>
+ * @extends ServiceEntityRepository<ToolReview>
  */
-class ToolReviwRepository extends ServiceEntityRepository
+class ToolReviewRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ToolReviw::class);
+        parent::__construct($registry, ToolReview::class);
     }
 
     //    /**
-    //     * @return ToolReviw[] Returns an array of ToolReviw objects
+    //     * @return ToolReview[] Returns an array of ToolReview objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ToolReviwRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ToolReviw
+    //    public function findOneBySomeField($value): ?ToolReview
     //    {
     //        return $this->createQueryBuilder('t')
     //            ->andWhere('t.exampleField = :val')

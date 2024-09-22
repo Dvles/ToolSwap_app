@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -51,10 +53,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $rewards = null;
 
+    /**
+     * @var Collection<int, Tool>
+     */
+    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'UserOfTool', orphanRemoval: true)]
+    private Collection $ToolOfUser;
+
+    /**
+     * @var Collection<int, ToolReview>
+     */
+    #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'UserOfReview', orphanRemoval: true)]
+    private Collection $userReviews;
+
+    /**
+     * @var Collection<int, BorrowTool>
+     */
+    #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'userBorrower')]
+    private Collection $borrowTool;
+
     public function __construct()
     {
         // Set default role for all new users
         $this->roles[] = 'ROLE_USER';
+        $this->ToolOfUser = new ArrayCollection();
+        $this->userReviews = new ArrayCollection();
+        $this->borrowTool = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,6 +223,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRewards(?int $rewards): static
     {
         $this->rewards = $rewards;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tool>
+     */
+    public function getToolOfUser(): Collection
+    {
+        return $this->ToolOfUser;
+    }
+
+    public function addToolOfUser(Tool $toolOfUser): static
+    {
+        if (!$this->ToolOfUser->contains($toolOfUser)) {
+            $this->ToolOfUser->add($toolOfUser);
+            $toolOfUser->setUserOfTool($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolOfUser(Tool $toolOfUser): static
+    {
+        if ($this->ToolOfUser->removeElement($toolOfUser)) {
+            // set the owning side to null (unless already changed)
+            if ($toolOfUser->getUserOfTool() === $this) {
+                $toolOfUser->setUserOfTool(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToolReview>
+     */
+    public function getUserReviews(): Collection
+    {
+        return $this->userReviews;
+    }
+
+    public function addUserReview(ToolReview $userReview): static
+    {
+        if (!$this->userReviews->contains($userReview)) {
+            $this->userReviews->add($userReview);
+            $userReview->setUserOfReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserReview(ToolReview $userReview): static
+    {
+        if ($this->userReviews->removeElement($userReview)) {
+            // set the owning side to null (unless already changed)
+            if ($userReview->getUserOfReview() === $this) {
+                $userReview->setUserOfReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BorrowTool>
+     */
+    public function getBorrowTool(): Collection
+    {
+        return $this->borrowTool;
+    }
+
+    public function addBorrowTool(BorrowTool $borrowTool): static
+    {
+        if (!$this->borrowTool->contains($borrowTool)) {
+            $this->borrowTool->add($borrowTool);
+            $borrowTool->setUserBorrower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBorrowTool(BorrowTool $borrowTool): static
+    {
+        if ($this->borrowTool->removeElement($borrowTool)) {
+            // set the owning side to null (unless already changed)
+            if ($borrowTool->getUserBorrower() === $this) {
+                $borrowTool->setUserBorrower(null);
+            }
+        }
 
         return $this;
     }
