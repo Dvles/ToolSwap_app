@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\ToolCalendar;
+use App\Entity\ToolAvailability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ToolCalendar>
+ * @extends ServiceEntityRepository<ToolAvailability>
  */
-class ToolCalendarRepository extends ServiceEntityRepository
+class ToolAvailabilityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ToolCalendar::class);
+        parent::__construct($registry, ToolAvailability::class);
     }
 
     //    /**
-    //     * @return ToolCalendar[] Returns an array of ToolCalendar objects
+    //     * @return ToolAvailability[] Returns an array of ToolAvailability objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ToolCalendarRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ToolCalendar
+    //    public function findOneBySomeField($value): ?ToolAvailability
     //    {
     //        return $this->createQueryBuilder('t')
     //            ->andWhere('t.exampleField = :val')

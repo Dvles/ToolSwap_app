@@ -44,8 +44,8 @@ class Tool
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
     private Collection $toolBorrowed;
 
-    #[ORM\OneToOne(inversedBy: 'toolOfCalendar', cascade: ['persist', 'remove'])]
-    private ?ToolCalendar $ToolCalendar = null;
+    #[ORM\OneToOne(inversedBy: 'toolOfAvailability', cascade: ['persist', 'remove'])]
+    private ?ToolAvailability $ToolAvailability = null;
 
     #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]
     #[ORM\JoinColumn(nullable: false)]
@@ -182,14 +182,14 @@ class Tool
         return $this;
     }
 
-    public function getToolCalendar(): ?ToolCalendar
+    public function getToolAvailability(): ?ToolAvailability
     {
-        return $this->ToolCalendar;
+        return $this->ToolAvailability;
     }
 
-    public function setToolCalendar(?ToolCalendar $ToolCalendar): static
+    public function setToolAvailability(?ToolAvailability $ToolAvailability): static
     {
-        $this->ToolCalendar = $ToolCalendar;
+        $this->ToolAvailability = $ToolAvailability;
 
         return $this;
     }
