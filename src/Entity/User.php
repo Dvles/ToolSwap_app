@@ -71,6 +71,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'userBorrower')]
     private Collection $borrowTool;
 
+    /**
+     * @var Collection<int, LenderReview>
+     */
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userLeavingReview', orphanRemoval: true)]
+    private Collection $reviewsLeft;
+
+    /**
+     * @var Collection<int, LenderReview>
+     */
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userBeingReviewed', orphanRemoval: true)]
+    private Collection $reviewsReceived;
+
     public function __construct()
     {
         // Set default role for all new users
@@ -78,6 +90,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ToolOfUser = new ArrayCollection();
         $this->userReviews = new ArrayCollection();
         $this->borrowTool = new ArrayCollection();
+        $this->reviewsLeft = new ArrayCollection();
+        $this->reviewsReceived = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -311,6 +325,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($borrowTool->getUserBorrower() === $this) {
                 $borrowTool->setUserBorrower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LenderReview>
+     */
+    public function getReviewsLeft(): Collection
+    {
+        return $this->reviewsLeft;
+    }
+
+    public function addReviewsLeft(LenderReview $reviewsLeft): static
+    {
+        if (!$this->reviewsLeft->contains($reviewsLeft)) {
+            $this->reviewsLeft->add($reviewsLeft);
+            $reviewsLeft->setUserLeavingReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReviewsLeft(LenderReview $reviewsLeft): static
+    {
+        if ($this->reviewsLeft->removeElement($reviewsLeft)) {
+            // set the owning side to null (unless already changed)
+            if ($reviewsLeft->getUserLeavingReview() === $this) {
+                $reviewsLeft->setUserLeavingReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LenderReview>
+     */
+    public function getReviewsReceived(): Collection
+    {
+        return $this->reviewsReceived;
+    }
+
+    public function addReviewsReceived(LenderReview $reviewsReceived): static
+    {
+        if (!$this->reviewsReceived->contains($reviewsReceived)) {
+            $this->reviewsReceived->add($reviewsReceived);
+            $reviewsReceived->setUserBeingReviewed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReviewsReceived(LenderReview $reviewsReceived): static
+    {
+        if ($this->reviewsReceived->removeElement($reviewsReceived)) {
+            // set the owning side to null (unless already changed)
+            if ($reviewsReceived->getUserBeingReviewed() === $this) {
+                $reviewsReceived->setUserBeingReviewed(null);
             }
         }
 
