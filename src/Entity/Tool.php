@@ -57,10 +57,17 @@ class Tool
     #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'toolOfReview', orphanRemoval: true)]
     private Collection $toolReviews;
 
+    /**
+     * @var Collection<int, ToolAvailability>
+     */
+    #[ORM\OneToMany(targetEntity: ToolAvailability::class, mappedBy: 'tool')]
+    private Collection $toolAvailabilities;
+
     public function __construct()
     {
         $this->borrowTools = new ArrayCollection();
         $this->toolReviews = new ArrayCollection();
+        $this->toolAvailabilities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -228,6 +235,36 @@ class Tool
         if ($this->toolReviews->removeElement($toolReview)) {
             if ($toolReview->getToolOfReview() === $this) {
                 $toolReview->setToolOfReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToolAvailability>
+     */
+    public function getToolAvailabilities(): Collection
+    {
+        return $this->toolAvailabilities;
+    }
+
+    public function addToolAvailability(ToolAvailability $toolAvailability): static
+    {
+        if (!$this->toolAvailabilities->contains($toolAvailability)) {
+            $this->toolAvailabilities->add($toolAvailability);
+            $toolAvailability->setTool($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolAvailability(ToolAvailability $toolAvailability): static
+    {
+        if ($this->toolAvailabilities->removeElement($toolAvailability)) {
+            // set the owning side to null (unless already changed)
+            if ($toolAvailability->getTool() === $this) {
+                $toolAvailability->setTool(null);
             }
         }
 

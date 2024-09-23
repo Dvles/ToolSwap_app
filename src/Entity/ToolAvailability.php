@@ -20,6 +20,20 @@ class ToolAvailability
     #[ORM\OneToOne(mappedBy: 'ToolAvailability', cascade: ['persist', 'remove'])]
     private ?Tool $toolOfAvailability = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isRecurring = null;
+
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $specificDates = null;
+
+    #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tool $tool = null;
+
+    #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,6 +69,54 @@ class ToolAvailability
         }
 
         $this->toolOfAvailability = $toolOfAvailability;
+
+        return $this;
+    }
+
+    public function isRecurring(): ?bool
+    {
+        return $this->isRecurring;
+    }
+
+    public function setRecurring(?bool $isRecurring): static
+    {
+        $this->isRecurring = $isRecurring;
+
+        return $this;
+    }
+
+    public function getSpecificDates(): ?array
+    {
+        return $this->specificDates;
+    }
+
+    public function setSpecificDates(?array $specificDates): static
+    {
+        $this->specificDates = $specificDates;
+
+        return $this;
+    }
+
+    public function getTool(): ?Tool
+    {
+        return $this->tool;
+    }
+
+    public function setTool(?Tool $tool): static
+    {
+        $this->tool = $tool;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
