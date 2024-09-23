@@ -95,7 +95,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
             $tool = new Tool();
             $tool->setName($electromenagerTools[mt_rand(0,14)]);
-            $tool->setUserOfTool($users[mt_rand(0, count($users)-1)]);
+            $tool->setOwner($users[mt_rand(0, count($users)-1)]);
             $tool->setToolCategory($category);
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://via.placeholder.com/500x500');
@@ -109,7 +109,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
             $tool = new Tool();
             $tool->setName($jardinageTools[mt_rand(0,14)]);
-            $tool->setUserOfTool($users[mt_rand(0, count($users)-1)]);
+            $tool->setOwner($users[mt_rand(0, count($users)-1)]);
             $tool->setToolCategory($category);
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://via.placeholder.com/500x500');
@@ -124,7 +124,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
             $tool = new Tool();
             $tool->setName($constructionTools[mt_rand(0,14)]);
-            $tool->setUserOfTool($users[mt_rand(0, count($users)-1)]);
+            $tool->setOwner($users[mt_rand(0, count($users)-1)]);
             $tool->setToolCategory($category);
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://via.placeholder.com/500x500');

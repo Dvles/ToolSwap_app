@@ -34,18 +34,18 @@ class Tool
     #[ORM\Column(length: 255)]
     private ?string $imageTool = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ToolOfUser')]
+    #[ORM\ManyToOne(inversedBy: 'toolsOwned')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $UserOfTool = null;
+    private ?User $owner = null;
 
     /**
      * @var Collection<int, BorrowTool>
      */
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
-    private Collection $toolBorrowed;
+    private Collection $borrowTools;
 
     #[ORM\OneToOne(inversedBy: 'toolOfAvailability', cascade: ['persist', 'remove'])]
-    private ?ToolAvailability $ToolAvailability = null;
+    private ?ToolAvailability $toolAvailability = null;
 
     #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]
     #[ORM\JoinColumn(nullable: false)]
@@ -55,12 +55,12 @@ class Tool
      * @var Collection<int, ToolReview>
      */
     #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'toolOfReview', orphanRemoval: true)]
-    private Collection $toolReview;
+    private Collection $toolReviews;
 
     public function __construct()
     {
-        $this->toolBorrowed = new ArrayCollection();
-        $this->toolReview = new ArrayCollection();
+        $this->borrowTools = new ArrayCollection();
+        $this->toolReviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,14 +140,14 @@ class Tool
         return $this;
     }
 
-    public function getUserOfTool(): ?User
+    public function getOwner(): ?User
     {
-        return $this->UserOfTool;
+        return $this->owner;
     }
 
-    public function setUserOfTool(?User $UserOfTool): static
+    public function setOwner(?User $owner): static
     {
-        $this->UserOfTool = $UserOfTool;
+        $this->owner = $owner;
 
         return $this;
     }
@@ -155,27 +155,26 @@ class Tool
     /**
      * @return Collection<int, BorrowTool>
      */
-    public function getToolBorrowed(): Collection
+    public function getBorrowTools(): Collection
     {
-        return $this->toolBorrowed;
+        return $this->borrowTools;
     }
 
-    public function addToolBorrowed(BorrowTool $toolBorrowed): static
+    public function addBorrowTool(BorrowTool $borrowTool): static
     {
-        if (!$this->toolBorrowed->contains($toolBorrowed)) {
-            $this->toolBorrowed->add($toolBorrowed);
-            $toolBorrowed->setToolBeingBorrowed($this);
+        if (!$this->borrowTools->contains($borrowTool)) {
+            $this->borrowTools->add($borrowTool);
+            $borrowTool->setToolBeingBorrowed($this);
         }
 
         return $this;
     }
 
-    public function removeToolBorrowed(BorrowTool $toolBorrowed): static
+    public function removeBorrowTool(BorrowTool $borrowTool): static
     {
-        if ($this->toolBorrowed->removeElement($toolBorrowed)) {
-            // set the owning side to null (unless already changed)
-            if ($toolBorrowed->getToolBeingBorrowed() === $this) {
-                $toolBorrowed->setToolBeingBorrowed(null);
+        if ($this->borrowTools->removeElement($borrowTool)) {
+            if ($borrowTool->getToolBeingBorrowed() === $this) {
+                $borrowTool->setToolBeingBorrowed(null);
             }
         }
 
@@ -184,12 +183,12 @@ class Tool
 
     public function getToolAvailability(): ?ToolAvailability
     {
-        return $this->ToolAvailability;
+        return $this->toolAvailability;
     }
 
-    public function setToolAvailability(?ToolAvailability $ToolAvailability): static
+    public function setToolAvailability(?ToolAvailability $toolAvailability): static
     {
-        $this->ToolAvailability = $ToolAvailability;
+        $this->toolAvailability = $toolAvailability;
 
         return $this;
     }
@@ -209,15 +208,15 @@ class Tool
     /**
      * @return Collection<int, ToolReview>
      */
-    public function getToolReview(): Collection
+    public function getToolReviews(): Collection
     {
-        return $this->toolReview;
+        return $this->toolReviews;
     }
 
     public function addToolReview(ToolReview $toolReview): static
     {
-        if (!$this->toolReview->contains($toolReview)) {
-            $this->toolReview->add($toolReview);
+        if (!$this->toolReviews->contains($toolReview)) {
+            $this->toolReviews->add($toolReview);
             $toolReview->setToolOfReview($this);
         }
 
@@ -226,8 +225,7 @@ class Tool
 
     public function removeToolReview(ToolReview $toolReview): static
     {
-        if ($this->toolReview->removeElement($toolReview)) {
-            // set the owning side to null (unless already changed)
+        if ($this->toolReviews->removeElement($toolReview)) {
             if ($toolReview->getToolOfReview() === $this) {
                 $toolReview->setToolOfReview(null);
             }

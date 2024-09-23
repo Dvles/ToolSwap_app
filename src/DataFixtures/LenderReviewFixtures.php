@@ -31,7 +31,7 @@ class LenderReviewFixtures extends Fixture implements DependentFixtureInterface
             // fetch random tool + it's user (ID and object)
             $randomNumber1 = rand(0,count($tools)-1);
             $randomTool = $tools[$randomNumber1];
-            $userBeingReviewed = $randomTool->getUserOfTool(); 
+            $userBeingReviewed = $randomTool->getOwner(); 
          
 
             // fetch random user ID and object

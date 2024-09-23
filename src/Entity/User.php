@@ -56,40 +56,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Tool>
      */
-    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'UserOfTool', orphanRemoval: true)]
-    private Collection $ToolOfUser;
+    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $toolsOwned;
 
     /**
      * @var Collection<int, ToolReview>
      */
-    #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'UserOfReview', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'userOfReview', orphanRemoval: true)]
     private Collection $userReviews;
 
     /**
      * @var Collection<int, BorrowTool>
      */
-    #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'userBorrower')]
-    private Collection $borrowTool;
+    #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'userBorrower', orphanRemoval: true)]
+    private Collection $borrowTools;
 
     /**
      * @var Collection<int, LenderReview>
      */
-    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userLeavingReview', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userReviewsLeft', orphanRemoval: true)]
     private Collection $reviewsLeft;
 
     /**
      * @var Collection<int, LenderReview>
      */
-    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userBeingReviewed', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'reviewsReceived', orphanRemoval: true)]
     private Collection $reviewsReceived;
 
     public function __construct()
     {
-        // Set default role for all new users
         $this->roles[] = 'ROLE_USER';
-        $this->ToolOfUser = new ArrayCollection();
+        $this->toolsOwned = new ArrayCollection();
         $this->userReviews = new ArrayCollection();
-        $this->borrowTool = new ArrayCollection();
+        $this->borrowTools = new ArrayCollection();
         $this->reviewsLeft = new ArrayCollection();
         $this->reviewsReceived = new ArrayCollection();
     }
@@ -107,15 +106,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
@@ -129,9 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // Guarantee every user has at least ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
@@ -141,7 +132,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
@@ -156,17 +146,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -177,7 +161,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -189,7 +172,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -201,7 +183,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoneNumber(?string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
-
         return $this;
     }
 
@@ -213,7 +194,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -225,7 +205,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCommunity(string $community): static
     {
         $this->community = $community;
-
         return $this;
     }
 
@@ -237,37 +216,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRewards(?int $rewards): static
     {
         $this->rewards = $rewards;
-
         return $this;
     }
 
     /**
      * @return Collection<int, Tool>
      */
-    public function getToolOfUser(): Collection
+    public function getToolsOwned(): Collection
     {
-        return $this->ToolOfUser;
+        return $this->toolsOwned;
     }
 
-    public function addToolOfUser(Tool $toolOfUser): static
+    public function addTool(Tool $tool): static
     {
-        if (!$this->ToolOfUser->contains($toolOfUser)) {
-            $this->ToolOfUser->add($toolOfUser);
-            $toolOfUser->setUserOfTool($this);
+        if (!$this->toolsOwned->contains($tool)) {
+            $this->toolsOwned->add($tool);
+            $tool->setOwner($this);
         }
-
         return $this;
     }
 
-    public function removeToolOfUser(Tool $toolOfUser): static
+    public function removeTool(Tool $tool): static
     {
-        if ($this->ToolOfUser->removeElement($toolOfUser)) {
-            // set the owning side to null (unless already changed)
-            if ($toolOfUser->getUserOfTool() === $this) {
-                $toolOfUser->setUserOfTool(null);
+        if ($this->toolsOwned->removeElement($tool)) {
+            if ($tool->getOwner() === $this) {
+                $tool->setOwner(null);
             }
         }
-
         return $this;
     }
 
@@ -285,49 +260,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->userReviews->add($userReview);
             $userReview->setUserOfReview($this);
         }
-
         return $this;
     }
 
     public function removeUserReview(ToolReview $userReview): static
     {
         if ($this->userReviews->removeElement($userReview)) {
-            // set the owning side to null (unless already changed)
             if ($userReview->getUserOfReview() === $this) {
                 $userReview->setUserOfReview(null);
             }
         }
-
         return $this;
     }
 
     /**
      * @return Collection<int, BorrowTool>
      */
-    public function getBorrowTool(): Collection
+    public function getBorrowTools(): Collection
     {
-        return $this->borrowTool;
+        return $this->borrowTools;
     }
 
     public function addBorrowTool(BorrowTool $borrowTool): static
     {
-        if (!$this->borrowTool->contains($borrowTool)) {
-            $this->borrowTool->add($borrowTool);
+        if (!$this->borrowTools->contains($borrowTool)) {
+            $this->borrowTools->add($borrowTool);
             $borrowTool->setUserBorrower($this);
         }
-
         return $this;
     }
 
     public function removeBorrowTool(BorrowTool $borrowTool): static
     {
-        if ($this->borrowTool->removeElement($borrowTool)) {
-            // set the owning side to null (unless already changed)
+        if ($this->borrowTools->removeElement($borrowTool)) {
             if ($borrowTool->getUserBorrower() === $this) {
                 $borrowTool->setUserBorrower(null);
             }
         }
-
         return $this;
     }
 
@@ -343,23 +312,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->reviewsLeft->contains($reviewsLeft)) {
             $this->reviewsLeft->add($reviewsLeft);
-            $reviewsLeft->setUserLeavingReview($this);
+            $reviewsLeft->setUserLeavingReview($this); // Update this line
         }
-
         return $this;
     }
 
     public function removeReviewsLeft(LenderReview $reviewsLeft): static
     {
         if ($this->reviewsLeft->removeElement($reviewsLeft)) {
-            // set the owning side to null (unless already changed)
-            if ($reviewsLeft->getUserLeavingReview() === $this) {
-                $reviewsLeft->setUserLeavingReview(null);
+            if ($reviewsLeft->getUserLeavingReview() === $this) { // Update this line
+                $reviewsLeft->setUserLeavingReview(null); // Update this line
             }
         }
-
         return $this;
     }
+
 
     /**
      * @return Collection<int, LenderReview>
@@ -373,21 +340,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->reviewsReceived->contains($reviewsReceived)) {
             $this->reviewsReceived->add($reviewsReceived);
-            $reviewsReceived->setUserBeingReviewed($this);
+            $reviewsReceived->setUserBeingReviewed($this); // Update this line
         }
-
         return $this;
     }
 
     public function removeReviewsReceived(LenderReview $reviewsReceived): static
     {
         if ($this->reviewsReceived->removeElement($reviewsReceived)) {
-            // set the owning side to null (unless already changed)
-            if ($reviewsReceived->getUserBeingReviewed() === $this) {
-                $reviewsReceived->setUserBeingReviewed(null);
+            if ($reviewsReceived->getUserBeingReviewed() === $this) { // Update this line
+                $reviewsReceived->setUserBeingReviewed(null); // Update this line
             }
         }
-
         return $this;
     }
+
 }

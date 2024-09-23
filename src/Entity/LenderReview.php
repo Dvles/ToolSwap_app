@@ -41,7 +41,6 @@ class LenderReview
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -53,7 +52,6 @@ class LenderReview
     public function setComments(?string $comments): static
     {
         $this->comments = $comments;
-
         return $this;
     }
 
@@ -65,7 +63,6 @@ class LenderReview
     public function setUserLeavingReview(?User $userLeavingReview): static
     {
         $this->userLeavingReview = $userLeavingReview;
-
         return $this;
     }
 
@@ -77,7 +74,6 @@ class LenderReview
     public function setUserBeingReviewed(?User $userBeingReviewed): static
     {
         $this->userBeingReviewed = $userBeingReviewed;
-
         return $this;
     }
 }

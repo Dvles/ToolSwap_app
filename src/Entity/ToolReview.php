@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ToolReviewRepository;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ToolReviewRepository::class)]
@@ -17,14 +18,14 @@ class ToolReview
     #[ORM\Column]
     private ?int $rating = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $comment = null;
 
     #[ORM\ManyToOne(inversedBy: 'userReviews')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $UserOfReview = null;
+    private ?User $userOfReview = null;
 
-    #[ORM\ManyToOne(inversedBy: 'toolReview')]
+    #[ORM\ManyToOne(inversedBy: 'toolReviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Tool $toolOfReview = null;
 
@@ -41,7 +42,6 @@ class ToolReview
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -53,19 +53,17 @@ class ToolReview
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
-
         return $this;
     }
 
     public function getUserOfReview(): ?User
     {
-        return $this->UserOfReview;
+        return $this->userOfReview;
     }
 
-    public function setUserOfReview(?User $UserOfReview): static
+    public function setUserOfReview(?User $userOfReview): static
     {
-        $this->UserOfReview = $UserOfReview;
-
+        $this->userOfReview = $userOfReview;
         return $this;
     }
 
@@ -77,7 +75,6 @@ class ToolReview
     public function setToolOfReview(?Tool $toolOfReview): static
     {
         $this->toolOfReview = $toolOfReview;
-
         return $this;
     }
 }
