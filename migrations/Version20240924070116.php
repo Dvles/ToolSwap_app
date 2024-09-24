@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240923174248 extends AbstractMigration
+final class Version20240924070116 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -23,7 +23,7 @@ final class Version20240923174248 extends AbstractMigration
         $this->addSql('CREATE TABLE borrow_tool (id INT AUTO_INCREMENT NOT NULL, user_borrower_id INT NOT NULL, tool_being_borrowed_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, status VARCHAR(255) NOT NULL, INDEX IDX_A3DE04F4B8D5F8BE (user_borrower_id), INDEX IDX_A3DE04F42F823257 (tool_being_borrowed_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE lender_review (id INT AUTO_INCREMENT NOT NULL, user_leaving_review_id INT NOT NULL, user_being_reviewed_id INT NOT NULL, rating INT NOT NULL, comments LONGTEXT DEFAULT NULL, INDEX IDX_14FFCC36DCAFF04B (user_leaving_review_id), INDEX IDX_14FFCC36F5F6B329 (user_being_reviewed_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool (id INT AUTO_INCREMENT NOT NULL, owner_id INT NOT NULL, tool_availability_id INT DEFAULT NULL, tool_category_id INT NOT NULL, name VARCHAR(50) NOT NULL, description LONGTEXT DEFAULT NULL, tool_condition VARCHAR(20) NOT NULL, availability TINYINT(1) DEFAULT NULL, price_day NUMERIC(5, 2) DEFAULT NULL, image_tool VARCHAR(255) NOT NULL, INDEX IDX_20F33ED17E3C61F9 (owner_id), UNIQUE INDEX UNIQ_20F33ED1A1B75CA6 (tool_availability_id), INDEX IDX_20F33ED1887483BC (tool_category_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE tool_availability (id INT AUTO_INCREMENT NOT NULL, available_dates LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE tool_availability (id INT AUTO_INCREMENT NOT NULL, tool_id INT NOT NULL, user_id INT NOT NULL, available_dates LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\', is_recurring TINYINT(1) DEFAULT NULL, specific_dates LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:array)\', INDEX IDX_B3FEEC528F7B22CC (tool_id), INDEX IDX_B3FEEC52A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool_category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool_review (id INT AUTO_INCREMENT NOT NULL, user_of_review_id INT NOT NULL, tool_of_review_id INT NOT NULL, rating INT NOT NULL, comment LONGTEXT DEFAULT NULL, INDEX IDX_1C128DDA89864A9F (user_of_review_id), INDEX IDX_1C128DDA85037870 (tool_of_review_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL COMMENT \'(DC2Type:json)\', password VARCHAR(255) NOT NULL, first_name VARCHAR(150) NOT NULL, last_name VARCHAR(150) NOT NULL, phone_number VARCHAR(15) DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, community VARCHAR(255) NOT NULL, rewards INT DEFAULT NULL, UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -35,6 +35,8 @@ final class Version20240923174248 extends AbstractMigration
         $this->addSql('ALTER TABLE tool ADD CONSTRAINT FK_20F33ED17E3C61F9 FOREIGN KEY (owner_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE tool ADD CONSTRAINT FK_20F33ED1A1B75CA6 FOREIGN KEY (tool_availability_id) REFERENCES tool_availability (id)');
         $this->addSql('ALTER TABLE tool ADD CONSTRAINT FK_20F33ED1887483BC FOREIGN KEY (tool_category_id) REFERENCES tool_category (id)');
+        $this->addSql('ALTER TABLE tool_availability ADD CONSTRAINT FK_B3FEEC528F7B22CC FOREIGN KEY (tool_id) REFERENCES tool (id)');
+        $this->addSql('ALTER TABLE tool_availability ADD CONSTRAINT FK_B3FEEC52A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE tool_review ADD CONSTRAINT FK_1C128DDA89864A9F FOREIGN KEY (user_of_review_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE tool_review ADD CONSTRAINT FK_1C128DDA85037870 FOREIGN KEY (tool_of_review_id) REFERENCES tool (id)');
     }
@@ -49,6 +51,8 @@ final class Version20240923174248 extends AbstractMigration
         $this->addSql('ALTER TABLE tool DROP FOREIGN KEY FK_20F33ED17E3C61F9');
         $this->addSql('ALTER TABLE tool DROP FOREIGN KEY FK_20F33ED1A1B75CA6');
         $this->addSql('ALTER TABLE tool DROP FOREIGN KEY FK_20F33ED1887483BC');
+        $this->addSql('ALTER TABLE tool_availability DROP FOREIGN KEY FK_B3FEEC528F7B22CC');
+        $this->addSql('ALTER TABLE tool_availability DROP FOREIGN KEY FK_B3FEEC52A76ED395');
         $this->addSql('ALTER TABLE tool_review DROP FOREIGN KEY FK_1C128DDA89864A9F');
         $this->addSql('ALTER TABLE tool_review DROP FOREIGN KEY FK_1C128DDA85037870');
         $this->addSql('DROP TABLE borrow_tool');
