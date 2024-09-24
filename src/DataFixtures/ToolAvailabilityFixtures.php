@@ -24,16 +24,21 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
             $availableDates1 = ['Lundi', 'Mardi'];
             $availableDates2 = ['Jeudi', 'Samedi'];
             $availableDates3 = ['Mardi', 'Mercredi', 'Jeudi', 'Samedi', 'Dimanche'];
+            $availableDates4 = ['Vendredi', 'Samedi', 'Dimanche'];
+
 
             if ($tool->getId() % 3 === 0) {
                 $toolAvailability->setAvailableDates($availableDates1);
-                $toolAvailability->isRecurring(false);
+                $toolAvailability->setRecurring(false);
             } elseif ($tool->getId() % 5 === 0) {
                 $toolAvailability->setAvailableDates($availableDates2);
-                $toolAvailability->isRecurring(true);
+                $toolAvailability->setRecurring(true);
+            }  elseif ($tool->getId() % 7 === 0) {
+                $toolAvailability->setAvailableDates($availableDates4);
+                $toolAvailability->setRecurring(false);
             } else {
                 $toolAvailability->setAvailableDates($availableDates3);
-                $toolAvailability->isRecurring(true);
+                $toolAvailability->setRecurring(true);
             }
 
             // Set the user as the owner of the tool
