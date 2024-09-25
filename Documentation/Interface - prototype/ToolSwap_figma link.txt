@@ -1,0 +1,6 @@
+https://www.figma.com/proto/mvFibX52WxmbmGyW1wtDLd/ToolSwap?node-id=0-1&t=ZCPq8qMSWVE761b8-1
+
+
+Dev notes:
+This is a personal project as I'm learning how to use Visily templates & Figma. 
+I initially created the prototype using Visily, then imported it into Figma to further prototype and better understand the necessary website functionalities. The goal is to explore what features are required on the frontend, and what processes would need to happen in the backend.
