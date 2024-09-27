@@ -1,7 +1,5 @@
-https://www.figma.com/proto/mvFibX52WxmbmGyW1wtDLd/ToolSwap?node-id=1-1953&t=VxD1ZrlmvKAJ37tz-1
+https://www.figma.com/proto/aLuh7Ba6zizkOyARDEQn8B/Toolswap-2?node-id=9-1769&node-type=frame&t=0ZdsRK9kCh75DaMH-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=9%3A1769&share=1
 
 
 Dev notes:
-This is an exploration of Visily templates & Figma, not the final prototype of application.
-Visily templates are used then imported it into Figma to better understand the necessary website functionalities. 
 The goal is to explore what features are required on the frontend, and what processes would need to happen in the backend.
