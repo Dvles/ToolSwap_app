@@ -3,7 +3,7 @@
 
 namespace App\Enum;
 
-enum BorrowToolStatus: string
+enum ToolStatus: string
 {
     case PENDING = 'pending';      // Borrow request is made but not yet approved
     case APPROVED = 'approved';    // Request approved, but tool not yet collected
