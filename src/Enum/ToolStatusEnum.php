@@ -3,11 +3,13 @@
 
 namespace App\Enum;
 
-enum ToolStatusEnum: string
+enum BorrowToolStatus: string
 {
-    case PENDING = 'En attente';
-    case ACTIVE = 'Actif';
-    case RETURNED = 'Rendu';
-    case RECEIVED = 'Reçu';
+    case PENDING = 'pending';      // Borrow request is made but not yet approved
+    case APPROVED = 'approved';    // Request approved, but tool not yet collected
+    case ACTIVE = 'active';        // Tool is with the borrower, in use
+    case RETURNED = 'returned';    // Tool returned but not confirmed received by owner
+    case COMPLETED = 'completed';  // Tool returned and confirmed by owner
+    case CANCELED = 'canceled';    // Borrow request canceled before handover
 }
 
