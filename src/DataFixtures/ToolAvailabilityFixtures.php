@@ -20,11 +20,14 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         foreach ($tools as $tool){
 
             $toolAvailability = new ToolAvailability();
+
+            $toolName = $tool->getName();
             
             $user = $tool->getOwner();
             $startDate = new \DateTime('2024-11-01 10:00:00');
             $endDate = new \DateTime('2024-11-10 18:00:00'); 
 
+            $toolAvailability->setTitle($toolName);
             $toolAvailability->setStart($startDate);
             $toolAvailability->setEnd($endDate);
             $toolAvailability-> setBackgroundColor('rgba(255, 179, 71, 1)');
