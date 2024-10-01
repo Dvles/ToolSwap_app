@@ -35,6 +35,6 @@ class CalendarTestController extends AbstractController
         
         $toolAvailabilitiesJSON = $serializer->serialize($toolAvailabilities, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['user']]);
         $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
-        return $this->render('calendar_test/display_tool_availabilities', $vars);
+        return $this->render('calendar_test/display_tool_availabilities.html.twig', $vars);
     }
 }
