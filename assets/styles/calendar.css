@@ -1,3 +1,9 @@
 body {
     background-color: lightgray;
 }
+
+#availabilityCalendar
+{
+    width:50%;
+    height:50%;
+} 
