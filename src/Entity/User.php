@@ -83,6 +83,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'reviewsReceived', orphanRemoval: true)]
     private Collection $reviewsReceived;
 
+    /**
+     * @var Collection<int, ToolAvailability>
+     */
+    #[ORM\OneToMany(targetEntity: ToolAvailability::class, mappedBy: 'user')]
+    private Collection $toolAvailabilities;
+
 
 
     public function __construct()
@@ -93,6 +99,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->borrowTools = new ArrayCollection();
         $this->reviewsLeft = new ArrayCollection();
         $this->reviewsReceived = new ArrayCollection();
+        $this->toolAvailabilities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -354,6 +361,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $reviewsReceived->setUserBeingReviewed(null); 
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ToolAvailability>
+     */
+    public function getToolAvailabilities(): Collection
+    {
+        return $this->toolAvailabilities;
+    }
+
+    public function addToolAvailability(ToolAvailability $toolAvailability): static
+    {
+        if (!$this->toolAvailabilities->contains($toolAvailability)) {
+            $this->toolAvailabilities->add($toolAvailability);
+            $toolAvailability->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeToolAvailability(ToolAvailability $toolAvailability): static
+    {
+        if ($this->toolAvailabilities->removeElement($toolAvailability)) {
+            // set the owning side to null (unless already changed)
+            if ($toolAvailability->getUser() === $this) {
+                $toolAvailability->setUser(null);
+            }
+        }
+
         return $this;
     }
 

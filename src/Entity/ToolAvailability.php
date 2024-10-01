@@ -35,6 +35,14 @@ class ToolAvailability
     #[ORM\Column(length: 255)]
     private ?string $text_color = null;
 
+    #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tool $Tool = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +128,30 @@ class ToolAvailability
     public function setTextColor(string $text_color): static
     {
         $this->text_color = $text_color;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTool(): ?Tool
+    {
+        return $this->Tool;
+    }
+
+    public function setTool(?Tool $Tool): static
+    {
+        $this->Tool = $Tool;
 
         return $this;
     }
