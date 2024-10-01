@@ -8,6 +8,8 @@
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/calendar.css';
 
+alert('testing calendar js');
+
 
 
 // importer les objets de fullcalendar dont on a besoin
@@ -22,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 1. on obtient les événements du controller, on les stocke dans le data-calendrier du div  
   // console.log (document.getElementById ('calendrier').dataset.calendrier);
-  let evenementsJSONJS = document.getElementById('calendrier').dataset.calendrier;
+  let evenementsJSONJS = document.getElementById('calendar').dataset.calendar;
   // 2. On transforme le JSON en array d'objets JS
   let evenementsJSONJSArray = JSON.parse(evenementsJSONJS);
   
