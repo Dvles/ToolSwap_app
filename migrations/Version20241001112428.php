@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240930091528 extends AbstractMigration
+final class Version20241001112428 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -23,6 +23,7 @@ final class Version20240930091528 extends AbstractMigration
         $this->addSql('CREATE TABLE borrow_tool (id INT AUTO_INCREMENT NOT NULL, user_borrower_id INT NOT NULL, tool_being_borrowed_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, status VARCHAR(255) NOT NULL, INDEX IDX_A3DE04F4B8D5F8BE (user_borrower_id), INDEX IDX_A3DE04F42F823257 (tool_being_borrowed_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE lender_review (id INT AUTO_INCREMENT NOT NULL, user_leaving_review_id INT NOT NULL, user_being_reviewed_id INT NOT NULL, rating INT NOT NULL, comments LONGTEXT DEFAULT NULL, INDEX IDX_14FFCC36DCAFF04B (user_leaving_review_id), INDEX IDX_14FFCC36F5F6B329 (user_being_reviewed_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool (id INT AUTO_INCREMENT NOT NULL, owner_id INT NOT NULL, tool_category_id INT NOT NULL, name VARCHAR(50) NOT NULL, description LONGTEXT DEFAULT NULL, tool_condition VARCHAR(20) NOT NULL, availability TINYINT(1) DEFAULT NULL, price_day NUMERIC(5, 2) DEFAULT NULL, image_tool VARCHAR(255) NOT NULL, INDEX IDX_20F33ED17E3C61F9 (owner_id), INDEX IDX_20F33ED1887483BC (tool_category_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE tool_availability (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) DEFAULT NULL, start DATE NOT NULL, end DATE NOT NULL, description LONGTEXT DEFAULT NULL, background_color VARCHAR(255) NOT NULL, border_color VARCHAR(255) NOT NULL, text_color VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool_category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE tool_review (id INT AUTO_INCREMENT NOT NULL, user_of_review_id INT NOT NULL, tool_of_review_id INT NOT NULL, rating INT NOT NULL, comment LONGTEXT DEFAULT NULL, INDEX IDX_1C128DDA89864A9F (user_of_review_id), INDEX IDX_1C128DDA85037870 (tool_of_review_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL COMMENT \'(DC2Type:json)\', password VARCHAR(255) NOT NULL, first_name VARCHAR(150) NOT NULL, last_name VARCHAR(150) NOT NULL, phone_number VARCHAR(15) DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, community VARCHAR(255) NOT NULL, rewards INT DEFAULT NULL, UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -51,6 +52,7 @@ final class Version20240930091528 extends AbstractMigration
         $this->addSql('DROP TABLE borrow_tool');
         $this->addSql('DROP TABLE lender_review');
         $this->addSql('DROP TABLE tool');
+        $this->addSql('DROP TABLE tool_availability');
         $this->addSql('DROP TABLE tool_category');
         $this->addSql('DROP TABLE tool_review');
         $this->addSql('DROP TABLE user');
