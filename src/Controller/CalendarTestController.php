@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\User;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class CalendarTestController extends AbstractController
@@ -20,20 +23,29 @@ class CalendarTestController extends AbstractController
     }
 
     #[Route('/display/tool/calendar', name: 'display_tool_calendar')]
-    public function afficherCalendrierUtilisateur(SerializerInterface $serializer): Response
+    public function afficherCalendrierUtilisateur(EntityManagerInterface $em, SerializerInterface $serializer): Response
     {
         $user = $this->getUser(); 
         if (is_null($user)) {
             return $this->redirectToRoute("app_login");
         }
+
     
         // Get tool availabilities for the user
         $toolAvailabilities = $user->getToolAvailabilities();
+
+        // Force initialization of the PersistentCollection if not already initialized
+        if ($toolAvailabilities instanceof PersistentCollection && !$toolAvailabilities->isInitialized()) {
+            $toolAvailabilities->initialize();
+        }
+
+
+        dd($toolAvailabilities);
         
         // Debug: Check if there are any availabilities
         if ($toolAvailabilities->isEmpty()) {
             // Optionally add a message to inform user no availabilities found
-            dd($toolAvailabilities);
+            
             
             return $this->redirectToRoute("app_login"); 
         }
