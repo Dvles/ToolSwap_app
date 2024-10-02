@@ -75,13 +75,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, LenderReview>
      */
-    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userReviewsLeft', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userLeavingReview', orphanRemoval: true)]
     private Collection $reviewsLeft;
 
     /**
      * @var Collection<int, LenderReview>
      */
-    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'reviewsReceived', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LenderReview::class, mappedBy: 'userBeingReviewed', orphanRemoval: true)]
     private Collection $reviewsReceived;
 
     /**

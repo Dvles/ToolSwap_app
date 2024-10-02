@@ -24,11 +24,11 @@ class BorrowTool
     #[ORM\Column(enumType: ToolStatusEnum::class)]
     private ?ToolStatusEnum $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'borrowTool')]
+    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userBorrower = null;
 
-    #[ORM\ManyToOne(inversedBy: 'toolBorrowed')]
+    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Tool $toolBeingBorrowed = null;
 
