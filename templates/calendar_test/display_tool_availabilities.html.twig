@@ -14,8 +14,9 @@
 Voici les données reçues du controller pour afficher dans le calendrier 
 
 
-<div id="calendar" data-calendar="{{ toolAvailabilitiesJSON }}" class="calendar"></div>
+<div id="availabilityCalendar" data-calendar='{{ toolAvailabilitiesJSON|raw }}' class="calendar"></div>
 
 {{ dump(toolAvailabilitiesJSON) }}
+
 
 {% endblock %}

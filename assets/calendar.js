@@ -1,136 +1,76 @@
 /*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
+ * Main JavaScript file for calendar
  */
 
-// any CSS you import will output into a single css file (app.css in this case)
 import './styles/calendar.css';
 
-alert('testing calendar js');
-
-
-
-// importer les objets de fullcalendar dont on a besoin
 import { Calendar } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-
-// si ce n'est pas fait, installez AXIOS (npm install axios) et importez-le (concrètement l'objet AXIOS)
 import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", function () {
-
-  // 1. on obtient les événements du controller, on les stocke dans le data-calendrier du div  
-  // console.log (document.getElementById ('calendrier').dataset.calendrier);
-  let evenementsJSONJS = document.getElementById('calendar').dataset.calendar;
-  // 2. On transforme le JSON en array d'objets JS
-  let evenementsJSONJSArray = JSON.parse(evenementsJSONJS);
   
-  // console.log(evenementsJSONJSArray);
-
-
-  // 3. On crée le calendrier, associé au div
+  // Get the calendar element by ID
   let calendarEl = document.getElementById("availabilityCalendar");
 
-  // initilialisation du calendrier
-  // et définition du comportement du click
-  var calendar = new Calendar(calendarEl, {
-    // events:[
-    // exemple :
-      // {
-      //   title: "",
-      //   start: "2022-03-20",
-      //    etc...
-      // },
-    // ],
-    // nous avons notre array déjà en format js (on la crée plus haut)
-    events: evenementsJSONJSArray,
-  
-    displayEventTime: false, // cacher l'heure
-    initialView: "dayGridMonth",
-    initialDate: new Date(), // aujourd'hui
-    headerToolbar: {
-      left: "prev,next today",
-      center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay",
-    },
+  // Check if the element exists before accessing dataset
+  if (calendarEl && calendarEl.dataset.calendar) {
+    // Get the calendar data from the dataset
+    let evenementsJSONJS = calendarEl.dataset.calendar;
+    
+    // Parse the JSON string into an array of event objects
+    let evenementsJSONJSArray = JSON.parse(evenementsJSONJS);
 
-    // nous allons utiliser cet evenement pour
-    // rajouter de nouveaux Evenements 
-    dateClick: function (info) {
-      // Nous devons choisir quoi faire quand on clique. 
-      // Ici on va juste rajouter un evenement à chaque click qui dure toute la journée.
-      // Pour l'effacer, on va gérer la situation avec EventClick
-      let nouvelEvenement =
-      {
-        title: "nouveau",
-        start: info.dateStr,
-        allDay: true 
-        // on rajoute ce qu'on veut ici!
-      } 
+    // Initialize the FullCalendar
+    var calendar = new Calendar(calendarEl, {
+      events: evenementsJSONJSArray,
+      displayEventTime: false,
+      initialView: "dayGridMonth",
+      initialDate: new Date(),
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay",
+      },
+      dateClick: function (info) {
+        let nouvelEvenement = {
+          title: "nouveau",
+          start: info.dateStr,
+          allDay: true
+        };
 
-      // OPTIONNEL: éviter doublons: Obtenir tous les Evenements du calendrier et chercher 
-      // un événement ayant 
-      // le même title et
-      // le même start (ce critére est à vous de le choisir)
-      var allEvents = calendar.getEvents();
-      var existe = false;
-      allEvents.forEach(function(value) 
-      {
-        
-        if (value.title === nouvelEvenement.title && 
-          new Date(value.start).toDateString() === new Date(nouvelEvenement.start).toDateString())
-        { 
-          existe = true;
+        var allEvents = calendar.getEvents();
+        var existe = allEvents.some(function (event) {
+          return event.title === nouvelEvenement.title &&
+            new Date(event.start).toDateString() === new Date(nouvelEvenement.start).toDateString();
+        });
+
+        if (!existe) {
+          axios.post("/add/evenement", nouvelEvenement)
+            .then(function (response) {
+              nouvelEvenement.id = response.data.id;
+              calendar.addEvent(nouvelEvenement);
+            });
+        } else {
+          console.log("Event already exists, skipping.");
         }
-      });
-      // console.log (existe);
+      },
+      eventClick: function (info) {
+        let idEvenementEffacer = info.event.id;
 
-      // on ne rajout pas si l'Evenement existe
-      if (!existe){
-        axios.post("/add/evenement", 
-              nouvelEvenement) // axios encode le nouvelElement en json automatiquement et l'envoie dans le corps de la Request
-              .then (function (response){
-                  // si success dans l'insertion dans la BD
-                  console.log (response);
-                  // rajouter à calendrier (interface)
-                  // d'abord obtenir l'id fourni par Doctrine
-                  // et l'incruster dans le nouvel Evenement 
-                  nouvelEvenement.id = response.data.id;           
-                  calendar.addEvent (nouvelEvenement);
-              });  
-      }
-      else {
-        console.log ("on ne rajoute pas, l'Evenement existe");
-      } 
+        axios.post("/effacer/evenement", { id: idEvenementEffacer })
+          .then(function (response) {
+            calendar.getEventById(idEvenementEffacer).remove();
+          });
+      },
+      plugins: [interactionPlugin, dayGridPlugin],
+    });
 
-    },
-    // ici on detecte un click sur un Evenement
-    // on va choisir de l'effacer
-    eventClick: function (info){
-      console.log (info.event.id);
-      let idEvenementEffacer = info.event.id;
-      // on doit effacer de la BD aussi!
-      axios.post("/effacer/evenement", 
-       { id: idEvenementEffacer})
-      .then (function (response){
-        // si success dans l'insertion dans la BD
-        console.log (response);
-        // effacer du calendrier (interface)  
-        calendar.getEventById(idEvenementEffacer).remove();
-      }); 
-      
+    // Render the calendar
+    calendar.render();
 
-    },
-    // liste de plugins qu'on va utiliser
-    plugins: [interactionPlugin, dayGridPlugin],
-  });
-
-  // Affichage
-  calendar.render();
-
-
-
+  } else {
+    console.error("Calendar element or data not found.");
+  }
 });

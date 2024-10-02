@@ -33,6 +33,8 @@ class CalendarTestController extends AbstractController
         // Debug: Check if there are any availabilities
         if ($toolAvailabilities->isEmpty()) {
             // Optionally add a message to inform user no availabilities found
+            dd($toolAvailabilities);
+            
             return $this->redirectToRoute("app_login"); 
         }
         
@@ -46,9 +48,13 @@ class CalendarTestController extends AbstractController
             [AbstractNormalizer::GROUPS => ['tool:read']]
         );
     
+        // Debug the serialized output
+        dd($toolAvailabilitiesJSON); // This should be valid JSON
+        
         // Prepare variables for rendering
         $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
         return $this->render('calendar_test/display_tool_availabilities.html.twig', $vars);
     }
+    
     
 }
