@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\ToolAvailabilityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ToolAvailabilityRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ToolAvailabilityRepository::class)]
 class ToolAvailability
@@ -14,22 +15,29 @@ class ToolAvailability
     #[ORM\Column]
     private ?int $id = null;
 
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["tool:read"])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["tool:read"])]
     private ?\DateTimeInterface $start = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["tool:read"])]
     private ?\DateTimeInterface $end = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["tool:read"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["tool:read"])]
     private ?string $background_color = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["tool:read"])]
     private ?string $border_color = null;
 
     #[ORM\Column(length: 255)]

@@ -69,7 +69,8 @@ class CalendarTestController extends AbstractController
         );
     
         // Debug the serialized output
-        dd($toolAvailabilitiesJSON); // This should be valid JSON
+        //dd($toolAvailabilities); // 
+        //dd($toolAvailabilitiesJSON);
         
         // Prepare variables for rendering
         $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
