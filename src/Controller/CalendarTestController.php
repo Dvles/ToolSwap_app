@@ -49,17 +49,11 @@ class CalendarTestController extends AbstractController
             $toolAvailabilities->initialize();
         }
 
-
-        // dd($toolAvailabilities);
-        
-        // Debug: Check if there are any availabilities
         if ($toolAvailabilities->isEmpty()) {
             // Optionally , later add a message to inform user no availabilities found
             return $this->redirectToRoute("app_login"); 
         }
         
-        // Debugging output to check the availabilities
-        // dd($toolAvailabilities); 
     
         // Serialize the availabilities for the JSON response
         $toolAvailabilitiesJSON = $serializer->serialize(
