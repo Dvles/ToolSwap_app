@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block body %}
-Voici les données reçues du controller pour afficher dans le calendrier 
 
+<h2>Dispobilités de tes outils <em>{{ app.user.firstName }}</em></h2>
 
 <div id="availabilityCalendar" data-calendar='{{ toolAvailabilitiesJSON|raw }}' class="calendar"></div> 
 

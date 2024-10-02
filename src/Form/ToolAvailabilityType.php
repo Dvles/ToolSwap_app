@@ -28,14 +28,14 @@ class ToolAvailabilityType extends AbstractType
             // ->add('background_color'); setBackgroundColor(string $background_color)
             // ->add('border_color'); setBorderColor(string $border_color)
             // ->add('text_color'); setTextColor(string $text_color)
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('Tool', EntityType::class, [
-                'class' => Tool::class,
-                'choice_label' => 'id',
-            ])
+            //->add('user', EntityType::class, [
+            //    'class' => User::class,
+            //    'choice_label' => 'id',
+            //])
+            //->add('Tool', EntityType::class, [
+            //    'class' => Tool::class,
+            //    'choice_label' => 'id',
+            //])
         ;
     }
 

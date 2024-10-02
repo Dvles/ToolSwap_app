@@ -68,7 +68,11 @@ class CalendarTestController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Set the tool from the previous step
             $toolAvailability->setTool($tool);
-            $toolAvailability->setUser($this->getUser()); // Set the user if needed
+            $toolAvailability->setTitle($tool->getName());
+            $toolAvailability->setUser($this->getUser()); 
+            $toolAvailability->setBackgroundColor('rgba(255, 179, 71, 1)');
+            $toolAvailability->setBorderColor('rgba(255, 140, 0, 1');
+            $toolAvailability->setTextColor('#000000');
     
             $em->persist($toolAvailability);
             $em->flush();
