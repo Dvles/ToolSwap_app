@@ -74,7 +74,7 @@ class CalendarTestController extends AbstractController
             $em->flush();
     
             // Redirect to a success page or the tool list page
-            return $this->redirectToRoute('tool_success');
+            return $this->redirectToRoute('display_tool_calendar');
         }
     
         return $this->render('calendar_test/tool_add_availability.twig', [
