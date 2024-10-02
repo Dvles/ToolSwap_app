@@ -25,14 +25,24 @@ class CalendarTestController extends AbstractController
     #[Route('/display/tool/calendar', name: 'display_tool_calendar')]
     public function afficherCalendrierUtilisateur(EntityManagerInterface $em, SerializerInterface $serializer): Response
     {
+        // check if user is connected or redirected for now
         $user = $this->getUser(); 
         if (is_null($user)) {
             return $this->redirectToRoute("app_login");
         }
 
+        // Fetching the user with associated data
+        $userFromDb = $em->getRepository(User::class)->find($user->getId());
+
+        // Validate that the user exists and is valid
+        if (!$userFromDb) {
+            throw $this->createNotFoundException('User not found.');
+        }
+
+        //dd($userFromDb); 
     
         // Get tool availabilities for the user
-        $toolAvailabilities = $user->getToolAvailabilities();
+        $toolAvailabilities = $userFromDb->getToolAvailabilities();
 
         // Force initialization of the PersistentCollection if not already initialized
         if ($toolAvailabilities instanceof PersistentCollection && !$toolAvailabilities->isInitialized()) {
@@ -40,18 +50,16 @@ class CalendarTestController extends AbstractController
         }
 
 
-        dd($toolAvailabilities);
+        // dd($toolAvailabilities);
         
         // Debug: Check if there are any availabilities
         if ($toolAvailabilities->isEmpty()) {
-            // Optionally add a message to inform user no availabilities found
-            
-            
+            // Optionally , later add a message to inform user no availabilities found
             return $this->redirectToRoute("app_login"); 
         }
         
         // Debugging output to check the availabilities
-        // dd($toolAvailabilities); // Check what is being returned
+        // dd($toolAvailabilities); 
     
         // Serialize the availabilities for the JSON response
         $toolAvailabilitiesJSON = $serializer->serialize(
