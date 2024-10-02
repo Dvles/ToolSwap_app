@@ -3,7 +3,7 @@
     <a href="">Rechercher</a>
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
-        <a href="">+ Objet</a>
+        <a href="{{ path ('tool_add')}}">+ Objet</a>
         <a href="">Profil</a>
     {% else %}
         <a href=" {{ path ('register')}} ">S'inscrire</a>
