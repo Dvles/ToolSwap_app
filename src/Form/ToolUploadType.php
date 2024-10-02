@@ -18,13 +18,13 @@ class ToolUploadType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('toolCondition')
-            ->add('availability')
             ->add('priceDay')
             ->add('imageTool')
-            ->add('owner', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+            // The Owner is the user logged ---> do this in controller
+            // ->add('owner', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'id',
+            // ])
             ->add('toolCategory', EntityType::class, [
                 'class' => ToolCategory::class,
                 'choice_label' => 'id',
