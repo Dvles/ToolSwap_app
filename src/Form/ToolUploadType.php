@@ -27,7 +27,7 @@ class ToolUploadType extends AbstractType
             // ])
             ->add('toolCategory', EntityType::class, [
                 'class' => ToolCategory::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

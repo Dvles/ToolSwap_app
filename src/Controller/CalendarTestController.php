@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Tool;
+use App\Entity\ToolAvailability;
 use App\Entity\User;
+use App\Form\ToolAvailabilityType;
+use App\Form\ToolUploadType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\HttpFoundation\Request;
 
 class CalendarTestController extends AbstractController
 {
@@ -21,6 +25,66 @@ class CalendarTestController extends AbstractController
             'controller_name' => 'CalendarTestController',
         ]);
     }
+
+    #[Route('tool/add', name: 'tool_add')]
+    public function addTool(Request $request, EntityManagerInterface $em)
+    {
+        $tool = new Tool();
+        $form = $this->createForm(ToolUploadType::class, $tool);
+    
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Set the current user as the owner
+            $tool->setOwner($this->getUser());
+    
+            $em->persist($tool);
+            $em->flush();
+    
+            // Redirect to the tool availability page, passing the tool ID
+            return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
+        }
+    
+        return $this->render('calendar_test/tool_add.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('tool/add/availability/{tool_id}', name: 'tool_add_availability')]
+    public function addToolAvailability(Request $request, EntityManagerInterface $em, $tool_id)
+    {
+        // Find the tool using the tool_id
+        $tool = $em->getRepository(Tool::class)->find($tool_id);
+    
+        // Check if the tool exists
+        if (!$tool) {
+            throw $this->createNotFoundException('Tool not found.');
+        }
+    
+        // Create ToolAvailability form
+        $toolAvailability = new ToolAvailability();
+        $form = $this->createForm(ToolAvailabilityType::class, $toolAvailability); // Make sure to use the correct form type
+    
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Set the tool from the previous step
+            $toolAvailability->setTool($tool);
+            $toolAvailability->setUser($this->getUser()); // Set the user if needed
+    
+            $em->persist($toolAvailability);
+            $em->flush();
+    
+            // Redirect to a success page or the tool list page
+            return $this->redirectToRoute('tool_success');
+        }
+    
+        return $this->render('calendar_test/tool_add_availability.twig', [
+            'form' => $form->createView(),
+            'tool' => $tool // Pass the tool if you want to display it in the view
+        ]);
+    }
+    
+
+
 
     #[Route('/display/tool/calendar', name: 'display_tool_calendar')]
     public function afficherCalendrierUtilisateur(EntityManagerInterface $em, SerializerInterface $serializer): Response
