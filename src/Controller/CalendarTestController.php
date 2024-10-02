@@ -43,7 +43,7 @@ class CalendarTestController extends AbstractController
         $toolAvailabilitiesJSON = $serializer->serialize(
             $toolAvailabilities, 
             'json', 
-            [AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'tool', 'toolAvailabilities']]
+            [AbstractNormalizer::GROUPS => ['tool:read']]
         );
     
         // Prepare variables for rendering
