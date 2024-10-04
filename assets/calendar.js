@@ -56,12 +56,14 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Event already exists, skipping.");
         }
       },
-      eventClick: function (info) {
-        let idEvenementEffacer = info.event.id;
 
-        axios.post("/effacer/evenement", { id: idEvenementEffacer })
+      // Delete availability unpon clicking
+      eventClick: function (info) {
+        let idToolAvailabilityDelete = info.event.id;
+
+        axios.post("tool/delete/availability", { id: idToolAvailabilityDelete })
           .then(function (response) {
-            calendar.getEventById(idEvenementEffacer).remove();
+            calendar.getEventById(idToolAvailabilityDelete).remove();
           });
       },
       plugins: [interactionPlugin, dayGridPlugin],

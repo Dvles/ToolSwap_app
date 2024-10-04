@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Availability delete{% endblock %}
+
+{% block body %}
+    <h1>Supprimer displonibility</h1>
+
+    {{ form_start(form) }}
+
+    {{ form_row(form.start) }}<br>
+    {{ form_row(form.end) }}<br><br>
+
+    <input type="submit" value="Insérer"><br>
+
+    {{ form_end(form) }}
+{% endblock %}

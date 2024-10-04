@@ -9,6 +9,7 @@ use App\Form\ToolAvailabilityType;
 use App\Form\ToolUploadType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -86,6 +87,25 @@ class CalendarTestController extends AbstractController
             'tool' => $tool // Pass the tool if you want to display it in the view
         ]);
     }
+
+
+    #[Route('tool/delete/availability/', name: "tool_availability_delete")]
+    public function deleteToolAvailability (Request $req, ManagerRegistry $doctrine) : Response {
+
+        $toolAvailabilityObject = json_decode($req->getContent());
+        $idDelete = $toolAvailabilityObject->id;
+
+        $em = $doctrine->getManager();
+        $rep = $em->getRepository(ToolAvailability::class);
+        $toolAvailability = $rep->find($idDelete);
+        $em->remove($toolAvailability);
+        $em->flush();
+
+
+
+        return new Response ("Availability deleted", 200);
+    }
+
     
 
 
