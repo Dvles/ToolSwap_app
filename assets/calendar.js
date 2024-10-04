@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // Delete availability unpon clicking
       eventClick: function (info) {
         let idToolAvailabilityDelete = info.event.id;
+        console.log("Event ID to delete:", idToolAvailabilityDelete);
+
 
         axios.post("tool/delete/availability", { id: idToolAvailabilityDelete })
           .then(function (response) {

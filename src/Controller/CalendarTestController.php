@@ -94,6 +94,7 @@ class CalendarTestController extends AbstractController
 
         $toolAvailabilityObject = json_decode($req->getContent());
         $idDelete = $toolAvailabilityObject->id;
+        
 
         $em = $doctrine->getManager();
         $rep = $em->getRepository(ToolAvailability::class);
