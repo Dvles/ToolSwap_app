@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\BorrowTool;
 use App\Entity\Tool;
 use App\Entity\ToolAvailability;
 use App\Entity\User;
+use App\Enum\ToolStatusEnum;
+use App\Form\BorrowToolType;
 use App\Form\ToolAvailabilityType;
 use App\Form\ToolUploadType;
 use Doctrine\ORM\PersistentCollection;
@@ -222,20 +225,48 @@ class CalendarTestController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/borrow', name: 'tool_borrow')]
-    public function toolBorrow(ManagerRegistry $doctrine, Request $request, $tool_id): Response{
+        public function toolBorrow(ManagerRegistry $doctrine, Request $request, $tool_id): Response
+        {
+            // Redirect if the user is not logged in
+            $user = $this->getUser(); 
+            if (!$user) {
+                return $this->redirectToRoute("app_login");
+            }
 
-        $request->isMethod('POST');
+            // Fetch the specific tool from the database using the tool ID
+            $tool = $doctrine->getRepository(Tool::class)->find($tool_id);
+            if (!$tool) {
+                throw $this->createNotFoundException('Tool not found');
+            }
 
+            // Create a new BorrowTool entity and pre-fill user and tool
+            $borrowTool = new BorrowTool();
+            
+            // Set default values
+            $borrowTool->setUserBorrower($user); // Set the current user as the borrower
+            $borrowTool->setToolBeingBorrowed($tool); // Set the current tool being borrowed
+            $borrowTool->setStatus(ToolStatusEnum::Pending); // Set default status to "pending"
 
+            // Create the form and handle the request
+            $form = $this->createForm(BorrowToolType::class, $borrowTool);
+            $form->handleRequest($request);
 
+            // If the form is submitted and valid, save the borrow tool request
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $doctrine->getManager();
+                $entityManager->persist($borrowTool);
+                $entityManager->flush();
 
-        $vars = ['tool' => 'tool'];
-        // Render the template with the tool data
-        return $this->render('calendar_test/tool_display_single.html.twig', $vars);
+                // Redirect to some success or tool detail page
+                return $this->redirectToRoute('tool_display_single', ['tool_id' => $tool_id]);
+            }
 
-
-
-    }
+            // Render the form and tool information
+            return $this->render('calendar_test/tool_borrow.html.twig', [
+                'form' => $form->createView(),
+                'tool' => $tool,
+            ]);
+        }
     
     
 }

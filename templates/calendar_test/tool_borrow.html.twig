@@ -1,14 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FormulairesController!{% endblock %}
+{% block title %}Borrow Tool{% endblock %}
 
 {% block body %}
-    <h1>Tool Borrow</h1>
+    <h1>Borrow the Tool</h1>
+
+    <div class="tool-detail">
+        <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
+        <h3>{{ tool.name }}</h3>
+        <p><strong>Community:</strong> {{ tool.owner.community }}</p>
+        <p>{{ tool.description }}</p>
+        <p><strong>Price per day:</strong> {{ tool.priceDay }}</p>
+    </div>
+
+    <h2>Borrow this tool</h2>
 
     {{ form_start(form) }}
+        <div>
+            {{ form_label(form.startDate) }}
+            {{ form_widget(form.startDate) }}
+        </div>
+        <div>
+            {{ form_label(form.endDate) }}
+            {{ form_widget(form.endDate) }}
+        </div>
+        <div>
+            {{ form_label(form.status) }}
+            {{ form_widget(form.status) }}
+        </div>
 
-
-    <input type="submit" value="Insérer">
-    
+        <button type="submit" class="btn btn-primary">Submit</button>
     {{ form_end(form) }}
+
 {% endblock %}

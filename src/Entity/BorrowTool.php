@@ -1,99 +1,51 @@
 <?php
 
-namespace App\Entity;
+namespace App\Form;
 
+use App\Entity\BorrowTool;
+use App\Entity\Tool;
+use App\Entity\User;
 use App\Enum\ToolStatusEnum;
-use App\Repository\BorrowToolRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-#[ORM\Entity(repositoryClass: BorrowToolRepository::class)]
-class BorrowTool
+class BorrowToolType extends AbstractType
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $endDate = null;
-
-    #[ORM\Column(enumType: ToolStatusEnum::class)]
-    private ?ToolStatusEnum $status = null;
-
-    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userBorrower = null;
-
-    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Tool $toolBeingBorrowed = null;
-
-    public function getId(): ?int
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        return $this->id;
+        $builder
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text', // For a proper date picker in HTML5
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text', // For a proper date picker in HTML5
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices' => ToolStatusEnum::cases(), // Use enum cases for choices
+                'choice_label' => function($choice) {
+                    return $choice->value; // Display enum values
+                },
+            ])
+            ->add('userBorrower', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'id', // You can customize how users are displayed
+                'disabled' => true, // Make this field non-editable if it's set by the controller
+            ])
+            ->add('toolBeingBorrowed', EntityType::class, [
+                'class' => Tool::class,
+                'choice_label' => 'id', // You can customize how tools are displayed
+                'disabled' => true, // Make this field non-editable if it's set by the controller
+            ]);
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return $this->startDate;
-    }
-
-    public function setStartDate(\DateTimeInterface $startDate): static
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(\DateTimeInterface $endDate): static
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    public function getStatus(): ?ToolStatusEnum
-    {
-        return $this->status;
-    }
-
-    public function setStatus(ToolStatusEnum $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getUserBorrower(): ?User
-    {
-        return $this->userBorrower;
-    }
-
-    public function setUserBorrower(?User $userBorrower): static
-    {
-        $this->userBorrower = $userBorrower;
-
-        return $this;
-    }
-
-    public function getToolBeingBorrowed(): ?Tool
-    {
-        return $this->toolBeingBorrowed;
-    }
-
-    public function setToolBeingBorrowed(?Tool $toolBeingBorrowed): static
-    {
-        $this->toolBeingBorrowed = $toolBeingBorrowed;
-
-        return $this;
+        $resolver->setDefaults([
+            'data_class' => BorrowTool::class,
+        ]);
     }
 }
