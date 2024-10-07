@@ -19,5 +19,10 @@
 
 {{ dump(toolAvailabilitiesJSON) }}
 
+<script>
+  var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
+  console.log(toolAvailabilities);  // Check the data structure
+</script>
+
 
 {% endblock %}

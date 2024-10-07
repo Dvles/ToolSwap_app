@@ -13,6 +13,7 @@ class ToolAvailability
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["tool:read"])]
     private ?int $id = null;
 
     
