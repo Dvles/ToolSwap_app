@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Tool ID and Tool Name (ensure these are being passed from the HTML)
     const toolId = calendarEl.dataset.toolId;
     const toolName = calendarEl.dataset.toolName;
+    
+    // empty array to store ToolAvailabilities
+    let toolAvailabilities = [];
 
     // Debugging - log toolId and toolName to verify
     console.log("Tool ID:", toolId);
@@ -66,6 +69,8 @@ document.addEventListener("DOMContentLoaded", function () {
           allDay: true // All-day event
         };
 
+        toolAvailabilities.push(nouvelEvenement);
+
         // Debugging logs before sending to backend
         console.log("Attempting to add event:", nouvelEvenement);
 
@@ -76,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             nouvelEvenement.id = response.data.id; // Ensure response returns ID
             calendar.addEvent(nouvelEvenement);
             console.log("Event added successfully:", nouvelEvenement);
+            console.log("ToolAvailabilities: ", toolAvailabilities );
           })
           .catch(error => {
             console.error("toolId: ", toolId);
