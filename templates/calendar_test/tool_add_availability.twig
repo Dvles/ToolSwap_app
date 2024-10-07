@@ -2,15 +2,21 @@
 
 {% block title %}Availability{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('calendar') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('calendar_empty') }}
+{% endblock %}
+
 {% block body %}
     <h1>Ajouter disponibilités</h1>
 
-    {{ form_start(form) }}
 
-    {{ form_row(form.start) }}<br>
-    {{ form_row(form.end) }}<br><br>
-
-    <input type="submit" value="Insérer"><br>
-
-    {{ form_end(form) }}
+    <div id="availabilityCalendar"       data-tool-id="{{ tool.id }}" 
+     data-tool-name="{{ tool.name }}"     class="calendar"></div> 
+    
 {% endblock %}

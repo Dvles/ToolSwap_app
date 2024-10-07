@@ -22,6 +22,8 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('calendar', './assets/calendar.js')
+    .addEntry('calendar_empty', './assets/calendar_empty.js')
+
 
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
