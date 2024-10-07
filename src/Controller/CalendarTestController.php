@@ -207,7 +207,7 @@ class CalendarTestController extends AbstractController
     {
         $request->isMethod('POST');
         
-        // Fetch the tool from the database
+        // Grab tool from the DB
         $repTools = $doctrine->getRepository(Tool::class);
         $tool = $repTools->find($tool_id);
 
@@ -215,11 +215,25 @@ class CalendarTestController extends AbstractController
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-
         $vars = ['tool' => $tool];
-
         // Render the template with the tool data
         return $this->render('calendar_test/tool_display_single.html.twig', $vars);
+
+    }
+
+    #[Route('/tool/single/{tool_id}/borrow', name: 'tool_borrow')]
+    public function toolBorrow(ManagerRegistry $doctrine, Request $request, $tool_id): Response{
+
+        $request->isMethod('POST');
+
+
+
+
+        $vars = ['tool' => 'tool'];
+        // Render the template with the tool data
+        return $this->render('calendar_test/tool_display_single.html.twig', $vars);
+
+
 
     }
     
