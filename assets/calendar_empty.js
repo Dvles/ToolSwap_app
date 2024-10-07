@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const toolId = calendarEl.dataset.toolId;
     const toolName = calendarEl.dataset.toolName;
 
-    // empty array to store ToolAvailabilities
+    // Empty array to store ToolAvailabilities
     let toolAvailabilities = [];
 
     // Debugging - log toolId and toolName to verify
@@ -65,27 +65,12 @@ document.addEventListener("DOMContentLoaded", function () {
           allDay: true // All-day event
         };
 
+        // Store the event in the local array
         toolAvailabilities.push(nouvelEvenement);
 
         // Debugging logs before sending to backend
         console.log("Attempting to add event:", nouvelEvenement);
-
-        // Add to backend
-        axios.post(`/tool/add/availability/${toolId}`, nouvelEvenement)
-          .then(function (response) {
-            // If successful, set the ID from the response
-            nouvelEvenement.id = response.data.id; // Ensure response returns ID
-            calendar.addEvent(nouvelEvenement);
-            console.log("Event added successfully:", nouvelEvenement);
-            console.log("ToolAvailabilities: ", toolAvailabilities);
-          })
-          .catch(error => {
-            console.error("toolId: ", toolId);
-            console.error("name: ", toolName);
-            console.error("startdate: ", startDate);
-            console.error("enddate: ", endDate);
-            console.error("There was an error adding the event!", error);
-          });
+        console.log("Current ToolAvailabilities array:", toolAvailabilities);
       },
 
       plugins: [interactionPlugin, dayGridPlugin],
@@ -96,24 +81,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event listener for submitting tool availabilities
     document.getElementById("submitToolAvailabilities").addEventListener("click", function() {
-      const nouvelEvenement = toolAvailabilities.map(avail => ({
+      // Prepare data to send, keeping the structure of toolAvailabilities
+      const payload = toolAvailabilities.map(avail => ({
+          toolId: avail.toolId,
+          start: avail.start,
+          end: avail.end,
           title: avail.title,
-          start: avail.start, // Format this if needed
-          end: avail.end,     // Format this if needed
-          backgroundColor: avail.backgroundColor, // Include if needed
-          borderColor: avail.borderColor,         // Include if needed
-          textColor: avail.textColor               // Include if needed
+          borderColor: avail.borderColor,
+          textColor: avail.textColor,
+          backgroundColor: avail.backgroundColor,
+          allDay: avail.allDay
       }));
 
+      // Debugging logs before sending to backend
+      console.log("Submitting tool availabilities:", payload);
+
       // Send the data to the backend
-      axios.post(`/tool/add/availability/${toolId}`, nouvelEvenement)
+      axios.post(`/tool/add/availability/${toolId}`, payload)
         .then(function(response) {
             // If successful, handle the response
-            console.log("Event availability successfully stored:", nouvelEvenement);
-            // You may want to do something here to refresh the calendar or the UI
+            console.log("Event availability successfully stored:", response.data);
+            calendar.refetchEvents(); // Refresh calendar events if needed
         })
         .catch(error => {
-            console.error("There was an error adding the event!", error);
+            console.error("There was an error adding the event availability!", error);
         });
     });
     
