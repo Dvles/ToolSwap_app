@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h2>Tout les outils</h2>
+
+<div class="tool-list">
+    {% for tool in tools %}
+        <div class="tool-item">
+            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 250px; height: 250px;" />            <h3>{{ tool.name }}</h3>
+            <p>{{ tool.owner.community }}</p>
+            <p><strong>{{ tool.priceDay }}</strong></p> 
+
+            <br><br>
+            
+
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

@@ -192,6 +192,23 @@ class CalendarTestController extends AbstractController
         $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
         return $this->render('calendar_test/display_tool_availabilities.html.twig', $vars);
     }
+
+    #[Route ('tool/display/all',  name: 'tool_display')]
+    public function toolDisplayAll(ManagerRegistry $doctrine){
+
+        $reptools = $doctrine->getRepository(Tool::class);
+        $tools = $reptools->findAll();
+
+    
+
+
+
+        $vars = ['tools' => $tools];
+        return $this->render('calendar_test/tool_display_all.html.twig', $vars);
+
+
+
+    }
     
     
 }
