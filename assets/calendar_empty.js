@@ -71,6 +71,18 @@ document.addEventListener("DOMContentLoaded", function () {
         // Debugging logs before sending to backend
         console.log("Attempting to add event:", nouvelEvenement);
         console.log("Current ToolAvailabilities array:", toolAvailabilities);
+
+        // Add the event visually to the calendar
+        calendar.addEvent({
+          id: toolId + '-' + startDate, // Optional: Generate a unique ID for the event
+          title: toolName,
+          start: startDate,
+          end: endDate,
+          allDay: true,
+          borderColor: '#ff0000', 
+          textColor: '#ffffff', 
+          backgroundColor: '#ffcccb'
+        });
       },
 
       plugins: [interactionPlugin, dayGridPlugin],
