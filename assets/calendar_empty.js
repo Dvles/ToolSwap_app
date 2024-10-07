@@ -119,6 +119,12 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("There was an error adding the event availability!", error);
         });
     });
+
+    
+
+    
+
+    
     
   } else {
     console.error("Calendar element or data not found.");
