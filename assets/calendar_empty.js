@@ -3,16 +3,12 @@
  */
 
 import './styles/calendar.css';
-
 import { Calendar } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import axios from "axios";
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
-
   // Get the calendar element by ID
   let calendarEl = document.getElementById("availabilityCalendar");
 
@@ -27,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Tool ID and Tool Name (ensure these are being passed from the HTML)
     const toolId = calendarEl.dataset.toolId;
     const toolName = calendarEl.dataset.toolName;
-    
+
     // empty array to store ToolAvailabilities
     let toolAvailabilities = [];
 
@@ -81,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
             nouvelEvenement.id = response.data.id; // Ensure response returns ID
             calendar.addEvent(nouvelEvenement);
             console.log("Event added successfully:", nouvelEvenement);
-            console.log("ToolAvailabilities: ", toolAvailabilities );
+            console.log("ToolAvailabilities: ", toolAvailabilities);
           })
           .catch(error => {
             console.error("toolId: ", toolId);
@@ -89,10 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("startdate: ", startDate);
             console.error("enddate: ", endDate);
             console.error("There was an error adding the event!", error);
-          }
-        );
-        console.log("/tool/add/availability/${" . toolId );
-
+          });
       },
 
       plugins: [interactionPlugin, dayGridPlugin],
@@ -101,8 +94,30 @@ document.addEventListener("DOMContentLoaded", function () {
     // Render the calendar
     calendar.render();
 
+    // Event listener for submitting tool availabilities
+    document.getElementById("submitToolAvailabilities").addEventListener("click", function() {
+      const nouvelEvenement = toolAvailabilities.map(avail => ({
+          title: avail.title,
+          start: avail.start, // Format this if needed
+          end: avail.end,     // Format this if needed
+          backgroundColor: avail.backgroundColor, // Include if needed
+          borderColor: avail.borderColor,         // Include if needed
+          textColor: avail.textColor               // Include if needed
+      }));
+
+      // Send the data to the backend
+      axios.post(`/tool/add/availability/${toolId}`, nouvelEvenement)
+        .then(function(response) {
+            // If successful, handle the response
+            console.log("Event availability successfully stored:", nouvelEvenement);
+            // You may want to do something here to refresh the calendar or the UI
+        })
+        .catch(error => {
+            console.error("There was an error adding the event!", error);
+        });
+    });
+    
   } else {
     console.error("Calendar element or data not found.");
   }
 });
-

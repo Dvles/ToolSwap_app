@@ -61,29 +61,7 @@ class CalendarTestController extends AbstractController
             throw $this->createNotFoundException('Tool not found.');
         }
     
-        // Create ToolAvailability form
-        $toolAvailability = new ToolAvailability();
-        $form = $this->createForm(ToolAvailabilityType::class, $toolAvailability); // Make sure to use the correct form type
-    
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Set the tool from the previous step
-            $toolAvailability->setTool($tool);
-            $toolAvailability->setTitle($tool->getName());
-            $toolAvailability->setUser($this->getUser()); 
-            $toolAvailability->setBackgroundColor('rgba(255, 179, 71, 1)');
-            $toolAvailability->setBorderColor('rgba(255, 140, 0, 1');
-            $toolAvailability->setTextColor('#000000');
-    
-            $em->persist($toolAvailability);
-            $em->flush();
-    
-            // Redirect to a success page or the tool list page
-            return $this->redirectToRoute('display_tool_calendar');
-        }
-    
         return $this->render('calendar_test/tool_add_availability.twig', [
-            'form' => $form->createView(),
             'tool' => $tool // Pass the tool if you want to display it in the view
         ]);
     }
