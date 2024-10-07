@@ -61,13 +61,14 @@ class CalendarTestController extends AbstractController
             throw $this->createNotFoundException('Tool not found.');
         }
     
+
         // Check if the request is a POST request
         if ($request->isMethod('POST')) {
             // Get the JSON data from the request
             $data = json_decode($request->getContent(), true);
-    
+
             // Validate the incoming data
-            if (empty($data) || !isset($data['start'], $data['end'], $data['title'])) {
+            if (empty($data) || !is_array($data)) {
                 return $this->json(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
             }
     

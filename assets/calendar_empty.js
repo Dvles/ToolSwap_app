@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add the event visually to the calendar
         calendar.addEvent({
-          id: toolId + '-' + startDate, // Optional: Generate a unique ID for the event
           title: toolName,
           start: startDate,
           end: endDate,
@@ -116,7 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
             calendar.refetchEvents(); // Refresh calendar events if needed
         })
         .catch(error => {
-            console.error("There was an error adding the event availability!", error);
+          console.log("Submitting tool availabilities:", payload);  
+          console.error("There was an error adding the event availability!", error);
         });
     });
     
