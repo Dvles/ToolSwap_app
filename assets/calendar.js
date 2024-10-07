@@ -68,10 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         
         
-        axios.post("/tool/delete/availability", { id: idToolAvailabilityDelete })
+        axios.post("/tool/delete/availability/", { id: idToolAvailabilityDelete })
         .then(function (response) {
           calendar.getEventById(idToolAvailabilityDelete).remove();
+          console.log("Event deleted successfully");
+        }) .catch(error => {
+          console.error("There was an error deleting the event!", error);
         });
+
+
+
         console.log("Event ID to delete:", idToolAvailabilityDelete);
       },
       plugins: [interactionPlugin, dayGridPlugin],
