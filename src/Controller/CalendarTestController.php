@@ -208,15 +208,15 @@ class CalendarTestController extends AbstractController
         $request->isMethod('POST');
         
         // Fetch the tool from the database
-        $reptools = $doctrine->getRepository(Tool::class);
-        $tool = $reptools->findAll($tool_id);
+        $repTools = $doctrine->getRepository(Tool::class);
+        $tool = $repTools->find($tool_id);
 
         // Check if the tool exists
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
 
-        $vars = ['tool', $tool];
+        $vars = ['tool' => $tool];
 
         // Render the template with the tool data
         return $this->render('calendar_test/tool_display_single.html.twig', $vars);
