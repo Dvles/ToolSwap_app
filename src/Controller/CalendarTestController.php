@@ -83,6 +83,7 @@ class CalendarTestController extends AbstractController
     
             // Loop through each availability data item
             foreach ($data as $availabilityData) {
+
                 // Validate required fields for each availability
                 if (!isset($availabilityData['start']) || !isset($availabilityData['end']) || !isset($availabilityData['title'])) {
                     return $this->json(['error' => 'Missing required fields.'], 400);

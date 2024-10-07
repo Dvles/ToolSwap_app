@@ -48,10 +48,45 @@ document.addEventListener("DOMContentLoaded", function () {
         right: "dayGridMonth,timeGridWeek,timeGridDay",
       },
 
+      // Handle the eventClick for deleting events
+      eventClick: function (info) {
+        
+        // Create a new Date object from the event's start time
+        const startDateTime = new Date(info.event.start);
+
+        // Get the date in the format 'YYYY-MM-DD'
+        const startDate = startDateTime.toISOString().split('T')[0]; // 
+
+        // Confirm deletion
+        if (confirm(`Are you sure you want to delete "${info.event.title}" availabity of "${startDate}" ?`)) {
+          // Remove the event from the calendar
+          info.event.remove();
+
+          // Find the event in the toolAvailabilities array and remove it
+          toolAvailabilities = toolAvailabilities.filter(event => 
+            event.start !== info.event.startStr || event.end !== info.event.endStr
+          );
+
+          // Debugging logs
+          console.log("Updated ToolAvailabilities array after deletion:", toolAvailabilities);
+        }
+      },
+      
+
       // When a date is clicked, add ToolAvailability
       dateClick: function (info) {
         const startDate = info.dateStr;
         const endDate = info.dateStr; // Assuming start and end dates are the same
+
+        // Check for duplicates
+        const exists = toolAvailabilities.some(avail => 
+          avail.start === startDate && avail.end === endDate
+      );
+
+        if (exists) {
+            alert(`Event for ${startDate} already exists!`);
+            return; // Exit the function if the event already exists
+        }
 
         // Prepare the new event data
         let nouvelEvenement = {
