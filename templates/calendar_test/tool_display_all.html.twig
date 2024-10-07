@@ -7,10 +7,13 @@
 <div class="tool-list">
     {% for tool in tools %}
         <div class="tool-item">
-            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 250px; height: 250px;" />            <h3>{{ tool.name }}</h3>
+            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;" />            
+            <h3>{{ tool.name }}</h3>
             <p>{{ tool.owner.community }}</p>
             <p><strong>{{ tool.priceDay }}</strong></p> 
+            <h6><a href="{{ path('tool_display_single', {'id': tool.id}) }}">See more</a> </h6>
 
+            <br><br>
             <br><br>
             
 
