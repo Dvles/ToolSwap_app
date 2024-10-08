@@ -25,21 +25,20 @@ class UserFixtures extends Fixture
         $fakerIt = Factory::create("it_IT");
         $fakerNl = Factory::create("nl_BE");
         $bxlMunicipalities = [
-            "ixelles",        
-            "schaerbeek",     
-            "woluwe-saint-lambert", 
-            "woluwe-saint-pierre",  
-            "bruxelles-centre",     
-            "anderlecht",    
-            "etterbeke",    
-            "forest",        
-            "molenbeek-saint-jean", 
-            "saint-gilles",  
-            "saint-josse-ten-noode", 
-            "saint-michel",  
-            "uccle"       
+            "Ixelles",        
+            "Schaerbeek",     
+            "Woluwe-saint-lambert", 
+            "Woluwe-saint-pierre",  
+            "Bruxelles-centre",     
+            "Anderlecht",    
+            "Etterbeke",    
+            "Forest",        
+            "Molenbeek-saint-jean", 
+            "Saint-gilles",  
+            "Saint-josse-ten-noode", 
+            "Saint-michel",  
+            "Uccle"       
         ];
-
 
 
         // 'users' to test web application
@@ -52,7 +51,11 @@ class UserFixtures extends Fixture
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
             $user->setCommunity("ixelles");
+            
             $manager->persist($user);
+
+            // Set the reference for user1
+            $this->addReference('user' . $i, $user); 
         }
 
         // 'realistic users' for display purposes 
