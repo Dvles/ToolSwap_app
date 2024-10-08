@@ -2,20 +2,31 @@
 
 {% block body %}
 
-<h2>Single tool page</h2>
+ <h1>{{ tool.name }}</h1>
 
-    <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" />            
-    <h3>{{ tool.name }}</h3>
-    <p>{{ tool.owner.community }}</p>
-    <p>{{ tool.description }}</p>
-    <h5>état: {{ tool.toolCondition }}</h5>
-    <p><strong>{{ tool.priceDay }}</strong> € /jour</p>
+    <div class="tool-detail">
+        <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
+        <p> <em>{{ tool.owner.community }}</em></p>
+        <p> <strong>état: </strong>{{ tool.toolCondition }}</p>
+        <p>{{ tool.description }}</p>
+        <p><strong>{{ tool.priceDay }}</strong> € / jour</p>
+    </div>
+
     <button id="btnAlerts" type="button">Recevoir notifications</button>
     <a href="{{ path('tool_borrow', {'tool_id': tool.id}) }}">
         <button id="btnBorrowTool" type="button">Emprunter</button>
     </a>
 <br><br>
 <br><br>
+
+
+    <h2> Commentaires </h2>
+    <ul>
+        <li> bientot </li>
+         <li> bientot </li>
+          <li> bientot </li>
+           <li> bientot </li>
+    </ul>
             
 
 

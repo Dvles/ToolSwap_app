@@ -3,21 +3,30 @@
 {% block title %}Borrow Tool{% endblock %}
 
 {% block body %}
-    <h1>Borrow Tool</h1>
+    <h1>{{ tool.name }}</h1>
 
     <div class="tool-detail">
         <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
-        <h3>{{ tool.name }}</h3>
-        <p><strong>Community:</strong> {{ tool.owner.community }}</p>
+        <p> <em>{{ tool.owner.community }}</em></p>
+        <p> <strong>état: </strong>{{ tool.toolCondition }}</p>
         <p>{{ tool.description }}</p>
-        <p><strong>{{ tool.priceDay }}</strong> € /jour</p>
+        <p><strong>{{ tool.priceDay }}</strong> € / jour</p>
     </div>
+<br><br>
+<br><br>
 
     <h2>Emprunter</h2>
 
     {{ form_start(form) }}
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {# Render the toolAvailability dropdown #}
+        {{ form_row(form.toolAvailability) }}
+
+        {# Now place the submit button underneath the dropdown #} 
+        <br>
+        <button type="submit" class="btn btn-primary">Confirmer</button>
+
     {{ form_end(form) }}
+
 
 {% endblock %}
