@@ -32,6 +32,10 @@ class BorrowTool
     #[ORM\JoinColumn(nullable: false)]
     private ?Tool $toolBeingBorrowed = null;
 
+    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ToolAvailability $toolAvailability = null; // Needed to display toolAvailabilities when creating BorrowTool object
+
     
     
 
@@ -96,6 +100,18 @@ class BorrowTool
     public function setToolBeingBorrowed(?Tool $toolBeingBorrowed): static
     {
         $this->toolBeingBorrowed = $toolBeingBorrowed;
+
+        return $this;
+    }
+
+    public function getToolAvailability(): ?ToolAvailability
+    {
+        return $this->toolAvailability;
+    }
+
+    public function setToolAvailability(?ToolAvailability $toolAvailability): static
+    {
+        $this->toolAvailability = $toolAvailability;
 
         return $this;
     }

@@ -50,7 +50,7 @@ class ToolAvailability
 
     #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Tool $Tool = null;
+    private ?Tool $tool = null;
 
     public function getId(): ?int
     {
@@ -153,15 +153,17 @@ class ToolAvailability
         return $this;
     }
 
+
     public function getTool(): ?Tool
     {
-        return $this->Tool;
+        return $this->tool; // No change needed
     }
 
-    public function setTool(?Tool $Tool): static
+    public function setTool(?Tool $tool): static
     {
-        $this->Tool = $Tool;
+        $this->tool = $tool; // No change needed
 
         return $this;
+    
     }
 }
