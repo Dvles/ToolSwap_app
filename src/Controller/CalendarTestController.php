@@ -266,6 +266,16 @@ class CalendarTestController extends AbstractController
 
             // If the form is submitted and valid, save the borrow tool request
             if ($form->isSubmitted() && $form->isValid()) {
+                
+                // Get the selected ToolAvailability from the form
+                $toolAvailability = $borrowTool->getToolAvailability();
+
+                // Automatically set the start and end dates based on the selected availability
+                if ($toolAvailability) {
+                    $borrowTool->setStartDate($toolAvailability->getStart());
+                    $borrowTool->setEndDate($toolAvailability->getEnd());
+                }
+
                 $entityManager = $doctrine->getManager();
                 $entityManager->persist($borrowTool);
                 $entityManager->flush();
