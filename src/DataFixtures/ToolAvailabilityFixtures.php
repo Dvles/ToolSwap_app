@@ -9,6 +9,7 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -17,6 +18,8 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         
         $repTools = $manager->getRepository(Tool::class);
         $tools = $repTools->findAll();
+
+        $faker = Factory::create("fr_BE");
         
         // random ToolAvailabilities
         foreach ($tools as $tool){
@@ -55,6 +58,8 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $user1Tool->setOwner($user1);
         $user1Tool->setToolCategory($toolCategory);
         $user1Tool->setToolCondition('neuf');
+        $tool->setDescription($faker->paragraph(1));
+        $tool->setPriceDay(mt_rand(5,10));
         $user1Tool->setImageTool('https://via.placeholder.com/500x500');
         $manager->persist($user1Tool);
         
@@ -79,10 +84,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
             $manager->persist($toolAvailabilityUser1);
         }
-
         
-
-
         $manager->flush();
     }
 

@@ -3,17 +3,17 @@
 {% block title %}Borrow Tool{% endblock %}
 
 {% block body %}
-    <h1>Borrow the Tool</h1>
+    <h1>Borrow Tool</h1>
 
     <div class="tool-detail">
         <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
         <h3>{{ tool.name }}</h3>
         <p><strong>Community:</strong> {{ tool.owner.community }}</p>
         <p>{{ tool.description }}</p>
-        <p><strong>Price per day:</strong> {{ tool.priceDay }}</p>
+        <p><strong>{{ tool.priceDay }}</strong> € /jour</p>
     </div>
 
-    <h2>Borrow this tool</h2>
+    <h2>Emprunter</h2>
 
     {{ form_start(form) }}
         <div>
