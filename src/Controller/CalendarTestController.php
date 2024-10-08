@@ -276,9 +276,14 @@ class CalendarTestController extends AbstractController
                     $borrowTool->setEndDate($toolAvailability->getEnd());
                 }
 
-                $entityManager = $doctrine->getManager();
-                $entityManager->persist($borrowTool);
-                $entityManager->flush();
+                $em = $doctrine->getManager();
+                $em->persist($borrowTool);
+
+
+                // Delete related toolAvailability
+                $em->remove($toolAvailability);
+                $em->flush();
+
 
                 // Redirect to some success or tool detail page
                 return $this->redirectToRoute('tool_display_single', ['tool_id' => $tool_id]);
