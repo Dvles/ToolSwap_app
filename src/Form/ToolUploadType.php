@@ -6,6 +6,7 @@ use App\Entity\Tool;
 use App\Entity\ToolCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -40,7 +41,7 @@ class ToolUploadType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('priceDay', null, [
+            ->add('priceDay', MoneyType::class, [ // Using MoneyType for currency
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Price per day cannot be empty.',
@@ -49,11 +50,14 @@ class ToolUploadType extends AbstractType
                         'type' => 'numeric',
                         'message' => 'The price must be a valid number.',
                     ]),
-                    new Assert\Positive([
-                        'message' => 'The price must be a positive number.',
-                    ]),
+                    // Removed Assert\Positive constraint
                 ],
+                'required' => false, 
+                'empty_data' => '0.00',
+                'scale' => 2, 
+                'currency' => 'EURO', 
             ])
+
             ->add('imageTool', null, [
                 'constraints' => [
                     new Assert\NotBlank([

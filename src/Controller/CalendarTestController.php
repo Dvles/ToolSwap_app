@@ -35,17 +35,32 @@ class CalendarTestController extends AbstractController
     {
         $tool = new Tool();
         $form = $this->createForm(ToolUploadType::class, $tool);
-    
+        
         $form->handleRequest($request);
     
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Set the current user as the owner
-            $tool->setOwner($this->getUser());
-            $em->persist($tool);
-            $em->flush();
+        // Handle form submission
+        if ($form->isSubmitted()) {
+            // Check if the user is logged in
+            $user = $this->getUser();
+            if (!$user) {
+                // Handle the case where the user is not logged in
+                throw $this->createAccessDeniedException('You must be logged in to add a tool.');
+            }
     
-            // Redirect to the tool availability page, passing the tool ID
-            return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
+            if (!$form->isValid()) {
+                $errors = $form->getErrors(true); 
+                foreach ($errors as $error) {
+                    echo 'Error: ' . $error->getMessage() . "<br>";
+                }
+            } else {
+                // Set the current user as the owner
+                $tool->setOwner($user);
+                $em->persist($tool);
+                $em->flush();
+    
+                // Redirect to the tool availability page, passing the tool ID
+                return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
+            }
         }
     
         // Pass form and tool to the view
@@ -54,6 +69,7 @@ class CalendarTestController extends AbstractController
             'tool' => $tool
         ]);
     }
+    
     
 
 
