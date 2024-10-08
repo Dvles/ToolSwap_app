@@ -245,7 +245,7 @@ class CalendarTestController extends AbstractController
             // Set default values
             $borrowTool->setUserBorrower($user); // Set the current user as the borrower
             $borrowTool->setToolBeingBorrowed($tool); // Set the current tool being borrowed
-            $borrowTool->setStatus(ToolStatusEnum::Pending); // Set default status to "pending"
+            $borrowTool->setStatus(ToolStatusEnum::PENDING); // Set default status to "pending"
 
             // Create the form and handle the request
             $form = $this->createForm(BorrowToolType::class, $borrowTool);
