@@ -37,29 +37,24 @@ class CalendarTestController extends AbstractController
         $form = $this->createForm(ToolUploadType::class, $tool);
     
         $form->handleRequest($request);
+    
         if ($form->isSubmitted() && $form->isValid()) {
             // Set the current user as the owner
             $tool->setOwner($this->getUser());
             $em->persist($tool);
             $em->flush();
-
-            //dd("it works");
     
             // Redirect to the tool availability page, passing the tool ID
             return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
-        } else {
-        // Retrieve form errors
-            $errors = $form->getErrors(true); // true means to get errors from all child forms as well
-
-            foreach ($errors as $error) {
-                // Now we are working with each individual FormError
-                echo 'Error: ' . $error->getMessage() . "<br>";
-            }
-            
-            // Debugging: Dump the errors for further inspection
-            dd($errors); // Dump the error iterator for deeper inspection
         }
+    
+        // Pass form and tool to the view
+        return $this->render('calendar_test/tool_add.html.twig', [
+            'form' => $form->createView(),
+            'tool' => $tool
+        ]);
     }
+    
 
 
     #[Route('tool/add/availability/{tool_id}', name: 'tool_add_availability')]
