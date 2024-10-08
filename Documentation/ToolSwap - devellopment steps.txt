@@ -1,0 +1,7 @@
+https://docs.google.com/document/d/1BYRBk3Of79z-N-ss5eGz6q9BF8hx_YJKOBI6aVS19cQ/edit?usp=sharing
+
+Steps taken and planned for this tool management project. 
+It covers everything from setting up entities and models to adding functionality for uploading tools and managing their availability.
+
+
+(ง '-')ง
