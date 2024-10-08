@@ -1,6 +1,6 @@
 <nav>
     {# liens sans connexion #}
-    <a href="">Rechercher</a>
+    <a href=" {{ path ('tool_display')}}">Rechercher</a>
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
         <a href="{{ path ('tool_add')}}">+ Objet</a>
