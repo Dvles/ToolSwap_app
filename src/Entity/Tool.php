@@ -50,6 +50,8 @@ class Tool
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
     private Collection $borrowTools;
 
+    
+
 
 
     #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]

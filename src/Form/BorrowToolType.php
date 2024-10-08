@@ -21,15 +21,18 @@ class BorrowToolType extends AbstractType
             ->add('endDate', null, [
                 'widget' => 'single_text',
             ])
-            ->add('status')
-            ->add('userBorrower', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('toolBeingBorrowed', EntityType::class, [
-                'class' => Tool::class,
-                'choice_label' => 'id',
-            ])
+            
+            // values set in backend
+            
+            //->add('status')
+            // ->add('userBorrower', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'id',
+            // ])
+            // ->add('toolBeingBorrowed', EntityType::class, [
+            //     'class' => Tool::class,
+            //     'choice_label' => 'id',
+            // ])
         ;
     }
 
