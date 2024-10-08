@@ -16,39 +16,23 @@ class BorrowToolType extends AbstractType
     {
         $builder
         
-        // creating drowpdown ensuring users can only select available dates
+        // creating dropdown ensuring users can only select available dates
         ->add('toolAvailability', EntityType::class, [
             'class' => ToolAvailability::class,
-            'query_builder' => function (EntityRepository $er) {
+            'query_builder' => function (EntityRepository $er) use ($options) {
                 return $er->createQueryBuilder('ta')
-                ->orderBy('ta.start', 'ASC');
-            },
-            'choice_label' => function (ToolAvailability $availability) {
-                return $availability->getStart()->format('d-m-Y'); 
+                    ->where('ta.tool = :tool') // Filter by tool
+                    ->setParameter('tool', $options['tool']) // Set the tool parameter
+                    ->orderBy('ta.start', 'ASC');
             },
             'placeholder' => 'Select Availability',
+            'choice_label' => function (ToolAvailability $availability) {
+                return $availability->getStart()->format('d-m-Y'); 
+                dump($availabilities); 
+            },
         ]);
 
-        // values no longer needed
 
-        // ->add('startDate', null, [
-        //     'widget' => 'single_text',
-        // ])
-        // ->add('endDate', null, [
-        //     'widget' => 'single_text',
-        // ])
-            
-            // values set in backend
-
-            //->add('status')
-            // ->add('userBorrower', EntityType::class, [
-            //     'class' => User::class,
-            //     'choice_label' => 'id',
-            // ])
-            // ->add('toolBeingBorrowed', EntityType::class, [
-            //     'class' => Tool::class,
-            //     'choice_label' => 'id',
-            // ])
         
     }
 
@@ -56,6 +40,7 @@ class BorrowToolType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BorrowTool::class,
+            'tool' => null, // Add a new option for the selected tool
 
         ]);
     }
