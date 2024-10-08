@@ -112,8 +112,8 @@ class CalendarTestController extends AbstractController
                 $toolAvailability->setEnd(new \DateTime($availabilityData['end']));
                 
                 // Set colors from the incoming data if they exist, else set default values
-                $toolAvailability->setBackgroundColor($availabilityData['backgroundColor'] ?? 'rgba(255, 179, 71, 1)');
-                $toolAvailability->setBorderColor($availabilityData['borderColor'] ?? 'rgba(255, 140, 0, 1)');
+                $toolAvailability->setBackgroundColor($availabilityData['backgroundColor'] ?? '#ffb775');
+                $toolAvailability->setBorderColor($availabilityData['borderColor'] ?? '#ffb775');
                 $toolAvailability->setTextColor($availabilityData['textColor'] ?? '#000000');
                 
 

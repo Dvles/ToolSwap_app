@@ -94,9 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
           start: startDate,
           end: endDate,
           title: toolName, // Set title from tool name
-          borderColor: '#ff0000', // Example border color
-          textColor: '#ffffff', // Example text color
-          backgroundColor: '#ffcccb', // Example background color
+          borderColor: '#f59842', // Example border color
+          textColor: '#000000', // Example text color
+          backgroundColor: '#ffb775', // Example background color
           allDay: true // All-day event
         };
 
@@ -113,9 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
           start: startDate,
           end: endDate,
           allDay: true,
-          borderColor: '#ff0000', 
-          textColor: '#ffffff', 
-          backgroundColor: '#ffcccb'
+          borderColor: '#ff9330', 
+          textColor: '#000000', 
+          backgroundColor: '#ffb775'
         });
       },
 
