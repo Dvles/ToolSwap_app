@@ -21,14 +21,15 @@ class BorrowToolType extends AbstractType
             'class' => ToolAvailability::class,
             'query_builder' => function (EntityRepository $er) use ($options) {
                 return $er->createQueryBuilder('ta')
-                    ->where('ta.tool = :tool') // Filter by tool
+                    ->where('ta.isAvailable = :available') // Only get available tool availabilities
+                    ->setParameter('available', true) // Set the parameter to true to filter available records
+                    ->andWhere('ta.tool = :tool') // Ensure you filter by the specific tool
                     ->setParameter('tool', $options['tool']) // Set the tool parameter
-                    ->orderBy('ta.start', 'ASC');
+                    ->orderBy('ta.start', 'ASC'); // UX enhancement =) logic
             },
             'placeholder' => 'Select Availability',
             'choice_label' => function (ToolAvailability $availability) {
                 return $availability->getStart()->format('d-m-Y'); 
-                dump($availabilities); 
             },
         ]);
 

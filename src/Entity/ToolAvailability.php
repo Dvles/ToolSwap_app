@@ -44,6 +44,9 @@ class ToolAvailability
     #[ORM\Column(length: 255)]
     private ?string $text_color = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isAvailable = true; // Default to true (available)
+
     #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -156,14 +159,26 @@ class ToolAvailability
 
     public function getTool(): ?Tool
     {
-        return $this->tool; // No change needed
+        return $this->tool; 
     }
 
     public function setTool(?Tool $tool): static
     {
-        $this->tool = $tool; // No change needed
+        $this->tool = $tool; 
 
         return $this;
     
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function setIsAvailable(bool $isAvailable): static
+    {
+        $this->isAvailable = $isAvailable;
+
+        return $this;
     }
 }

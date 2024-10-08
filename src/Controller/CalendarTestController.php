@@ -276,12 +276,12 @@ class CalendarTestController extends AbstractController
                     $borrowTool->setEndDate($toolAvailability->getEnd());
                 }
 
+                // Set the ToolAvailability to be unavailable (-> so it's filtered out from BorrowTool dropdown of ToolAvailabilities)
+                $toolAvailability->setIsAvailable(false); 
+                $doctrine->getManager()->persist($toolAvailability);
+                
                 $em = $doctrine->getManager();
                 $em->persist($borrowTool);
-
-
-                // Delete related toolAvailability
-                $em->remove($toolAvailability);
                 $em->flush();
 
 
