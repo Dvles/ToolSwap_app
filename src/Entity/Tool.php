@@ -35,7 +35,6 @@ class Tool
     private ?bool $availability = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Assert\Range(min: 0)] // 
     private ?string $priceDay = null; 
 
     #[ORM\Column(length: 255)]
