@@ -160,7 +160,7 @@ class ToolController extends AbstractController
 
         $vars= ['tools' => $userTools];
         
-        return $this->render('tool/tool_display_single.html.twig', $vars); 
+        return $this->render('tool/tool_display_user.html.twig', $vars); 
     }
 
     // modify tool controller TBD
