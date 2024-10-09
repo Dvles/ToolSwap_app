@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Availability{% endblock %}
+{% block title %}Ajouter disponibilités {{ tool.name }} {% endblock %}
+
 
 {% block stylesheets %}
     {{ parent() }}
@@ -16,8 +17,6 @@
     <h1>Ajouter disponibilités</h1>
     <p> Clicker sur les dates de disponibités</p>
     <p> Re-cliker pour éffacer</p>
-
-
 
     <div id="availabilityCalendar"       data-tool-id="{{ tool.id }}" 
      data-tool-name="{{ tool.name }}"     class="calendar"></div> 
