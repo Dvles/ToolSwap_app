@@ -156,7 +156,7 @@ class ToolController extends AbstractController
         $userTools = $userWithTools->getToolsOwned();
     
         // Debugging check for fetched data
-        dd($user->getToolsOwned()->toArray());
+        //dd($user->getToolsOwned()->toArray());
 
         $vars= ['tools' => $userTools];
         
