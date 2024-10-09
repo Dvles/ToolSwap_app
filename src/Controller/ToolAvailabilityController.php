@@ -81,7 +81,6 @@ class ToolAvailabilityController extends AbstractController
             'tool' => $tool // Pass the tool if you want to display it in the view
         ]);
     }
-    
 
 
     #[Route('tool/delete/availability/', name: "tool_availability_delete")]

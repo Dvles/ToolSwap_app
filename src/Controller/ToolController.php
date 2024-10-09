@@ -2,12 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\BorrowTool;
 use App\Entity\Tool;
-use App\Entity\ToolAvailability;
 use App\Entity\User;
-use App\Enum\ToolStatusEnum;
-use App\Form\BorrowToolType;
 use App\Form\ToolUploadType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;

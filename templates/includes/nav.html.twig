@@ -3,7 +3,8 @@
     <a href=" {{ path ('tool_display_all')}}">Rechercher</a>
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
-        <a href="{{ path ('tool_upload')}}">+ Objet</a>
+        <a href="{{ path ('tool_upload')}}">+ Outils</a>
+        <a href="{{ path ('tool_display_user')}}">Mes Outils</a>
         <a href="">Profil</a>
     {% else %}
         <a href=" {{ path ('register')}} ">S'inscrire</a>
