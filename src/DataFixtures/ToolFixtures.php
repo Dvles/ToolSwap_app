@@ -25,12 +25,14 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
         // get 'toolCategory' repo to assign to new object 
         //->'tool' object can't have 'toolCategory' property null
         $repToolCategories = $manager->getRepository(ToolCategory::class);
-        $toolCategories = $repToolCategories->findAll();
 
-        // Create a mapping of category names to category objects
-        $categoryMap = [];
-        foreach ($toolCategories as $category) {
-            $categoryMap[$category->getName()] = $category;
+        $electromenagerCategory = $repToolCategories->findOneBy(['name' => 'Électroménager']);
+        $jardinageCategory = $repToolCategories->findOneBy(['name' => 'Jardinage']);
+        $constructionCategory = $repToolCategories->findOneBy(['name' => 'Construction']);
+
+        // Check if all required tool categories exist; if not, throw an exception.
+        if (!$electromenagerCategory || !$jardinageCategory || !$constructionCategory) {
+            throw new \Exception("One or more categories not found.");
         }
 
         // Tools for 'Électroménager' (Home Appliances as per ToolCategory static fixtures)
@@ -95,12 +97,11 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
         
         // conditional per category that is linked to right category Entity
         for ($i = 0; $i < 30; $i++){
-            $category = $categoryMap['Électroménager'];
 
             $tool = new Tool();
             $tool->setName($electromenagerTools[mt_rand(0,14)]);
             $tool->setOwner($users[mt_rand(0, count($users)-1)]);
-            $tool->setToolCategory($category);
+            $tool->setToolCategory($electromenagerCategory);
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setDescription($faker->paragraph(1));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
@@ -111,12 +112,11 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i < 30; $i++){
 
-            $category = $categoryMap['Jardinage'];
 
             $tool = new Tool();
             $tool->setName($jardinageTools[mt_rand(0,14)]);
             $tool->setOwner($users[mt_rand(0, count($users)-1)]);
-            $tool->setToolCategory($category);
+            $tool->setToolCategory($jardinageCategory);
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setDescription($faker->paragraph(1));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
@@ -126,14 +126,11 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
         }
 
         for ($i = 0; $i < 30; $i++){
-            
-            $category = $categoryMap['Construction'];
-
 
             $tool = new Tool();
             $tool->setName($constructionTools[mt_rand(0,14)]);
             $tool->setOwner($users[mt_rand(0, count($users)-1)]);
-            $tool->setToolCategory($category);
+            $tool->setToolCategory($constructionCategory);
             $tool->setDescription($faker->paragraph(1));
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
@@ -141,6 +138,26 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
             $manager->persist($tool);
         }
+
+        // User1 tools x 8 for testing
+        for ($i = 0; $i < 8; $i++){
+
+
+            $tool = new Tool();
+            $tool->setName($constructionTools[mt_rand(0,14)]);
+            $tool->setOwner($users[0]);
+            $tool->setToolCategory($constructionCategory);
+            $tool->setPriceDay(mt_rand(0,2));
+            $tool->setDescription('This is a test tool.');
+            $tool->setToolCondition('neuf');
+            $tool->setImageTool('https://via.placeholder.com/500x500');
+            
+            $manager->persist($tool);
+            
+        }
+
+
+
 
 
         $manager->flush();
