@@ -63,7 +63,7 @@ class ToolController extends AbstractController
     #[Route('/display/tool/calendar', name: 'display_tool_calendar')]
     public function afficherCalendrierUtilisateur(EntityManagerInterface $em, SerializerInterface $serializer): Response
     {
-        // check if user is connected or redirected for now
+        // check if user is connected or redirected for now - may not be necessaru as only logged in users should have access to url?
         $user = $this->getUser(); 
         if (is_null($user)) {
             return $this->redirectToRoute("app_login");
@@ -135,6 +135,32 @@ class ToolController extends AbstractController
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
 
+    }
+
+    #[Route('/tool/display/user', name: 'tool_display_user')]
+    public function toolDisplayUser(ManagerRegistry $doctrine) {
+        
+        $user = $this->getUser();
+    
+        if (!$user) {
+            throw $this->createAccessDeniedException('No user is logged in.');
+        }
+    
+        // Fetch the EntityManager
+        $em = $doctrine->getManager();
+    
+        // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
+        $userWithTools = $em->getRepository(User::class)->find($user->getId());
+    
+        // Check if tools are fetched
+        $userTools = $userWithTools->getToolsOwned();
+    
+        // Debugging check for fetched data
+        dd($user->getToolsOwned()->toArray());
+
+        $vars= ['tools' => $userTools];
+        
+        return $this->render('tool/tool_display_single.html.twig', $vars); 
     }
 
     // modify tool controller TBD

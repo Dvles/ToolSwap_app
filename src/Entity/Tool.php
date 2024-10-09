@@ -40,7 +40,7 @@ class Tool
     #[ORM\Column(length: 255)]
     private ?string $imageTool = null;
 
-    #[ORM\ManyToOne(inversedBy: 'toolsOwned')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'toolsOwned')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 

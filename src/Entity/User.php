@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Tool>
      */
-    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: 'owner', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Tool::class, mappedBy: "owner", fetch: "EAGER", orphanRemoval: true)] // EAGER to instruct Doctrine to load the toolsOwned collection at the same time as the User
     private Collection $toolsOwned;
 
     /**
