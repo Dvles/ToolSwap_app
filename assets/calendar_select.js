@@ -51,11 +51,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Handle the eventClick for updating event styles and adding/removing to array
       eventClick: function (info) {
-        const startDateTime = new Date(info.event.start);
-        const startDate = startDateTime.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
-
+        const startDateStr = info.event.start.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
+        const eventId = info.event.id; // Use the unique ID from the event data
+    
         // Check if the event is already in the array (deselection case)
-        const index = borrowToolAvailabilities.findIndex(event => event.start === info.event.startStr);
+        const index = borrowToolAvailabilities.findIndex(event => event.id === eventId);
+        console.log("index: " + index);
+        console.log("info.event.id: " + eventId);
 
         if (index !== -1) {
           // Event found, meaning the user is deselecting the date
@@ -66,13 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
           info.event.setProp('textColor', '#000000');   // Reverted text color
           info.event.setProp('backgroundColor', '#ffffff'); // Reverted background color
 
-          console.log(`Deselected: ${startDate}, Updated Array:`, borrowToolAvailabilities);
+          console.log(`Deselected: ${startDateStr}, Updated Array:`, borrowToolAvailabilities);
         } else {
           // Event not found, meaning the user is selecting the date
           let selectedEvent = {
+            id: eventId, // Use the existing unique ID
             toolId: toolId,
-            start: startDate,
-            end: startDate,
+            start: startDateStr, // Use startDateStr for consistency
+            end: startDateStr, // Use startDateStr for end as well
             title: toolName,
             borderColor: '#42f554',
             textColor: '#ffffff',
@@ -88,16 +91,13 @@ document.addEventListener("DOMContentLoaded", function () {
           info.event.setProp('textColor', '#ffffff');   // New text color
           info.event.setProp('backgroundColor', '#42a5f5'); // New background color
 
-          console.log(`Selected: ${startDate}, Updated Array:`, borrowToolAvailabilities);
+          console.log(`Selected: ${startDateStr}, Updated Array:`, borrowToolAvailabilities);
         }
-
-
-
-
       },
 
       plugins: [interactionPlugin, dayGridPlugin],
     });
+
 
     // Render the calendar
     calendar.render();
