@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Emprunter
+	{{ tool.name }}
+{% endblock %}
+
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('calendar') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('calendar_select') }}
+{% endblock %}
+
+
+{% block body %}
+	<h1>{{ tool.name }}</h1>
+
+	<div class="tool-detail">
+		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
+		<p>
+			<em>{{ tool.owner.community }}</em>
+		</p>
+		<p>
+			<strong>état:
+			</strong>
+			{{ tool.toolCondition }}</p>
+		<p>{{ tool.description }}</p>
+		<p>
+			<strong>{{ tool.priceDay }}</strong>
+			€ / jour</p>
+	</div>
+	<br><br>
+	<br><br>
+	<h2>Emprunter</h2>
+
+	<div id="availabilityCalendar" data-calendar='{{ toolAvailabilitiesJSON|raw }}' class="calendar"></div>
+
+
+	{{ dump(toolAvailabilitiesJSON) }}
+
+	<script>
+		var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
+console.log(toolAvailabilities); // Check the data structure
+	</script>
+
+
+{% endblock %}
+
+

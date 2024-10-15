@@ -23,6 +23,8 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('calendar', './assets/calendar.js')
     .addEntry('calendar_empty', './assets/calendar_empty.js')
+    .addEntry('calendar_select', './assets/calendar_select.js')
+
 
 
 

@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize the FullCalendar
     var calendar = new Calendar(calendarEl, {
-      events: evenementsJSONJSArray,
+      events: evenementsJSONJSArray, // Load existing availabilities
       displayEventTime: false,
       initialView: "dayGridMonth",
       initialDate: new Date(),
@@ -50,19 +50,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Handle the eventClick for deleting events
       eventClick: function (info) {
-        
-        // Create a new Date object from the event's start time
         const startDateTime = new Date(info.event.start);
-
-        // Get the date in the format 'YYYY-MM-DD'
-        const startDate = startDateTime.toISOString().split('T')[0]; // 
+        const startDate = startDateTime.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
 
         // Confirm deletion
-        if (confirm(`Are you sure you want to delete "${info.event.title}" availabity of "${startDate}" ?`)) {
+        if (confirm(`Are you sure you want to delete availability for "${startDate}"?`)) {
           // Remove the event from the calendar
           info.event.remove();
 
-          // Find the event in the toolAvailabilities array and remove it
+          // Find and remove the event from the toolAvailabilities array
           toolAvailabilities = toolAvailabilities.filter(event => 
             event.start !== info.event.startStr || event.end !== info.event.endStr
           );
@@ -72,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       },
       
-
       // When a date is clicked, add ToolAvailability
       dateClick: function (info) {
         const startDate = info.dateStr;
@@ -81,11 +76,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check for duplicates
         const exists = toolAvailabilities.some(avail => 
           avail.start === startDate && avail.end === endDate
-      );
+        );
 
         if (exists) {
-            alert(`Event for ${startDate} already exists!`);
-            return; // Exit the function if the event already exists
+          alert(`Event for ${startDate} already exists!`);
+          return; // Exit if the event already exists
         }
 
         // Prepare the new event data
@@ -113,9 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
           start: startDate,
           end: endDate,
           allDay: true,
-          borderColor: '#ff9330', 
-          textColor: '#000000', 
-          backgroundColor: '#ffb775'
+          borderColor: '#00FF00', // Green for clicked availability
+          textColor: '#FFFFFF', // White text color
+          backgroundColor: '#007BFF' // Blue for clicked availability
         });
       },
 
@@ -150,17 +145,9 @@ document.addEventListener("DOMContentLoaded", function () {
             calendar.refetchEvents(); // Refresh calendar events if needed
         })
         .catch(error => {
-          console.log("Submitting tool availabilities:", payload);  
           console.error("There was an error adding the event availability!", error);
         });
     });
-
-    
-
-    
-
-    
-    
   } else {
     console.error("Calendar element or data not found.");
   }
