@@ -140,6 +140,19 @@ class BorrowToolController extends AbstractController
 
         //dd($toolAvailabilitiesJSON);
 
+
+
+        // STEP 2 - Create a BorrowTool object when user confirms desired availabilities
+
+        $borrowTool = new BorrowTool();
+        $borrowTool->setStartDate();
+        $borrowTool->setEndDate();
+        $borrowTool->setStatus(ToolStatusEnum::PENDING);
+        $borrowTool->setUserBorrower($user);
+
+        
+
+
         $vars = [
             'toolAvailabilitiesJSON' => $toolAvailabilitiesJSON,
             'tool' => $tool
