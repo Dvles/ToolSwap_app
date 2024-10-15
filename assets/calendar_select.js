@@ -49,39 +49,51 @@ document.addEventListener("DOMContentLoaded", function () {
         right: "dayGridMonth,timeGridWeek,timeGridDay",
       },
 
-      // Handle the eventClick for updating event styles
+      // Handle the eventClick for updating event styles and adding/removing to array
       eventClick: function (info) {
         const startDateTime = new Date(info.event.start);
         const startDate = startDateTime.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
 
-        // Update event properties (colors, etc.)
-        info.event.setProp('borderColor', '#42f554'); // New border color
-        info.event.setProp('textColor', '#ffffff');   // New text color
-        info.event.setProp('backgroundColor', '#42a5f5'); // New background color
+        // Check if the event is already in the array (deselection case)
+        const index = borrowToolAvailabilities.findIndex(event => event.start === info.event.startStr);
 
-        // Debugging logs to check if properties are applied
-        console.log("Event styles updated:", {
-          borderColor: info.event.borderColor,
-          textColor: info.event.textColor,
-          backgroundColor: info.event.backgroundColor
-        });
+        if (index !== -1) {
+          // Event found, meaning the user is deselecting the date
+          borrowToolAvailabilities.splice(index, 1); // Remove the event from the array
 
-        // Update the borrowToolAvailabilities array
-        borrowToolAvailabilities = borrowToolAvailabilities.map(event => {
-          if (event.start === info.event.startStr && event.end === info.event.endStr) {
-            return {
-              ...event,
-              borderColor: '#42f554',
-              textColor: '#ffffff',
-              backgroundColor: '#42a5f5',
-            };
-          }
-          return event;
-        });
+          // Revert the event's color to indicate deselection
+          info.event.setProp('borderColor', '#ff0000'); // Reverted border color
+          info.event.setProp('textColor', '#000000');   // Reverted text color
+          info.event.setProp('backgroundColor', '#ffffff'); // Reverted background color
 
-        // Debugging logs
-        console.log("Updated event with new styles:", info.event);
-        console.log("Updated BorrowToolAvailabilities array:", borrowToolAvailabilities);
+          console.log(`Deselected: ${startDate}, Updated Array:`, borrowToolAvailabilities);
+        } else {
+          // Event not found, meaning the user is selecting the date
+          let selectedEvent = {
+            toolId: toolId,
+            start: startDate,
+            end: startDate,
+            title: toolName,
+            borderColor: '#42f554',
+            textColor: '#ffffff',
+            backgroundColor: '#42a5f5',
+            allDay: true
+          };
+
+          // Add the event to the array
+          borrowToolAvailabilities.push(selectedEvent);
+
+          // Update the event's color to indicate selection
+          info.event.setProp('borderColor', '#42f554'); // New border color
+          info.event.setProp('textColor', '#ffffff');   // New text color
+          info.event.setProp('backgroundColor', '#42a5f5'); // New background color
+
+          console.log(`Selected: ${startDate}, Updated Array:`, borrowToolAvailabilities);
+        }
+
+
+
+
       },
 
       plugins: [interactionPlugin, dayGridPlugin],
