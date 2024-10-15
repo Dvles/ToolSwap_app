@@ -67,8 +67,10 @@ class Tool
     /**
      * @var Collection<int, ToolAvailability>
      */
-    #[ORM\OneToMany(targetEntity: ToolAvailability::class, mappedBy: 'Tool')]
+    #[ORM\OneToMany(targetEntity: ToolAvailability::class, mappedBy: 'tool', cascade: ['persist', 'remove'])]
     private Collection $toolAvailabilities;
+    // Added cascade to automatically persist or remove ToolAvailability entities when a Tool is saved or deleted
+
 
 
 

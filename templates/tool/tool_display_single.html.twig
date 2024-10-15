@@ -17,7 +17,10 @@
 
     <button id="btnAlerts" type="button">Recevoir notifications</button>
     <a href="{{ path('tool_borrow', {'tool_id': tool.id}) }}">
-        <button id="btnBorrowTool" type="button">Emprunter</button>
+        <button id="btnBorrowTool" type="button">Emprunter normal</button>
+    </a>
+        <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+        <button id="btnBorrowTool" type="button">Emprunter calendrier</button>
     </a>
 <br><br>
 <br><br>
