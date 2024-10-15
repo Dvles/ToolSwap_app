@@ -31,6 +31,8 @@ class ToolAvailabilityController extends AbstractController
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found.');
         }
+
+        //dd($tool);
     
 
         // Check if the request is a POST request

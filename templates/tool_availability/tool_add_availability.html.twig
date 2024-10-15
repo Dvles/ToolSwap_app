@@ -2,7 +2,6 @@
 
 {% block title %}Ajouter disponibilités {{ tool.name }} {% endblock %}
 
-
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('calendar') }}
@@ -15,12 +14,14 @@
 
 {% block body %}
     <h1>Ajouter disponibilités</h1>
-    <p> Clicker sur les dates de disponibités</p>
-    <p> Re-cliker pour éffacer</p>
+    <p>Clicker sur les dates de disponibilités</p>
+    <p>Re-cliquer pour effacer</p>
 
-    <div id="availabilityCalendar"       data-tool-id="{{ tool.id }}" 
-     data-tool-name="{{ tool.name }}"     class="calendar"></div> 
+    <div id="availabilityCalendar" 
+         data-tool-id="{{ tool.id }}" 
+         data-tool-name="{{ tool.name }}" 
+         data-calendar=""  
+         class="calendar"></div> 
 
-     <button id="submitToolAvailabilities" type="button">confirmer</button>
-    
+    <button id="submitToolAvailabilities" type="button">confirmer</button>
 {% endblock %}

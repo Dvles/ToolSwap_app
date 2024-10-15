@@ -8,160 +8,107 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import axios from "axios";
 
+// Alert to check if the JS file loads
+alert('JavaScript file loaded');
+
 document.addEventListener("DOMContentLoaded", function () {
+  
+  alert('DOM fully loaded and parsed');
+  
   // Get the calendar element by ID
   let calendarEl = document.getElementById("availabilityCalendar");
+  
+  alert('Calendar element found: ' + (calendarEl !== null));
 
-  // Check if the element exists before accessing dataset
+  // Ensure the calendar element exists
   if (calendarEl) {
     // Get the calendar data from the dataset
-    let evenementsJSONJS = calendarEl.dataset.calendar;
+    let evenementsJSONJS = calendarEl.dataset.calendar || '[]'; // Default to '[]' if no data is provided
 
-    // Parse the JSON string into an array of event objects or use an empty array if no data
-    let evenementsJSONJSArray = evenementsJSONJS ? JSON.parse(evenementsJSONJS) : [];
+    alert('Calendar data from dataset: ' + evenementsJSONJS);
+
+    // Parse the JSON string into an array of event objects, defaulting to an empty array
+    let evenementsJSONJSArray = [];
+    try {
+      evenementsJSONJSArray = JSON.parse(evenementsJSONJS);
+      if (!Array.isArray(evenementsJSONJSArray)) {
+        evenementsJSONJSArray = []; // Ensure it's an array
+      }
+      alert('Parsed events: ' + JSON.stringify(evenementsJSONJSArray));
+    } catch (error) {
+      console.error("Error parsing calendar data:", error);
+      evenementsJSONJSArray = []; // Fallback to an empty array
+    }
 
     // Tool ID and Tool Name (ensure these are being passed from the HTML)
     const toolId = calendarEl.dataset.toolId;
     const toolName = calendarEl.dataset.toolName;
 
-    // Empty array to store ToolAvailabilities
-    let toolAvailabilities = [];
-
-    // Debugging - log toolId and toolName to verify
+    // Debugging logs to verify tool ID and name
     console.log("Tool ID:", toolId);
     console.log("Tool Name:", toolName);
 
     if (!toolId || !toolName) {
       console.error("Tool ID or Tool Name is missing from the dataset.");
-      return;
+      return; // Exit early if required data is missing
     }
 
-    // Initialize the FullCalendar
+    // Initialize FullCalendar with default configuration
     var calendar = new Calendar(calendarEl, {
-      events: evenementsJSONJSArray,
-      displayEventTime: false,
-      initialView: "dayGridMonth",
-      initialDate: new Date(),
+      events: evenementsJSONJSArray, // Event data from backend or empty array
+      displayEventTime: false, // We don't need times, just dates
+      initialView: "dayGridMonth", // Start with month view
+      initialDate: new Date(), // Start on today's date
       headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay",
+        left: "prev,next today", // Navigation buttons
+        center: "title", // Calendar title
+        right: "dayGridMonth,timeGridWeek,timeGridDay", // Different views
       },
 
-      // Handle the eventClick for deleting events
+      // Handle event click for deletion
       eventClick: function (info) {
-        
-        // Create a new Date object from the event's start time
-        const startDateTime = new Date(info.event.start);
-
-        // Get the date in the format 'YYYY-MM-DD'
-        const startDate = startDateTime.toISOString().split('T')[0]; // 
+        const startDate = new Date(info.event.start).toISOString().split('T')[0];
 
         // Confirm deletion
-        if (confirm(`Are you sure you want to delete "${info.event.title}" availabity of "${startDate}" ?`)) {
+        if (confirm(`Are you sure you want to delete "${info.event.title}" availability on "${startDate}"?`)) {
           // Remove the event from the calendar
           info.event.remove();
-
-          // Find the event in the toolAvailabilities array and remove it
-          toolAvailabilities = toolAvailabilities.filter(event => 
-            event.start !== info.event.startStr || event.end !== info.event.endStr
-          );
-
-          // Debugging logs
-          console.log("Updated ToolAvailabilities array after deletion:", toolAvailabilities);
+          console.log("Event deleted:", info.event.title);
         }
       },
-      
 
-      // When a date is clicked, add ToolAvailability
+      // Handle date click for adding availability
       dateClick: function (info) {
         const startDate = info.dateStr;
         const endDate = info.dateStr; // Assuming start and end dates are the same
 
-        // Check for duplicates
-        const exists = toolAvailabilities.some(avail => 
-          avail.start === startDate && avail.end === endDate
-      );
-
-        if (exists) {
-            alert(`Event for ${startDate} already exists!`);
-            return; // Exit the function if the event already exists
-        }
+        // Debugging logs
+        console.log("Date clicked:", startDate);
 
         // Prepare the new event data
         let nouvelEvenement = {
-          toolId: toolId, // toolId from the previous page
+          toolId: toolId,
           start: startDate,
           end: endDate,
-          title: toolName, // Set title from tool name
-          borderColor: '#f59842', // Example border color
-          textColor: '#000000', // Example text color
-          backgroundColor: '#ffb775', // Example background color
-          allDay: true // All-day event
+          title: toolName, // Tool name as event title
+          allDay: true // This is an all-day event
         };
 
-        // Store the event in the local array
-        toolAvailabilities.push(nouvelEvenement);
-
-        // Debugging logs before sending to backend
-        console.log("Attempting to add event:", nouvelEvenement);
-        console.log("Current ToolAvailabilities array:", toolAvailabilities);
-
         // Add the event visually to the calendar
-        calendar.addEvent({
-          title: toolName,
-          start: startDate,
-          end: endDate,
-          allDay: true,
-          borderColor: '#ff9330', 
-          textColor: '#000000', 
-          backgroundColor: '#ffb775'
-        });
+        calendar.addEvent(nouvelEvenement);
+        console.log("Added event:", nouvelEvenement);
       },
 
-      plugins: [interactionPlugin, dayGridPlugin],
+      plugins: [interactionPlugin, dayGridPlugin], // Use interaction and day grid plugins
     });
 
     // Render the calendar
     calendar.render();
+    console.log("Calendar rendered successfully");
+    alert('Calendar rendered successfully');
 
-    // Event listener for submitting tool availabilities
-    document.getElementById("submitToolAvailabilities").addEventListener("click", function() {
-      // Prepare data to send, keeping the structure of toolAvailabilities
-      const payload = toolAvailabilities.map(avail => ({
-          toolId: avail.toolId,
-          start: avail.start,
-          end: avail.end,
-          title: avail.title,
-          borderColor: avail.borderColor,
-          textColor: avail.textColor,
-          backgroundColor: avail.backgroundColor,
-          allDay: avail.allDay
-      }));
-
-      // Debugging logs before sending to backend
-      console.log("Submitting tool availabilities:", payload);
-
-      // Send the data to the backend
-      axios.post(`/tool/add/availability/${toolId}`, payload)
-        .then(function(response) {
-            // If successful, handle the response
-            console.log("Event availability successfully stored:", response.data);
-            calendar.refetchEvents(); // Refresh calendar events if needed
-        })
-        .catch(error => {
-          console.log("Submitting tool availabilities:", payload);  
-          console.error("There was an error adding the event availability!", error);
-        });
-    });
-
-    
-
-    
-
-    
-    
   } else {
-    console.error("Calendar element or data not found.");
+    console.error("Calendar element not found.");
+    alert('Calendar element not found');
   }
 });
