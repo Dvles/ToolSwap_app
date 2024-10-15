@@ -140,8 +140,11 @@ class BorrowToolController extends AbstractController
 
         //dd($toolAvailabilitiesJSON);
 
-        $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
-        return $this->render('tool/tool_display_availabilities.html.twig', $vars);
+        $vars = [
+            'toolAvailabilitiesJSON' => $toolAvailabilitiesJSON,
+            'tool' => $tool
+        ];
+        return $this->render('borrow_tool/tool_borrow_calendar.html.twig', $vars);
 
     }
 }

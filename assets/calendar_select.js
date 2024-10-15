@@ -25,9 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const toolName = calendarEl.dataset.toolName;
 
     // Empty array to store ToolAvailabilities
-    let toolAvailabilities = [];
+    let borrowToolAvailabilities = [];
 
     // Debugging - log toolId and toolName to verify
+    console.log("Dataset:", calendarEl.dataset);
     console.log("Tool ID:", toolId);
     console.log("Tool Name:", toolName);
 
@@ -48,39 +49,50 @@ document.addEventListener("DOMContentLoaded", function () {
         right: "dayGridMonth,timeGridWeek,timeGridDay",
       },
 
-      // Handle the eventClick for deleting events
+      // Handle the eventClick for updating event styles
       eventClick: function (info) {
         const startDateTime = new Date(info.event.start);
         const startDate = startDateTime.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
 
-        // Confirm deletion
-        if (confirm(`Are you sure you want to delete availability for "${startDate}"?`)) {
-          // Remove the event from the calendar
-          info.event.remove();
+        // Ask user if they want to update the event's style
+        if (confirm(`Do you want to update the availability for "${startDate}"?`)) {
+          // Update event properties (colors, etc.)
+          info.event.setProp('borderColor', '#42f554'); // New border color
+          info.event.setProp('textColor', '#ffffff');   // New text color
+          info.event.setProp('backgroundColor', '#42a5f5'); // New background color
 
-          // Find and remove the event from the toolAvailabilities array
-          toolAvailabilities = toolAvailabilities.filter(event => 
-            event.start !== info.event.startStr || event.end !== info.event.endStr
-          );
+          // Find the event in the borrowToolAvailabilities array and update it
+          borrowToolAvailabilities = borrowToolAvailabilities.map(event => {
+            if (event.start === info.event.startStr && event.end === info.event.endStr) {
+              return {
+                ...event,
+                borderColor: '#42f554',
+                textColor: '#ffffff',
+                backgroundColor: '#42a5f5',
+              };
+            }
+            return event;
+          });
 
           // Debugging logs
-          console.log("Updated ToolAvailabilities array after deletion:", toolAvailabilities);
+          console.log("Updated event with new styles:", info.event);
+          console.log("Updated BorrowToolAvailabilities array:", borrowToolAvailabilities);
         }
       },
-      
+
       // When a date is clicked, add ToolAvailability
       dateClick: function (info) {
         const startDate = info.dateStr;
         const endDate = info.dateStr; // Assuming start and end dates are the same
 
         // Check for duplicates
-        const exists = toolAvailabilities.some(avail => 
+        const exists = borrowToolAvailabilities.some(avail => 
           avail.start === startDate && avail.end === endDate
         );
 
         if (exists) {
           alert(`Event for ${startDate} already exists!`);
-          return; // Exit if the event already exists
+          return; // Exit the function if the event already exists
         }
 
         // Prepare the new event data
@@ -96,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         // Store the event in the local array
-        toolAvailabilities.push(nouvelEvenement);
+        borrowToolAvailabilities.push(nouvelEvenement);
 
         // Debugging logs before sending to backend
         console.log("Attempting to add event:", nouvelEvenement);
-        console.log("Current ToolAvailabilities array:", toolAvailabilities);
+        console.log("Current BorrowToolAvailabilities array:", borrowToolAvailabilities);
 
         // Add the event visually to the calendar
         calendar.addEvent({
@@ -108,9 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
           start: startDate,
           end: endDate,
           allDay: true,
-          borderColor: '#00FF00', // Green for clicked availability
-          textColor: '#FFFFFF', // White text color
-          backgroundColor: '#007BFF' // Blue for clicked availability
+          borderColor: '#ff9330', 
+          textColor: '#000000', 
+          backgroundColor: '#ffb775'
         });
       },
 
@@ -122,8 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event listener for submitting tool availabilities
     document.getElementById("submitToolAvailabilities").addEventListener("click", function() {
-      // Prepare data to send, keeping the structure of toolAvailabilities
-      const payload = toolAvailabilities.map(avail => ({
+      // Prepare data to send, keeping the structure of borrowToolAvailabilities
+      const payload = borrowToolAvailabilities.map(avail => ({
           toolId: avail.toolId,
           start: avail.start,
           end: avail.end,
@@ -145,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
             calendar.refetchEvents(); // Refresh calendar events if needed
         })
         .catch(error => {
+          console.log("Submitting tool availabilities:", payload);  
           console.error("There was an error adding the event availability!", error);
         });
     });
