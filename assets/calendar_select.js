@@ -53,31 +53,28 @@ document.addEventListener("DOMContentLoaded", function () {
       eventClick: function (info) {
         const startDateTime = new Date(info.event.start);
         const startDate = startDateTime.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
+        // Update event properties (colors, etc.)
+        info.event.setProp('borderColor', '#42f554'); // New border color
+        info.event.setProp('textColor', '#ffffff');   // New text color
+        info.event.setProp('backgroundColor', '#42a5f5'); // New background color
 
-        // Ask user if they want to update the event's style
-        if (confirm(`Do you want to update the availability for "${startDate}"?`)) {
-          // Update event properties (colors, etc.)
-          info.event.setProp('borderColor', '#42f554'); // New border color
-          info.event.setProp('textColor', '#ffffff');   // New text color
-          info.event.setProp('backgroundColor', '#42a5f5'); // New background color
+        // Find the event in the borrowToolAvailabilities array and update it
+        borrowToolAvailabilities = borrowToolAvailabilities.map(event => {
+          if (event.start === info.event.startStr && event.end === info.event.endStr) {
+            return {
+              ...event,
+              borderColor: '#42f554',
+              textColor: '#ffffff',
+              backgroundColor: '#42a5f5',
+            };
+          }
+          return event;
+        });
 
-          // Find the event in the borrowToolAvailabilities array and update it
-          borrowToolAvailabilities = borrowToolAvailabilities.map(event => {
-            if (event.start === info.event.startStr && event.end === info.event.endStr) {
-              return {
-                ...event,
-                borderColor: '#42f554',
-                textColor: '#ffffff',
-                backgroundColor: '#42a5f5',
-              };
-            }
-            return event;
-          });
+        // Debugging logs
+        console.log("Updated event with new styles:", info.event);
+        console.log("Updated BorrowToolAvailabilities array:", borrowToolAvailabilities);
 
-          // Debugging logs
-          console.log("Updated event with new styles:", info.event);
-          console.log("Updated BorrowToolAvailabilities array:", borrowToolAvailabilities);
-        }
       },
 
       // When a date is clicked, add ToolAvailability
