@@ -27,6 +27,7 @@
 ###> symfony/personal draft ###
 draft.php
 draft.js
+draft.txt
 
 ###> symfony personal backups ###
 /documentation/backups
