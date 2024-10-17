@@ -17,37 +17,36 @@
 
 
 {% block body %}
-    <h1>{{ tool.name }}</h1>
+	<h1>{{ tool.name }}</h1>
 
-    <div class="tool-detail">
-        <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
-        <p>
-            <em>{{ tool.owner.community }}</em>
-        </p>
-        <p>
-            <strong>état:</strong>
-            {{ tool.toolCondition }}
-        </p>
-        <p>{{ tool.description }}</p>
-        <p>
-            <strong>{{ tool.priceDay }}</strong>
-            € / jour
-        </p>
-    </div>
-    <br><br>
-    <h2>Emprunter</h2>
+	<div class="tool-detail">
+		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
+		<p>
+			<em>{{ tool.owner.community }}</em>
+		</p>
+		<p>
+			<strong>état:</strong>
+			{{ tool.toolCondition }}
+		</p>
+		<p>{{ tool.description }}</p>
+		<p>
+			<strong>{{ tool.priceDay }}</strong>
+			€ / jour
+		</p>
+	</div>
+	<br><br>
+	<h2>Emprunter</h2>
 
-    <div id="availabilityCalendar" 
-         data-calendar='{{ toolAvailabilitiesJSON|raw }}' 
-         data-tool-id="{{ tool.id }}" 
-         data-tool-name="{{ tool.name }}" 
-         class="calendar"></div>
+	<div id="availabilityCalendar" data-calendar='{{ toolAvailabilitiesJSON|raw }}' data-tool-id="{{ tool.id }}" data-tool-name="{{ tool.name }}" class="calendar"></div>
 
-    <script>
-        var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
-        console.log(toolAvailabilities); // Check the data structure
-    </script>
+<button id="confirmLink" class="btn btn-primary">Confirmer</button>
+
+
+
+	 <script>
+		var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
+		console.log('tool availabilities', toolAvailabilities); // Check the data structure
+	</script>
+
+
 {% endblock %}
-
-
-

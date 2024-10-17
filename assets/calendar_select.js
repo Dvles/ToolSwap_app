@@ -1,7 +1,3 @@
-/*
- * Main JavaScript file for calendar
- */
-
 import './styles/calendar.css';
 import { Calendar } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -9,129 +5,125 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get the calendar element by ID
-  let calendarEl = document.getElementById("availabilityCalendar");
+    console.log("DOMContentLoaded event fired");
 
-  // Check if the element exists before accessing dataset
-  if (calendarEl) {
-    // Get the calendar data from the dataset
-    let evenementsJSONJS = calendarEl.dataset.calendar;
+    // Get the calendar element
+    let calendarEl = document.getElementById("availabilityCalendar");
 
-    // Parse the JSON string into an array of event objects or use an empty array if no data
-    let evenementsJSONJSArray = evenementsJSONJS ? JSON.parse(evenementsJSONJS) : [];
+    // Check if the calendar element exists
+    if (calendarEl) {
+        console.log("Calendar element found.");
+        let evenementsJSONJS = calendarEl.dataset.calendar;
 
-    // Tool ID and Tool Name (ensure these are being passed from the HTML)
-    const toolId = calendarEl.dataset.toolId;
-    const toolName = calendarEl.dataset.toolName;
+        // Parse the JSON string into an array of event objects
+        let evenementsJSONJSArray = evenementsJSONJS ? JSON.parse(evenementsJSONJS) : [];
 
-    // Empty array to store ToolAvailabilities
-    let borrowToolAvailabilities = [];
+        // Tool ID and Tool Name
+        const toolId = calendarEl.dataset.toolId;
+        const toolName = calendarEl.dataset.toolName;
 
-    // Debugging - log toolId and toolName to verify
-    console.log("Dataset:", calendarEl.dataset);
-    console.log("Tool ID:", toolId);
-    console.log("Tool Name:", toolName);
+        // Empty array to store ToolAvailabilities
+        let borrowToolAvailabilities = [];
 
-    if (!toolId || !toolName) {
-      console.error("Tool ID or Tool Name is missing from the dataset.");
-      return;
-    }
+        // Debugging logs
+        console.log("Tool ID:", toolId);
+        console.log("Tool Name:", toolName);
 
-    // Initialize the FullCalendar
-    var calendar = new Calendar(calendarEl, {
-      events: evenementsJSONJSArray, // Load existing availabilities
-      displayEventTime: false,
-      initialView: "dayGridMonth",
-      initialDate: new Date(),
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay",
-      },
-
-      // Handle the eventClick for updating event styles and adding/removing to array
-      eventClick: function (info) {
-        const startDateStr = info.event.start.toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
-        const eventId = info.event.id; // Use the unique ID from the event data
-    
-        // Check if the event is already in the array (deselection case)
-        const index = borrowToolAvailabilities.findIndex(event => event.id === eventId);
-        console.log("index: " + index);
-        console.log("info.event.id: " + eventId);
-
-        if (index !== -1) {
-          // Event found, meaning the user is deselecting the date
-          borrowToolAvailabilities.splice(index, 1); // Remove the event from the array
-
-          // Revert the event's color to indicate deselection
-          info.event.setProp('borderColor', '#ff0000'); // Reverted border color
-          info.event.setProp('textColor', '#000000');   // Reverted text color
-          info.event.setProp('backgroundColor', '#ffffff'); // Reverted background color
-
-          console.log(`Deselected: ${startDateStr}, Updated Array:`, borrowToolAvailabilities);
-        } else {
-          // Event not found, meaning the user is selecting the date
-          let selectedEvent = {
-            id: eventId, // Use the existing unique ID
-            toolId: toolId,
-            start: startDateStr, // Use startDateStr for consistency
-            end: startDateStr, // Use startDateStr for end as well
-            title: toolName,
-            borderColor: '#42f554',
-            textColor: '#ffffff',
-            backgroundColor: '#42a5f5',
-            allDay: true
-          };
-
-          // Add the event to the array
-          borrowToolAvailabilities.push(selectedEvent);
-
-          // Update the event's color to indicate selection
-          info.event.setProp('borderColor', '#42f554'); // New border color
-          info.event.setProp('textColor', '#ffffff');   // New text color
-          info.event.setProp('backgroundColor', '#42a5f5'); // New background color
-
-          console.log(`Selected: ${startDateStr}, Updated Array:`, borrowToolAvailabilities);
+        if (!toolId || !toolName) {
+            console.error("Tool ID or Tool Name is missing from the dataset.");
+            return;
         }
-      },
 
-      plugins: [interactionPlugin, dayGridPlugin],
-    });
+        // Initialize FullCalendar
+        var calendar = new Calendar(calendarEl, {
+            events: evenementsJSONJSArray,
+            displayEventTime: false,
+            initialView: "dayGridMonth",
+            initialDate: new Date(),
+            headerToolbar: {
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,timeGridDay",
+            },
+            eventClick: function (info) {
+                const startDateStr = info.event.start.toISOString().split('T')[0];
+                const eventId = info.event.id;
+                const index = borrowToolAvailabilities.findIndex(event => event.id === eventId);
 
-
-    // Render the calendar
-    calendar.render();
-
-    // Event listener for submitting tool availabilities
-    document.getElementById("submitToolAvailabilities").addEventListener("click", function () {
-      // Prepare data to send, keeping the structure of borrowToolAvailabilities
-      const payload = borrowToolAvailabilities.map(avail => ({
-        toolId: avail.toolId,
-        start: avail.start,
-        end: avail.end,
-        title: avail.title,
-        borderColor: avail.borderColor,
-        textColor: avail.textColor,
-        backgroundColor: avail.backgroundColor,
-        allDay: avail.allDay
-      }));
-
-      // Debugging logs before sending to backend
-      console.log("Submitting tool availabilities:", payload);
-
-      // Send the data to the backend
-      axios.post(`/tool/add/availability/${toolId}`, payload)
-        .then(function (response) {
-          // If successful, handle the response
-          console.log("Event availability successfully stored:", response.data);
-          calendar.refetchEvents(); // Refresh calendar events if needed
-        })
-        .catch(error => {
-          console.log("Submitting tool availabilities:", payload);
-          console.error("There was an error adding the event availability!", error);
+                if (index !== -1) {
+                    borrowToolAvailabilities.splice(index, 1);
+                    // Revert color
+                    info.event.setProp('borderColor', '#ff0000');
+                    info.event.setProp('textColor', '#000000');
+                    info.event.setProp('backgroundColor', '#ffffff');
+                } else {
+                    let selectedEvent = {
+                        id: eventId,
+                        toolId: toolId,
+                        start: startDateStr,
+                        end: startDateStr,
+                        title: toolName,
+                        borderColor: '#42f554',
+                        textColor: '#ffffff',
+                        backgroundColor: '#42a5f5',
+                        allDay: true
+                    };
+                    borrowToolAvailabilities.push(selectedEvent);
+                    info.event.setProp('borderColor', '#42f554');
+                    info.event.setProp('textColor', '#ffffff');
+                    info.event.setProp('backgroundColor', '#42a5f5');
+                }
+                console.log(`Updated Array:`, borrowToolAvailabilities);
+            },
+            plugins: [interactionPlugin, dayGridPlugin],
         });
-    });
-  } else {
-    console.error("Calendar element or data not found.");
-  }
+
+        // Render the calendar
+        calendar.render();
+        console.log("FullCalendar rendered.");
+
+        // Get the confirm button
+        let confirmLink = document.getElementById("confirmLink");
+        if (!confirmLink) {
+            console.error("Confirm link not found in the DOM.");
+            return;
+        }
+
+        console.log(confirmLink);
+
+        // Event listener for the confirm button
+        confirmLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default button behavior
+            console.log("Confirm button clicked.");
+
+            // Check if borrowToolAvailabilities has data
+            if (borrowToolAvailabilities.length === 0) {
+                console.warn("No availability selected! Please select at least one date.");
+                return; // Exit early if no data
+            }
+
+            // Convert borrowToolAvailabilities to JSON string
+            const additionalData = JSON.stringify(borrowToolAvailabilities);
+            console.log("Additional data to be sent:", additionalData);
+
+            // Send the data using axios
+            axios.post(`/tool/single/${toolId}/borrow/calendar/confirm`, additionalData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log("Response from server:", response.data);
+                // Handle successful response (e.g., redirect or show success message)
+            })
+            .catch(error => {
+                console.error("There was an error sending the data:", error);
+            });
+        });
+
+    } else {
+        console.error("Calendar element not found.");
+    }
+    
+    console.log("Script executed.");
 });

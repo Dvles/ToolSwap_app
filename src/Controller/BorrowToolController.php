@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -142,15 +143,7 @@ class BorrowToolController extends AbstractController
 
 
 
-        // STEP 2 - Create a BorrowTool object when user confirms desired availabilities
 
-        $borrowTool = new BorrowTool();
-        $borrowTool->setStartDate();
-        $borrowTool->setEndDate();
-        $borrowTool->setStatus(ToolStatusEnum::PENDING);
-        $borrowTool->setUserBorrower($user);
-
-        
 
 
         $vars = [
@@ -158,6 +151,33 @@ class BorrowToolController extends AbstractController
             'tool' => $tool
         ];
         return $this->render('borrow_tool/tool_borrow_calendar.html.twig', $vars);
+    }
 
+    #[Route('/tool/single/{tool_id}/borrow/calendar/confirm', name: 'tool_borrow_calendar_confirm', methods: ['POST'])]
+    public function toolBorrowCalendarConfirm($tool_id, Request $request, EntityManagerInterface $em)
+    {
+
+        // Redirect if the user is not logged in
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute("app_login");
+        }
+
+        // STEP 1 - Get JSON payload from request
+        $borrowToolAvailabilities = json_decode($request->getContent(), true);
+
+        if (!$borrowToolAvailabilities) {
+            return new JsonResponse(['error' => 'No availabilities provided'], 400);
+        }
+
+        // Debugging: You can dump and die to see the structure of the payload
+        dd($borrowToolAvailabilities);
+        //$borrowTool = new BorrowTool();
+        // $borrowTool->setStartDate();
+        // $borrowTool->setEndDate();
+        // $borrowTool->setStatus(ToolStatusEnum::PENDING);
+        // $borrowTool->setUserBorrower($user);
+
+        return $this->render('borrow_tool/tool_borrow_calendar.html.twig');
     }
 }
