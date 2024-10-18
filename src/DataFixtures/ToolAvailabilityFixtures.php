@@ -64,7 +64,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities for each tool
         foreach ($tools as $tool) {
             $existingStartDates = []; // Array to track existing start dates
-            for ($i = 0; $i < 30; $i++) {
+            for ($i = 0; $i < 15; $i++) {
                 // Ensure the date is unique
                 $date = $this->getRandomDate();
                 $startDate = new \DateTime($date . ' 10:00:00');
