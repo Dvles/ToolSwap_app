@@ -133,7 +133,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Remove from the calendar and add to deletedAvailabilities
                     info.event.remove();
-                    deletedAvailabilities.push(info.event);
+
+                    // Format the event similar 'updateAvailabilities' objects
+                    const formattedDeletedEvent = {
+                        id: removedEvent.id,
+                        toolId: removedEvent.toolId,
+                        title: removedEvent.title,
+                        start: removedEvent.start,
+                        end: removedEvent.end,
+                        allDay: removedEvent.allDay,
+                        backgroundColor: removedEvent.backgroundColor,
+                        borderColor: removedEvent.borderColor,
+                        textColor: removedEvent.textColor
+                    };
+
+                    // Add to deletedAvailabilities in the correct format
+                    deletedAvailabilities.push(formattedDeletedEvent);
 
                     console.log("Deleted Event ID (DB event):", eventId);
                     console.log("deletedAvailabilities:", deletedAvailabilities);
@@ -146,9 +161,27 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Event exists in updateAvailabilities (new front-end event)
                         let eventToRemove = updateAvailabilities[indexInUpdates];
                         updateAvailabilities.splice(indexInUpdates, 1); // Remove from updateAvailabilities
-                        calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
-
+            
+                        // Format the event similar 'updateAvailabilities' objects
+                        const formattedDeletedEvent = {
+                            id: eventToRemove.id,
+                            toolId: eventToRemove.toolId,
+                            title: eventToRemove.title,
+                            start: eventToRemove.start,
+                            end: eventToRemove.end,
+                            allDay: eventToRemove.allDay,
+                            backgroundColor: eventToRemove.backgroundColor,
+                            borderColor: eventToRemove.borderColor,
+                            textColor: eventToRemove.textColor
+                        };
+            
+                        deletedAvailabilities.push(formattedDeletedEvent);
+            
+                        // Remove from the calendar
+                        calendar.getEventById(eventToRemove.id)?.remove();
+            
                         console.log("Removed from Update Availabilities:", eventToRemove);
+                        console.log("deletedAvailabilities:", deletedAvailabilities);
                     } else {
                         console.warn("Event not found in either eventsJSONArray or updateAvailabilities.");
                     }
@@ -180,13 +213,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => {
-                // Handle redirect after success
-                window.location.href = response.request.responseURL || '/success';
-            })
-            .catch(error => {
-                console.error("Error updating availabilities:", error);
-            });
+                .then(response => {
+                    // Handle redirect after success
+                    window.location.href = response.request.responseURL || '/success';
+                })
+                .catch(error => {
+                    console.error("Error updating availabilities:", error);
+                });
         });
     } else {
         console.log("calendar not initialized");
