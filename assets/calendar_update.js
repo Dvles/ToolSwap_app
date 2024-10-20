@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const toolId = calendarEl.dataset.toolId;
         const toolName = calendarEl.dataset.toolName;
 
-        // Empty arrays to store modified & deleted Availabilities
+        // Empty arrays to store modified & deleted availabilities
         let updateAvailabilities = [];
         let deletedAvailabilities = [];
 
@@ -42,21 +42,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 let existingEvent = eventsJSONArray.find(event => event.start.startsWith(dateStr));
                 console.log("existingEvent:", existingEvent);
 
-                // Check if we found an existing event
                 if (existingEvent) {
                     console.log("Found existing event:", existingEvent);
 
-                    // Now check if it exists in updateAvailabilities
+                    // Check if it exists in updateAvailabilities
                     const index = updateAvailabilities.findIndex(event => event.start.startsWith(dateStr));
 
                     if (index === -1) {
-                        // Event exists in eventsJSONArray, remove it from calendar and eventsJSONArray
+                        // Remove event from eventsJSONArray and calendar
                         let eventToRemove = calendar.getEventById(existingEvent.id);
                         if (eventToRemove) {
                             eventToRemove.remove();
                             deletedAvailabilities.push(existingEvent);  // Add to deletedAvailabilities
                             console.log("Removed Existing Event ID - from clicking on Date:", existingEvent.id);
-                            console.log("deletedAvailabilities:", deletedAvailabilities);
 
                             // Remove event from eventsJSONArray
                             const eventIndex = eventsJSONArray.findIndex(event => event.id === existingEvent.id);
@@ -71,12 +69,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     } else {
                         // Event exists in updateAvailabilities, remove it
-                        let eventToRemove = updateAvailabilities[index];
-                        updateAvailabilities.splice(index, 1);  // Remove from updateAvailabilities
+                        let eventToRemove = updateAvailabilities.splice(index, 1)[0];  // Remove from updateAvailabilities
                         calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
-                        console.log("index updateAvailabilities:", index);
                         console.log("Removed from Update Availabilities:", eventToRemove);
-                        console.log("updateAvailabilities:", updateAvailabilities);
                     }
                 } else {
                     console.info("Date is not present in eventsJSONArray");
@@ -87,11 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (index !== -1) {
                         // Remove from updateAvailabilities
-                        let eventToRemove = updateAvailabilities[index];
-                        updateAvailabilities.splice(index, 1);  // Remove from updateAvailabilities
+                        let eventToRemove = updateAvailabilities.splice(index, 1)[0];  // Remove from updateAvailabilities
                         calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
                         console.log("Removed from Update Availabilities:", eventToRemove);
-                        console.log("updateAvailabilities:", updateAvailabilities);
                     } else {
                         // Create new tool availability
                         let newEvent = {
@@ -111,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         updateAvailabilities.push(newEvent);
                         calendar.addEvent(newEvent);
                         console.log("Added New Event:", newEvent);
-                        console.log("updateAvailabilities:", updateAvailabilities);
                     }
                 }
             },
@@ -119,21 +111,19 @@ document.addEventListener("DOMContentLoaded", function () {
             eventClick: function (info) {
                 // Convert eventId to a number (since IDs in eventsJSONArray are numbers)
                 const eventId = Number(info.event.id); // Convert to number
-            
+
                 console.log("Clicked Event ID:", eventId); // Log the clicked event ID
-                console.log("Before Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2)); // Log state before removal
-            
+
                 // Check if the event is in eventsJSONArray (existing events from the DB)
                 const indexInEvents = eventsJSONArray.findIndex(item => item.id === eventId);
-            
+
                 if (indexInEvents !== -1) {
                     // Remove from eventsJSONArray
                     let removedEvent = eventsJSONArray.splice(indexInEvents, 1)[0]; // Get the removed event
-                    console.log("Removed from eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
-            
+
                     // Remove from the calendar and add to deletedAvailabilities
                     info.event.remove();
-            
+
                     // Format the event similarly to 'updateAvailabilities' objects
                     const formattedDeletedEvent = {
                         id: removedEvent.id,
@@ -146,35 +136,26 @@ document.addEventListener("DOMContentLoaded", function () {
                         borderColor: removedEvent.borderColor,
                         textColor: removedEvent.textColor
                     };
-            
-                    // Add to deletedAvailabilities in the correct format
+
+                    // Add to deletedAvailabilities
                     deletedAvailabilities.push(formattedDeletedEvent);
-            
-                    console.log("Deleted Event ID (DB event):", eventId);
-                    console.log("deletedAvailabilities:", deletedAvailabilities);
-            
+
                 } else {
-                    // Event is not in eventsJSONArray, so check updateAvailabilities (newly added events)
+                    // Check updateAvailabilities (newly added events)
                     const indexInUpdates = updateAvailabilities.findIndex(item => item.id === eventId);
-            
+
                     if (indexInUpdates !== -1) {
-                        // Event exists in updateAvailabilities (new front-end event)
+                        // Event exists in updateAvailabilities
                         let eventToRemove = updateAvailabilities.splice(indexInUpdates, 1)[0]; // Get the removed event
-            
-            
+
                         // Remove from the calendar
                         calendar.getEventById(eventToRemove.id)?.remove();
-            
-                        console.log("Removed from Update Availabilities:", eventToRemove);
-                        console.log("deletedAvailabilities:", deletedAvailabilities);
                     } else {
                         console.warn("Event not found in either eventsJSONArray or updateAvailabilities.");
                     }
                 }
-            
-                console.log("After Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));  // Log the updated array
             },
-            
+
             plugins: [interactionPlugin, dayGridPlugin],
         });
 
@@ -187,10 +168,25 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("updateAvailabilities:", updateAvailabilities);
         });
 
+        // Get the confirm button
         let btnUpdateAvailabilities = document.getElementById("btnUpdateAvailabilities");
+        if (!btnUpdateAvailabilities) {
+            console.error("Confirm link not found in the DOM.");
+            return;
+        }
+
+        // Event listener for the confirm button
         btnUpdateAvailabilities.addEventListener("click", function (event) {
             event.preventDefault();
+            console.log("Confirm button clicked.");
 
+            // Check if updateAvailabilities OR deletedAvailabilities has data
+            if (updateAvailabilities.length === 0 && deletedAvailabilities.length === 0) {
+                console.warn("No tool availability updated.");
+                return; // Exit early if no data
+            }
+
+            // Sending the data to the backend
             axios.post(`/tool/update/availability/${toolId}`, {
                 availabilities: updateAvailabilities,
                 deletedAvailabilities: deletedAvailabilities
@@ -199,15 +195,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => {
-                    // Handle redirect after success
-                    window.location.href = response.request.responseURL || '/success';
-                })
-                .catch(error => {
-                    console.error("Error updating availabilities:", error);
-                });
+            .then(response => {
+                console.log("Response from server:", response.data);
+                // Check if there is a redirect URL in the response
+                if (response.request.responseURL) {
+                    // Perform the redirection
+                    window.location.href = response.request.responseURL;
+                } else {
+                    console.log("No redirect URL detected. Handle success message or logic here.");
+                }
+            })
+            .catch(error => {
+                console.error("Error updating availabilities:", error);
+            });
         });
     } else {
-        console.log("calendar not initialized");
+        console.log("Calendar not initialized");
     }
 });
