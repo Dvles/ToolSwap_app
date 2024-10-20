@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
+
 class BorrowToolController extends AbstractController
 {
     #[Route('/borrow/tool', name: 'app_borrow_tool')]
@@ -157,6 +158,20 @@ class BorrowToolController extends AbstractController
     public function toolBorrowCalendarConfirm($tool_id, Request $request, EntityManagerInterface $em)
     {
 
+
+        try {
+            $data = json_decode($request->getContent(), true);
+            // Your logic here...
+        } catch (\Exception $e) {
+            error_log($e->getMessage()); // Log the error
+            return new JsonResponse(['error' => 'Something went wrong'], 500);
+        }
+
+        if (!isset($data['availabilities'])) {
+            // Handle missing data
+            return new JsonResponse(['error' => 'No availabilities provided'], 400);
+        }
+
         // Redirect if the user is not logged in
         $user = $this->getUser();
         if (!$user) {
@@ -171,13 +186,18 @@ class BorrowToolController extends AbstractController
         }
 
         // Debugging: You can dump and die to see the structure of the payload
-        dd($borrowToolAvailabilities);
-        //$borrowTool = new BorrowTool();
-        // $borrowTool->setStartDate();
-        // $borrowTool->setEndDate();
-        // $borrowTool->setStatus(ToolStatusEnum::PENDING);
-        // $borrowTool->setUserBorrower($user);
+        // dd($borrowToolAvailabilities);
+        // dd($tool_id);
 
-        return $this->render('borrow_tool/tool_borrow_calendar.html.twig');
+        return $this->redirectToRoute('tool_borrow_success', ['tool_id' => $tool_id]);
+    }
+
+
+    #[Route('/tool/single/{tool_id}/borrow/success', name: 'tool_borrow_success')]
+    public function borrowSuccess($tool_id)
+    {
+        return $this->render('borrow_tool/tool_borrow_success.html.twig', [
+            'tool_id' => $tool_id,
+        ]);
     }
 }

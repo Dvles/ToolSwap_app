@@ -15,7 +15,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
+
+
 {
+    
+
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -394,6 +399,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isEqualTo(UserInterface $user): bool
+    {
+        if (!$user instanceof self) {
+            return false; // Ensure it's the same class
+        }
+
+        // Check unique identifiers; adjust as necessary
+        if ($this->id !== $user->getId()) {
+            return false;
+        }
+
+        if ($this->email !== $user->getEmail()) {
+            return false;
+        }
+
+        // Avoid comparing passwords directly for security
+        // Ensure your password comparison logic aligns with your needs
+        return true; 
     }
 
 

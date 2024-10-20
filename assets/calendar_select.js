@@ -90,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         console.log(confirmLink);
-
         // Event listener for the confirm button
         confirmLink.addEventListener("click", function (event) {
             event.preventDefault(); // Prevent default button behavior
@@ -107,14 +106,22 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Additional data to be sent:", additionalData);
 
             // Send the data using axios
-            axios.post(`/tool/single/${toolId}/borrow/calendar/confirm`, additionalData, {
+            axios.post(`/tool/single/${toolId}/borrow/calendar/confirm`, {
+                availabilities: borrowToolAvailabilities
+            }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
             .then(response => {
                 console.log("Response from server:", response.data);
-                // Handle successful response (e.g., redirect or show success message)
+                // Check if there is a redirect URL in the response
+                if (response.request.responseURL) {
+                    // Perform the redirection
+                    window.location.href = response.request.responseURL;
+                } else {
+                    console.log("No redirect URL detected. Handle success message or logic here.");
+                }
             })
             .catch(error => {
                 console.error("There was an error sending the data:", error);
