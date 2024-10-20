@@ -111,14 +111,13 @@ class BorrowToolController extends AbstractController
 
         // dd($userFromDb); 
 
-
         // Fetch the specific tool from the database using the tool ID
         $tool = $doctrine->getRepository(Tool::class)->find($tool_id);
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
 
-        //dd($tool); //tool availabilities not initialized!!!
+        //dd($tool);
 
         // Get tool availabilities for the tool
         $toolAvailabilities = $tool->getToolAvailabilities();
@@ -128,7 +127,6 @@ class BorrowToolController extends AbstractController
             $toolAvailabilities->initialize();
         }
 
-        // Debug output to see how many availabilities were fetched
         //dd($toolAvailabilities->count());
 
         // Filter availabilities to include only those that are available
@@ -140,9 +138,6 @@ class BorrowToolController extends AbstractController
         $availableToolAvailabilities = array_filter($toolAvailabilities->toArray(), function ($availability) {
             return $availability->isAvailable() === true;
         });
-
-        // Debug output to see available availabilities count
-        //dd(count($availableToolAvailabilities)); // Check how many available availabilities were found
 
         // Check if there are available tool availabilities
         if (empty($availableToolAvailabilities)) {
@@ -161,7 +156,6 @@ class BorrowToolController extends AbstractController
         );
 
         //dd($toolAvailabilitiesJSON);
-
 
         $vars = [
             'toolAvailabilitiesJSON' => $toolAvailabilitiesJSON,
