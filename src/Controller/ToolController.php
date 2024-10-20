@@ -195,5 +195,30 @@ class ToolController extends AbstractController
     }
     
     // modify tool method TBD
+    #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]
+    public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em){
+         
+        $tool_id = $request->get('tool_id');
+        $tool = $repTools->find($tool_id);
+        //dd($tool);
+
+        if(!$tool){
+            throw $this->createNotFoundException('No tool found');
+        }
+
+        $form = $this->createForm(ToolUploadType::class, $tool);
+        $form-> handleRequest($request);
+        if ($form->isSubmitted()){
+            $em->flush();
+            $em->flush();
+            $vars = [ 'tool_id' => $tool_id];
+            return $this->redirectToRoute('tool_display_single', $vars);
+        }
+
+        $vars = ['form' => $form ];
+
+        return $this->render('tool/tool_update.html.twig', $vars);
+
+    }
 
 }

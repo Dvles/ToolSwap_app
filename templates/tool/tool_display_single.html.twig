@@ -16,11 +16,13 @@
     </div>
 
     {% if isOwner %}
-    <button>Modify Tool</button>
-    <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-        <button id="btnToolDelete" type="button">delete tool</button>
-    </a>
-    <p>C'est ton outil! Merci de partager</p>
+        <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+            <button id="btnToolUpdate" type="button">modify tool</button>
+        </a>
+        <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
+            <button id="btnToolDelete" type="button">delete tool</button>
+        </a>
+
     {% else %}
         <button id="btnAlerts" type="button">Recevoir notifications</button>
         <a href="{{ path('tool_borrow', {'tool_id': tool.id}) }}">

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier outil{% endblock %}
+
+{% block body %}
+    <h1>Modifier outil</h1>
+
+    {{ form_start(form) }}
+
+    {{ form_label(form.name) }}<br>
+    {{ form_widget(form.name) }}<br>
+
+    {{ form_label(form.description) }}<br>
+    {{ form_widget(form.description) }}<br>
+
+    {{ form_label(form.toolCondition) }}<br>
+    {{ form_widget(form.toolCondition) }}<br>
+
+    {{ form_label(form.priceDay) }}<br>
+    {{ form_widget(form.priceDay) }}<br>
+
+    {{ form_label(form.imageTool) }}<br>
+    {{ form_widget(form.imageTool) }}<br>
+
+    {{ form_label(form.toolCategory) }}<br>
+    {{ form_widget(form.toolCategory) }}<br><br>
+
+    <input type="submit" value="Insérer">
+    
+    {{ form_end(form) }}
+{% endblock %}
