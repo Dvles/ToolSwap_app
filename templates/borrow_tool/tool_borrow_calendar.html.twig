@@ -37,7 +37,11 @@
 	<br><br>
 	<h2>Emprunter</h2>
 
-	<div id="availabilityCalendar" data-calendar='{{ toolAvailabilitiesJSON|raw }}' data-tool-id="{{ tool.id }}" data-tool-name="{{ tool.name }}" class="calendar"></div>
+	<div id="availabilityCalendar" 
+		data-calendar='{{ toolAvailabilitiesJSON|raw }}' 
+		data-tool-id="{{ tool.id }}" 
+		data-tool-name="{{ tool.name }}" 
+		class="calendar"></div>
 
 <button id="confirmLink" class="btn btn-primary">Confirmer</button>
 

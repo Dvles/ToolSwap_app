@@ -24,6 +24,7 @@ Encore
     .addEntry('calendar', './assets/calendar.js')
     .addEntry('calendar_empty', './assets/calendar_empty.js')
     .addEntry('calendar_select', './assets/calendar_select.js')
+    .addEntry('calendar_update', './assets/calendar_update.js')
 
 
 

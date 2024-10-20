@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier disponibilités {{ tool.name }} {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('calendar') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('calendar_update') }}
+{% endblock %}
+
+{% block body %}
+    <h1>Modifier displonibilités test</h1>
+    <p>Clicker sur les dates de disponibilités</p>
+    <p>Re-cliquer pour effacer</p>
+
+    <div id="availabilityCalendar" 
+         data-tool-id="{{ tool.id }}" 
+         data-tool-name="{{ tool.name }}" 
+         data-calendar='{{ toolAvailabilitiesJSON|raw }}'   
+         class="calendar"></div> 
+
+    <button id="confirmModifiedAvailabilities" class="btn btn-primary">Confirmer disppnibilités</button>
+
+    {{ dump(toolAvailabilitiesJSON) }}
+
+	 <script>
+		var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
+		console.log('tool availabilities', toolAvailabilities); // Check the data structure
+	</script>
+
+{% endblock %}

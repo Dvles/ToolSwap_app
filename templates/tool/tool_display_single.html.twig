@@ -19,6 +19,9 @@
         <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
             <button id="btnToolUpdate" type="button">modify tool</button>
         </a>
+        <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+            <button id="btnToolUpdate" type="button">update availability</button>
+        </a>
         <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
             <button id="btnToolDelete" type="button">delete tool</button>
         </a>
