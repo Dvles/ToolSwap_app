@@ -210,7 +210,6 @@ class ToolController extends AbstractController
         $form-> handleRequest($request);
         if ($form->isSubmitted()){
             $em->flush();
-            $em->flush();
             $vars = [ 'tool_id' => $tool_id];
             return $this->redirectToRoute('tool_display_single', $vars);
         }
