@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Tool;
 use App\Entity\ToolAvailability;
+use App\Repository\ToolAvailabilityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -102,7 +104,10 @@ class ToolAvailabilityController extends AbstractController
     }
 
     #[Route('tool/update/availability/{tool_id}', name: 'tool_availability_update')]
-    public function updateToolAvailability( SerializerInterface $serializer, ManagerRegistry $doctrine, $tool_id
+    public function updateToolAvailability(
+        SerializerInterface $serializer,
+        ManagerRegistry $doctrine,
+        $tool_id
     ): Response {
         $user = $this->getUser();
         if (!$user) {
@@ -157,5 +162,85 @@ class ToolAvailabilityController extends AbstractController
 
 
         return $this->render('tool_availability/tool_update_availability.html.twig', $vars);
+    }
+
+    #[Route('tool/update/availability/{tool_id}/confirm', name: 'tool_availability_update_confirm')]
+    public function confirmToolAvailability($tool_id, Request $request, EntityManagerInterface $em, ToolAvailabilityRepository $repToolAvailability)
+    {
+
+        try {
+            // Log incoming request data
+            $content = json_decode($request->getContent(), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return new JsonResponse(['error' => 'Invalid JSON'], 400);
+            }
+
+            dd($content);
+
+            // Log the entire content for debugging
+            error_log(print_r($content, true));
+
+            if (!isset($content['availabilities'])) {
+                return new JsonResponse(['error' => 'No availabilities provided'], 400);
+            }
+
+            // Redirect if the user is not logged in
+            $user = $this->getUser();
+            if (!$user) {
+                return $this->redirectToRoute("app_login");
+            }
+
+            foreach ($content['availabilities'] as $updateToolAvailability) {
+                // Check if required keys exist
+                if (!isset($updateToolAvailability['start'], $updateToolAvailability['end'], $updateToolAvailability['toolId'], $updateToolAvailability['id'])) {
+                    return new JsonResponse(['error' => 'Missing required fields'], 400);
+                }
+
+                // STEP 1 - Delete toolAvailabitilies present in $content
+                if ($repToolAvailability->find($updateToolAvailability['id'])) {
+
+                    $updateToolAvailability->setIsAvailable(false); 
+                    $em->persist($updateToolAvailability); 
+
+                    // $em->remove($updateToolAvailability); -> data violation if we delete!!
+
+                } else {
+
+                    
+                    $startDate = new \DateTime($updateToolAvailability['start']);
+                    $endDate = new \DateTime($updateToolAvailability['end']);
+                    $toolAvailability = $updateToolAvailability['id'];
+
+                    // STEP 2 - Create BorrowTool objects
+                    $toolAvailability = new ToolAvailability();
+                    $toolAvailability->setStart($startDate);
+                    $toolAvailability->setEnd($endDate);
+                    $toolAvailability->setUser($this->getUser());
+                    $toolAvailability->setBackgroundColor($updateToolAvailability['backgroundColor'] ?? '#ffb775');
+                    $toolAvailability->setBorderColor($updateToolAvailability['borderColor'] ?? '#ffb775');
+                    $toolAvailability->setTextColor($updateToolAvailability['textColor'] ?? '#000000');
+                    $toolAvailability->setTitle($updateToolAvailability['title']);
+                    $toolAvailability->isAvailable('true');
+
+                    $em->persist($toolAvailability);
+                    
+                }
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('tool_availabity_success', ['tool_id' => $tool_id]);
+        } catch (\Exception $e) {
+            error_log($e->getMessage()); // Log any exceptions
+            return new JsonResponse(['error' => 'Something went wrong'], 500);
+        }
+    }
+
+    #[Route('tool/update/availability/{tool_id}/success', name: 'tool_availabity_success')]
+    public function toolUpdateAvailabilitySuccess($tool_id)
+    {
+        return $this->render('tool_availability/tool_update_availabity_success.html.twig', [
+            'tool_id' => $tool_id,
+        ]);
     }
 }
