@@ -8,8 +8,6 @@ use App\Entity\BorrowTool;
 use App\Entity\ToolAvailability;
 use App\Enum\ToolStatusEnum;
 use App\Form\BorrowToolType;
-use App\Repository\ToolAvailabilityRepository;
-use App\Repository\ToolRepository;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
