@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tool;
 use App\Entity\User;
 use App\Form\ToolUploadType;
+use App\Repository\ToolRepository;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -175,6 +176,24 @@ class ToolController extends AbstractController
         return $this->render('tool/tool_display_user.html.twig', $vars);
     }
 
-    // modify tool controller TBD
+    #[Route('/tool/single/{tool_id}/delete', name: 'tool_delete')]
+    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em){
+
+        $tool_id = $request->get('tool_id');
+        $tool = $repTools->find($tool_id);
+        //dd($tool);
+
+        if(!$tool){
+            throw $this->createNotFoundException('No tool found');
+        }
+
+        $em->remove($tool);
+        $em->flush();
+
+        return $this->redirectToRoute('tool_display_all');
+
+    }
+    
+    // modify tool method TBD
 
 }

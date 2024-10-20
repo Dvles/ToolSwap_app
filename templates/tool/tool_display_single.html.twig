@@ -17,7 +17,9 @@
 
     {% if isOwner %}
     <button>Modify Tool</button>
-    <button>Delete Tool</button>
+    <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
+        <button id="btnToolDelete" type="button">delete tool</button>
+    </a>
     <p>C'est ton outil! Merci de partager</p>
     {% else %}
         <button id="btnAlerts" type="button">Recevoir notifications</button>
