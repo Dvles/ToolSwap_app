@@ -15,17 +15,25 @@
         <p><strong>{{ tool.priceDay }}</strong> € / jour</p>
     </div>
 
-    <button id="btnAlerts" type="button">Recevoir notifications</button>
-    <a href="{{ path('tool_borrow', {'tool_id': tool.id}) }}">
-        <button id="btnBorrowTool1" type="button">Emprunter normal</button>
-    </a>
-        <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
-        <button id="btnBorrowTool2" type="button">Emprunter calendrier</button>
-    </a>
+    {% if isOwner %}
+    <button>Modify Tool</button>
+    <button>Delete Tool</button>
+    <p>C'est ton outil! Merci de partager</p>
+    {% else %}
+        <button id="btnAlerts" type="button">Recevoir notifications</button>
+        <a href="{{ path('tool_borrow', {'tool_id': tool.id}) }}">
+            <button id="btnBorrowTool1" type="button">Emprunter normal</button>
         </a>
-        <a href="{{ path('display_tool_calendar', {'tool_id': tool.id}) }}">
-        <button id="btnBorrowTool3" type="button">Disponibilités</button>
-    </a>
+            <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+            <button id="btnBorrowTool2" type="button">Emprunter calendrier</button>
+        </a>
+            </a>
+            <a href="{{ path('display_tool_calendar', {'tool_id': tool.id}) }}">
+            <button id="btnBorrowTool3" type="button">Disponibilités</button>
+        </a>
+    {% endif %}
+
+
 <br><br>
 <br><br>
 

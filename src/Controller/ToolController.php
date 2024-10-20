@@ -19,14 +19,14 @@ class ToolController extends AbstractController
 {
 
 
-    #[Route('tool/upload', name: 'tool_upload')] 
+    #[Route('tool/upload', name: 'tool_upload')]
     public function toolUpload(Request $request, EntityManagerInterface $em)
     {
         $tool = new Tool();
         $form = $this->createForm(ToolUploadType::class, $tool);
-        
+
         $form->handleRequest($request);
-    
+
         // Handle form submission
         if ($form->isSubmitted()) {
             // Check if the user is logged in
@@ -35,9 +35,9 @@ class ToolController extends AbstractController
                 // Handle the case where the user is not logged in
                 throw $this->createAccessDeniedException('You must be logged in to add a tool.');
             }
-    
+
             if (!$form->isValid()) {
-                $errors = $form->getErrors(true); 
+                $errors = $form->getErrors(true);
                 foreach ($errors as $error) {
                     echo 'Error: ' . $error->getMessage() . "<br>";
                 }
@@ -46,25 +46,25 @@ class ToolController extends AbstractController
                 $tool->setOwner($user);
                 $em->persist($tool);
                 $em->flush();
-    
+
                 // Redirect to the tool availability page, passing the tool ID
                 return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
             }
         }
-    
+
         // Pass form and tool to the view
         return $this->render('tool/tool_add.html.twig', [
             'form' => $form->createView(),
             'tool' => $tool
         ]);
     }
-    
+
 
     #[Route('/display/tool/calendar', name: 'display_tool_calendar')]
     public function afficherCalendrierUtilisateur(EntityManagerInterface $em, SerializerInterface $serializer): Response
     {
         // check if user is connected or redirected for now - may not be necessaru as only logged in users should have access to url?
-        $user = $this->getUser(); 
+        $user = $this->getUser();
         if (is_null($user)) {
             return $this->redirectToRoute("app_login");
         }
@@ -78,7 +78,7 @@ class ToolController extends AbstractController
         }
 
         //dd($userFromDb); 
-    
+
         // Get tool availabilities for the user
         $toolAvailabilities = $userFromDb->getToolAvailabilities();
 
@@ -89,28 +89,29 @@ class ToolController extends AbstractController
 
         if ($toolAvailabilities->isEmpty()) {
             // Optionally , later add a message to inform user no availabilities found
-            return $this->redirectToRoute("app_login"); 
+            return $this->redirectToRoute("app_login");
         }
-        
-    
+
+
         // Serialize the availabilities for the JSON response
         $toolAvailabilitiesJSON = $serializer->serialize(
-            $toolAvailabilities, 
-            'json', 
+            $toolAvailabilities,
+            'json',
             [AbstractNormalizer::GROUPS => ['tool:read']]
         );
-    
+
         // Debug the serialized output
         //dd($toolAvailabilities); // 
         //dd($toolAvailabilitiesJSON);
-        
+
         // Prepare variables for rendering
         $vars = ['toolAvailabilitiesJSON' => $toolAvailabilitiesJSON];
         return $this->render('tool/tool_display_availabilities.html.twig', $vars);
     }
 
-    #[Route ('tool/display/all',  name: 'tool_display_all')]
-    public function toolDisplayAll(ManagerRegistry $doctrine){
+    #[Route('tool/display/all',  name: 'tool_display_all')]
+    public function toolDisplayAll(ManagerRegistry $doctrine)
+    {
 
         $reptools = $doctrine->getRepository(Tool::class);
         $tools = $reptools->findAll();
@@ -122,7 +123,10 @@ class ToolController extends AbstractController
     public function toolDisplaySingle(ManagerRegistry $doctrine, Request $request, $tool_id): Response
     {
         $request->isMethod('POST');
-        
+
+        // Check if the user is logged in
+        $user = $this->getUser();
+
         // Grab tool from the DB
         $repTools = $doctrine->getRepository(Tool::class);
         $tool = $repTools->find($tool_id);
@@ -131,42 +135,46 @@ class ToolController extends AbstractController
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-        $vars = ['tool' => $tool];
+
+        // Check if user is owner of the tool
+        $isOwner = $user && $tool->getOwner() == $user;
+        // dd($isOwner);
+
+        $vars = [
+            'tool' => $tool,
+            'isOwner' => $isOwner
+        ];
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
-
     }
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
-    public function toolDisplayUser(ManagerRegistry $doctrine) {
-        
+    public function toolDisplayUser(ManagerRegistry $doctrine)
+    {
+
         $user = $this->getUser();
-    
+
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-    
+
         // Fetch the EntityManager
         $em = $doctrine->getManager();
-    
+
         // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
         $userWithTools = $em->getRepository(User::class)->find($user->getId());
-    
+
         // Check if tools are fetched
         $userTools = $userWithTools->getToolsOwned();
-    
+
         // Debugging check for fetched data
         //dd($user->getToolsOwned()->toArray());
 
-        $vars= ['tools' => $userTools];
-        
-        return $this->render('tool/tool_display_user.html.twig', $vars); 
+        $vars = ['tools' => $userTools];
+
+        return $this->render('tool/tool_display_user.html.twig', $vars);
     }
 
     // modify tool controller TBD
 
-   
-    
-    
 }
-
