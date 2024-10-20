@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     info.event.setProp('borderColor', '#ff0000');
                     info.event.setProp('textColor', '#000000');
                     info.event.setProp('backgroundColor', '#ffffff');
+                    console.log('index!== 1 - borrowToolAvailabilities:', borrowToolAvailabilities);
                 } else {
                     let selectedEvent = {
                         id: eventId,
@@ -73,6 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     info.event.setProp('borderColor', '#42f554');
                     info.event.setProp('textColor', '#ffffff');
                     info.event.setProp('backgroundColor', '#42a5f5');
+                    console.log('index == 1 - borrowToolAvailabilities:', borrowToolAvailabilities);
+
                 }
                 console.log(`Updated Array:`, borrowToolAvailabilities);
             },
