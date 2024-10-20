@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Tool;
 use App\Entity\User;
 use App\Entity\BorrowTool;
+use App\Entity\ToolAvailability;
 use App\Enum\ToolStatusEnum;
 use App\Form\BorrowToolType;
+use App\Repository\ToolAvailabilityRepository;
+use App\Repository\ToolRepository;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+
 
 
 class BorrowToolController extends AbstractController
@@ -155,42 +159,68 @@ class BorrowToolController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/borrow/calendar/confirm', name: 'tool_borrow_calendar_confirm', methods: ['POST'])]
-    public function toolBorrowCalendarConfirm($tool_id, Request $request, EntityManagerInterface $em)
+    public function toolBorrowCalendarConfirm($tool_id, Request $request, EntityManagerInterface $manager)
     {
-
-
         try {
-            $data = json_decode($request->getContent(), true);
-            // Your logic here...
+            // Log incoming request data
+            $content = json_decode($request->getContent(), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return new JsonResponse(['error' => 'Invalid JSON'], 400);
+            }
+    
+            // Log the entire content for debugging
+            error_log(print_r($content, true));
+    
+            if (!isset($content['availabilities'])) {
+                return new JsonResponse(['error' => 'No availabilities provided'], 400);
+            }
+    
+            // Redirect if the user is not logged in
+            $user = $this->getUser();
+            if (!$user) {
+                return $this->redirectToRoute("app_login");
+            }
+    
+            foreach ($content['availabilities'] as $borrowToolAvailability) {
+                // Check if required keys exist
+                if (!isset($borrowToolAvailability['start'], $borrowToolAvailability['end'], $borrowToolAvailability['toolId'], $borrowToolAvailability['id'])) {
+                    return new JsonResponse(['error' => 'Missing required fields'], 400);
+                }
+    
+                $startDate = new \DateTime($borrowToolAvailability['start']);
+                $endDate = new \DateTime($borrowToolAvailability['end']);
+                $toolId = $borrowToolAvailability['toolId'];
+                $toolAvailability = $borrowToolAvailability['id'];
+    
+                // STEP 2 - Create BorrowTool objects
+                $borrowTool = new BorrowTool();
+                $borrowTool->setStartDate($startDate);
+                $borrowTool->setEndDate($endDate);
+                $borrowTool->setStatus(ToolStatusEnum::PENDING);
+                $borrowTool->setUserBorrower($user);
+                $borrowTool->setToolBeingBorrowed($manager->getRepository(Tool::class)->find($toolId)); // fetch the tool entity
+                $borrowTool->setToolAvailability($manager->getRepository(ToolAvailability::class)->find($toolAvailability)); // fetch the availability entity
+    
+                $manager->persist($borrowTool);
+    
+                // STEP 3 - Change ToolAvailability status
+                $availabilityEntity = $borrowTool->getToolAvailability();
+                if ($availabilityEntity) {
+                    $availabilityEntity->setIsAvailable(false); // mark the tool as unavailable
+                    $manager->persist($availabilityEntity); // persist the change
+                }
+            }
+    
+            $manager->flush();
+    
+            return $this->redirectToRoute('tool_borrow_success', ['tool_id' => $tool_id]);
         } catch (\Exception $e) {
-            error_log($e->getMessage()); // Log the error
+            error_log($e->getMessage()); // Log any exceptions
             return new JsonResponse(['error' => 'Something went wrong'], 500);
         }
-
-        if (!isset($data['availabilities'])) {
-            // Handle missing data
-            return new JsonResponse(['error' => 'No availabilities provided'], 400);
-        }
-
-        // Redirect if the user is not logged in
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute("app_login");
-        }
-
-        // STEP 1 - Get JSON payload from request
-        $borrowToolAvailabilities = json_decode($request->getContent(), true);
-
-        if (!$borrowToolAvailabilities) {
-            return new JsonResponse(['error' => 'No availabilities provided'], 400);
-        }
-
-        // Debugging: You can dump and die to see the structure of the payload
-        // dd($borrowToolAvailabilities);
-        // dd($tool_id);
-
-        return $this->redirectToRoute('tool_borrow_success', ['tool_id' => $tool_id]);
     }
+    
+
 
 
     #[Route('/tool/single/{tool_id}/borrow/success', name: 'tool_borrow_success')]
