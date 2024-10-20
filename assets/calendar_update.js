@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Parse the JSON string into an array of event objects
         let eventsJSONArray = JSON.parse(eventsArray);
         console.log("Initial eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
+
         const toolId = calendarEl.dataset.toolId;
         const toolName = calendarEl.dataset.toolName;
 
@@ -32,98 +33,127 @@ document.addEventListener("DOMContentLoaded", function () {
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
             },
+
             dateClick: function (info) {
                 const dateStr = info.dateStr;  // Clicked date as a string (e.g., "2024-10-17")
                 console.log("Date clicked:", dateStr);  // Log clicked date
-            
+
                 // Check if the clicked date is already in eventsJSONArray (existing events from DB)
                 let existingEvent = eventsJSONArray.find(event => event.start.startsWith(dateStr));
-                console.log("Found existing event:", existingEvent);
-            
+                console.log("existingEvent:", existingEvent);
+
                 // Check if we found an existing event
                 if (existingEvent) {
+                    console.log("Found existing event:", existingEvent);
+
                     // Now check if it exists in updateAvailabilities
                     const index = updateAvailabilities.findIndex(event => event.start.startsWith(dateStr));
-            
+
                     if (index === -1) {
-                        // This means the existing event is not in updateAvailabilities
-                        // Attempt to remove it from the calendar
+                        // Event exists in eventsJSONArray, remove it from calendar and eventsJSONArray
                         let eventToRemove = calendar.getEventById(existingEvent.id);
                         if (eventToRemove) {
                             eventToRemove.remove();
-                            deletedAvailabilities.push(existingEvent);
-                            console.log("Removed Existing Event ID:", existingEvent.id);
+                            deletedAvailabilities.push(existingEvent);  // Add to deletedAvailabilities
+                            console.log("Removed Existing Event ID - from clicking on Date:", existingEvent.id);
                             console.log("deletedAvailabilities:", deletedAvailabilities);
+
+                            // Remove event from eventsJSONArray
+                            const eventIndex = eventsJSONArray.findIndex(event => event.id === existingEvent.id);
+                            if (eventIndex !== -1) {
+                                eventsJSONArray.splice(eventIndex, 1);  // Remove from the array
+                                console.log("Removed event from eventsJSONArray:", eventsJSONArray);
+                            } else {
+                                console.warn("Event not found in eventsJSONArray.");
+                            }
                         } else {
                             console.warn("No event found in calendar with ID:", existingEvent.id);
                         }
                     } else {
-                        // If the event exists in updateAvailabilities, we can just remove it from that array
+                        // Event exists in updateAvailabilities, remove it
                         let eventToRemove = updateAvailabilities[index];
                         updateAvailabilities.splice(index, 1);  // Remove from updateAvailabilities
                         calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
+                        console.log("index updateAvailabilities:", index);
                         console.log("Removed from Update Availabilities:", eventToRemove);
+                        console.log("updateAvailabilities:", updateAvailabilities);
                     }
                 } else {
-                    // Date is not present in eventsJSONArray, so check updateAvailabilities
+                    console.info("Date is not present in eventsJSONArray");
+
+                    // Check if the date exists in updateAvailabilities
                     const index = updateAvailabilities.findIndex(event => event.start.startsWith(dateStr));
                     console.log("Update Availabilities Index:", index);
-            
+
                     if (index !== -1) {
-                        // Date already exists in the front end (updateAvailabilities), remove it
+                        // Remove from updateAvailabilities
                         let eventToRemove = updateAvailabilities[index];
                         updateAvailabilities.splice(index, 1);  // Remove from updateAvailabilities
                         calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
                         console.log("Removed from Update Availabilities:", eventToRemove);
+                        console.log("updateAvailabilities:", updateAvailabilities);
                     } else {
-                        // Date is not present, create a new tool availability 
+                        // Create new tool availability
                         let newEvent = {
                             id: Date.now(), // temporary ID for front-end usage
                             toolId: toolId,
                             title: toolName,
                             start: `${dateStr}T00:00:00+01:00`, // Format start date as ISO string
-                            end: `${dateStr}T23:59:59+01:00`, 
+                            end: `${dateStr}T23:59:59+01:00`,
                             borderColor: '#42f554',
                             textColor: '#ffffff',
                             backgroundColor: '#42a5f5',
                             allDay: true,
                             isNew: true // mark this as a new event
                         };
-            
+
                         // Add the new availability to updateAvailabilities and the calendar
                         updateAvailabilities.push(newEvent);
                         calendar.addEvent(newEvent);
                         console.log("Added New Event:", newEvent);
+                        console.log("updateAvailabilities:", updateAvailabilities);
                     }
                 }
             },
 
             eventClick: function (info) {
-                // Convert eventId to a number
+                // Convert eventId to a number (since IDs in eventsJSONArray are numbers)
                 const eventId = Number(info.event.id); // Convert to number
-            
+
                 console.log("Clicked Event ID:", eventId); // Log the clicked event ID
                 console.log("Before Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2)); // Log state before removal
-            
-                // Remove from eventsJSONArray
-                const index = eventsJSONArray.findIndex(item => item.id === eventId);
-            
-                if (index !== -1) { // Check if the item was found
-                    eventsJSONArray.splice(index, 1); // Remove the item at that index
-                    console.log("Removed from eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
-                } else {
-                    console.warn("Event ID not found in eventsJSONArray");
-                }
-            
-                // Remove the event from the calendar
-                info.event.remove();
-            
-                // Push to deletedAvailabilities for tracking
-                deletedAvailabilities.push(info.event);
 
-                // debugging
-                console.log("Deleted Event ID:", eventId);
-                console.log("deletedAvailabilities:", deletedAvailabilities);
+                // Check if the event is in eventsJSONArray (existing events from the DB)
+                const indexInEvents = eventsJSONArray.findIndex(item => item.id === eventId);
+
+                if (indexInEvents !== -1) {
+                    // Remove from eventsJSONArray
+                    eventsJSONArray.splice(indexInEvents, 1);
+                    console.log("Removed from eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
+
+                    // Remove from the calendar and add to deletedAvailabilities
+                    info.event.remove();
+                    deletedAvailabilities.push(info.event);
+
+                    console.log("Deleted Event ID (DB event):", eventId);
+                    console.log("deletedAvailabilities:", deletedAvailabilities);
+
+                } else {
+                    // Event is not in eventsJSONArray, so check updateAvailabilities (newly added events)
+                    const indexInUpdates = updateAvailabilities.findIndex(item => item.id === eventId);
+
+                    if (indexInUpdates !== -1) {
+                        // Event exists in updateAvailabilities (new front-end event)
+                        let eventToRemove = updateAvailabilities[indexInUpdates];
+                        updateAvailabilities.splice(indexInUpdates, 1); // Remove from updateAvailabilities
+                        calendar.getEventById(eventToRemove.id)?.remove();  // Remove from front-end
+
+                        console.log("Removed from Update Availabilities:", eventToRemove);
+                    } else {
+                        console.warn("Event not found in either eventsJSONArray or updateAvailabilities.");
+                    }
+                }
+
                 console.log("After Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));  // Log the updated array
             },
 
@@ -131,6 +161,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         calendar.render();
+
+        let btnCheck = document.getElementById("btnCheck");
+
+        btnCheck.addEventListener("click", function () {
+            console.log("deletedAvailabilities:", deletedAvailabilities);
+            console.log("updateAvailabilities:", updateAvailabilities);
+        });
 
         document.getElementById("confirmupdateAvailabilities").addEventListener("click", function (event) {
             event.preventDefault();
