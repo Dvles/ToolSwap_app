@@ -119,22 +119,22 @@ document.addEventListener("DOMContentLoaded", function () {
             eventClick: function (info) {
                 // Convert eventId to a number (since IDs in eventsJSONArray are numbers)
                 const eventId = Number(info.event.id); // Convert to number
-
+            
                 console.log("Clicked Event ID:", eventId); // Log the clicked event ID
                 console.log("Before Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2)); // Log state before removal
-
+            
                 // Check if the event is in eventsJSONArray (existing events from the DB)
                 const indexInEvents = eventsJSONArray.findIndex(item => item.id === eventId);
-
+            
                 if (indexInEvents !== -1) {
                     // Remove from eventsJSONArray
-                    eventsJSONArray.splice(indexInEvents, 1);
+                    let removedEvent = eventsJSONArray.splice(indexInEvents, 1)[0]; // Get the removed event
                     console.log("Removed from eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
-
+            
                     // Remove from the calendar and add to deletedAvailabilities
                     info.event.remove();
-
-                    // Format the event similar 'updateAvailabilities' objects
+            
+                    // Format the event similarly to 'updateAvailabilities' objects
                     const formattedDeletedEvent = {
                         id: removedEvent.id,
                         toolId: removedEvent.toolId,
@@ -146,36 +146,21 @@ document.addEventListener("DOMContentLoaded", function () {
                         borderColor: removedEvent.borderColor,
                         textColor: removedEvent.textColor
                     };
-
+            
                     // Add to deletedAvailabilities in the correct format
                     deletedAvailabilities.push(formattedDeletedEvent);
-
+            
                     console.log("Deleted Event ID (DB event):", eventId);
                     console.log("deletedAvailabilities:", deletedAvailabilities);
-
+            
                 } else {
                     // Event is not in eventsJSONArray, so check updateAvailabilities (newly added events)
                     const indexInUpdates = updateAvailabilities.findIndex(item => item.id === eventId);
-
+            
                     if (indexInUpdates !== -1) {
                         // Event exists in updateAvailabilities (new front-end event)
-                        let eventToRemove = updateAvailabilities[indexInUpdates];
-                        updateAvailabilities.splice(indexInUpdates, 1); // Remove from updateAvailabilities
+                        let eventToRemove = updateAvailabilities.splice(indexInUpdates, 1)[0]; // Get the removed event
             
-                        // Format the event similar 'updateAvailabilities' objects
-                        const formattedDeletedEvent = {
-                            id: eventToRemove.id,
-                            toolId: eventToRemove.toolId,
-                            title: eventToRemove.title,
-                            start: eventToRemove.start,
-                            end: eventToRemove.end,
-                            allDay: eventToRemove.allDay,
-                            backgroundColor: eventToRemove.backgroundColor,
-                            borderColor: eventToRemove.borderColor,
-                            textColor: eventToRemove.textColor
-                        };
-            
-                        deletedAvailabilities.push(formattedDeletedEvent);
             
                         // Remove from the calendar
                         calendar.getEventById(eventToRemove.id)?.remove();
@@ -186,10 +171,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.warn("Event not found in either eventsJSONArray or updateAvailabilities.");
                     }
                 }
-
+            
                 console.log("After Removal - eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));  // Log the updated array
             },
-
+            
             plugins: [interactionPlugin, dayGridPlugin],
         });
 
@@ -202,7 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("updateAvailabilities:", updateAvailabilities);
         });
 
-        document.getElementById("confirmupdateAvailabilities").addEventListener("click", function (event) {
+        let btnUpdateAvailabilities = document.getElementById("btnUpdateAvailabilities");
+        btnUpdateAvailabilities.addEventListener("click", function (event) {
             event.preventDefault();
 
             axios.post(`/tool/update/availability/${toolId}`, {
