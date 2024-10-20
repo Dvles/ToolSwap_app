@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Sending the data to the backend
-            axios.post(`/tool/update/availability/${toolId}`, {
+            axios.post(`tool/update/availability/${tool_id}/confirm`, {
                 availabilities: updateAvailabilities,
                 deletedAvailabilities: deletedAvailabilities
             }, {
