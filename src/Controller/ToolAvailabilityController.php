@@ -16,13 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ToolAvailabilityController extends AbstractController
 {
-    #[Route('/tool/availability', name: 'app_tool_availability')]
-    public function index(): Response
-    {
-        return $this->render('tool_availability/index.html.twig', [
-            'controller_name' => 'ToolAvailabilityController',
-        ]);
-    }
+
 
     #[Route('tool/add/availability/{tool_id}', name: 'tool_add_availability')]
     public function addToolAvailability(Request $request, EntityManagerInterface $em, $tool_id)
@@ -140,14 +134,14 @@ class ToolAvailabilityController extends AbstractController
 
         // Check if there are available tool availabilities
         if (empty($availableToolAvailabilities)) {
-            // Optionally inform the user that no availabilities are found
-            // Add a flash message here if needed
+            // UX -> Optionally inform the user that no availabilities are found
+            // UX -> Add a flash message here if needed
             return $this->redirectToRoute("app_login");
         }
 
         //dd($availableToolAvailabilities);
 
-        // Instead of using serialize on the filtered results directly
+        // Serealizing data
         $toolAvailabilitiesJSON = $serializer->serialize(
             array_values($availableToolAvailabilities), // Convert associative array to indexed array
             'json',
