@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Parse the JSON string into an array of event objects
         let evenementsJSONJSArray = evenementsJSONJS ? JSON.parse(evenementsJSONJS) : [];
+        console.log("evenementsJSONJSArray", evenementsJSONJSArray);
 
         // Tool ID and Tool Name
         const toolId = calendarEl.dataset.toolId;

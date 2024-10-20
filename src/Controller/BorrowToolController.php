@@ -128,25 +128,39 @@ class BorrowToolController extends AbstractController
             $toolAvailabilities->initialize();
         }
 
-        if ($toolAvailabilities->isEmpty()) {
-            // LATER ater add a message to inform user no availabilities found
+        // Debug output to see how many availabilities were fetched
+        //dd($toolAvailabilities->count());
+
+        // Filter availabilities to include only those that are available
+        $availableToolAvailabilities = array_filter($toolAvailabilities->toArray(), function ($availability) {
+            return $availability->isAvailable() === true;
+        });
+
+        // After filtering availableToolAvailabilities
+        $availableToolAvailabilities = array_filter($toolAvailabilities->toArray(), function ($availability) {
+            return $availability->isAvailable() === true;
+        });
+
+        // Debug output to see available availabilities count
+        //dd(count($availableToolAvailabilities)); // Check how many available availabilities were found
+
+        // Check if there are available tool availabilities
+        if (empty($availableToolAvailabilities)) {
+            // Optionally inform the user that no availabilities are found
+            // Add a flash message here if needed
             return $this->redirectToRoute("app_login");
         }
 
-        //dd($toolAvailabilities);
+        //dd($availableToolAvailabilities);
 
-        // Serialize the availabilities for the JSON response
+        // Instead of using serialize on the filtered results directly
         $toolAvailabilitiesJSON = $serializer->serialize(
-            $toolAvailabilities,
+            array_values($availableToolAvailabilities), // Convert associative array to indexed array
             'json',
             [AbstractNormalizer::GROUPS => ['tool:read']]
         );
 
         //dd($toolAvailabilitiesJSON);
-
-
-
-
 
 
         $vars = [
@@ -165,31 +179,31 @@ class BorrowToolController extends AbstractController
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return new JsonResponse(['error' => 'Invalid JSON'], 400);
             }
-    
+
             // Log the entire content for debugging
             error_log(print_r($content, true));
-    
+
             if (!isset($content['availabilities'])) {
                 return new JsonResponse(['error' => 'No availabilities provided'], 400);
             }
-    
+
             // Redirect if the user is not logged in
             $user = $this->getUser();
             if (!$user) {
                 return $this->redirectToRoute("app_login");
             }
-    
+
             foreach ($content['availabilities'] as $borrowToolAvailability) {
                 // Check if required keys exist
                 if (!isset($borrowToolAvailability['start'], $borrowToolAvailability['end'], $borrowToolAvailability['toolId'], $borrowToolAvailability['id'])) {
                     return new JsonResponse(['error' => 'Missing required fields'], 400);
                 }
-    
+
                 $startDate = new \DateTime($borrowToolAvailability['start']);
                 $endDate = new \DateTime($borrowToolAvailability['end']);
                 $toolId = $borrowToolAvailability['toolId'];
                 $toolAvailability = $borrowToolAvailability['id'];
-    
+
                 // STEP 2 - Create BorrowTool objects
                 $borrowTool = new BorrowTool();
                 $borrowTool->setStartDate($startDate);
@@ -198,9 +212,9 @@ class BorrowToolController extends AbstractController
                 $borrowTool->setUserBorrower($user);
                 $borrowTool->setToolBeingBorrowed($manager->getRepository(Tool::class)->find($toolId)); // fetch the tool entity
                 $borrowTool->setToolAvailability($manager->getRepository(ToolAvailability::class)->find($toolAvailability)); // fetch the availability entity
-    
+
                 $manager->persist($borrowTool);
-    
+
                 // STEP 3 - Change ToolAvailability status
                 $availabilityEntity = $borrowTool->getToolAvailability();
                 if ($availabilityEntity) {
@@ -208,17 +222,15 @@ class BorrowToolController extends AbstractController
                     $manager->persist($availabilityEntity); // persist the change
                 }
             }
-    
+
             $manager->flush();
-    
+
             return $this->redirectToRoute('tool_borrow_success', ['tool_id' => $tool_id]);
         } catch (\Exception $e) {
             error_log($e->getMessage()); // Log any exceptions
             return new JsonResponse(['error' => 'Something went wrong'], 500);
         }
     }
-    
-
 
 
     #[Route('/tool/single/{tool_id}/borrow/success', name: 'tool_borrow_success')]
