@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tool;
 use App\Entity\ToolAvailability;
 use App\Repository\ToolAvailabilityRepository;
+use App\Repository\ToolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -166,7 +167,7 @@ class ToolAvailabilityController extends AbstractController
     }
 
     #[Route('tool/update/availability/{tool_id}/confirm', name: 'tool_availability_update_confirm')]
-    public function confirmToolAvailability($tool_id, Request $request, EntityManagerInterface $em, ToolAvailabilityRepository $repToolAvailability)
+    public function confirmToolAvailability($tool_id, Request $request, EntityManagerInterface $em, ToolAvailabilityRepository $repToolAvailability, ToolRepository $repTools)
     {
         try {
             // Log incoming request data
@@ -174,50 +175,97 @@ class ToolAvailabilityController extends AbstractController
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return new JsonResponse(['error' => 'Invalid JSON'], 400);
             }
-    
+
+            //dd($content);
+
             // Log the entire content for debugging
             error_log(print_r($content, true));
-    
+
             if (!isset($content['availabilities'])) {
                 return new JsonResponse(['error' => 'No availabilities provided'], 400);
             }
-    
+
             // Redirect if the user is not logged in
             $user = $this->getUser();
             if (!$user) {
                 return $this->redirectToRoute("app_login");
             }
-    
+
+            //dd($user);
+
             // Loop through deleted availabilities
             if (isset($content['availabilities']['delete'])) {
                 foreach ($content['availabilities']['delete'] as $deletedToolAvailability) {
                     // Check if required keys exist
-                    if (!isset($deletedToolAvailability['start'], $deletedToolAvailability['end'], $deletedToolAvailability['toolId'], $deletedToolAvailability['id'])) {
-                        return new JsonResponse(['error' => 'Missing required fields'], 400);
+                    if (!isset($deletedToolAvailability['id'])) {
+                        return new JsonResponse(['error' => 'Missing required field id in delete'], 400);
                     }
 
-                    // STEP 1 - Delete toolAvailabilities present in $content
+                    // STEP 1 - Mark toolAvailability as unavailable
                     $toolAvailabilityToDelete = $repToolAvailability->find($deletedToolAvailability['id']);
                     if ($toolAvailabilityToDelete) {
-                        $toolAvailabilityToDelete->setIsAvailable(false); 
-                        $em->persist($toolAvailabilityToDelete); 
+                        $toolAvailabilityToDelete->setIsAvailable(false);
+                        $em->persist($toolAvailabilityToDelete);
                     }
                 }
             }
-    
-    
+
+            //dd($toolAvailabilityToDelete);
+
+            
+            // Loop through updated availabilities
+            if (isset($content['availabilities']['update'])) {
+                foreach ($content['availabilities']['update'] as $updatedToolAvailability) {
+                    // Check if required keys exist
+                    if (!isset($updatedToolAvailability['start'], $updatedToolAvailability['end'], $updatedToolAvailability['toolId'], $updatedToolAvailability['id'], $updatedToolAvailability['title'], $updatedToolAvailability['backgroundColor'], $updatedToolAvailability['borderColor'], $updatedToolAvailability['textColor'])) {
+                        return new JsonResponse(['error' => 'Missing required fields in update'], 400);
+                    }
+                    
+                    // Fetch tool entity using toolId
+                    $tool = $repTools->find($updatedToolAvailability['toolId']);
+                    if (!$tool) {
+                        return new JsonResponse(['error' => 'Tool not found'], 404);
+                    }
+                    
+                    //dd($tool);
+                    
+                    // Validate date formats
+                    $startDateTime = \DateTime::createFromFormat(DATE_ATOM, $updatedToolAvailability['start']);
+                    $endDateTime = \DateTime::createFromFormat(DATE_ATOM, $updatedToolAvailability['end']);
+
+                    if ($startDateTime === false || $endDateTime === false) {
+                        return new JsonResponse(['error' => 'Invalid date format'], 400);
+                    }
+
+                    // Create new ToolAvailability object
+                    $newToolAvailability = new ToolAvailability();
+                    $newToolAvailability->setTitle($updatedToolAvailability['title']);
+                    $newToolAvailability->setIsAvailable(true);
+                    $newToolAvailability->setStart($startDateTime);
+                    $newToolAvailability->setEnd($endDateTime);
+                    $newToolAvailability->setBackgroundColor($updatedToolAvailability['backgroundColor']);
+                    $newToolAvailability->setBorderColor($updatedToolAvailability['borderColor']);
+                    $newToolAvailability->setTextColor($updatedToolAvailability['textColor']);
+                    $newToolAvailability->setUser($user); // Assuming you want to set the current user
+                    $newToolAvailability->setTool($tool); 
+
+                    $em->persist($newToolAvailability);
+                }
+            }
+
+            //dd($toolAvailabilityToDelete);
+
+
             // Save changes
             $em->flush();
-    
+
             return $this->redirectToRoute('tool_availability_success', ['tool_id' => $tool_id]);
-    
         } catch (\Exception $e) {
             error_log($e->getMessage()); // Log any exceptions
             error_log($e->getTraceAsString()); // Log the stack trace for more information
             return new JsonResponse(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
     }
-    
 
     #[Route('tool/update/availability/{tool_id}/success', name: 'tool_availability_success')]
     public function toolUpdateAvailabilitySuccess($tool_id)

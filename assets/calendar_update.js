@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             textColor: '#ffffff',
                             backgroundColor: '#42a5f5',
                             allDay: true,
-                            isNew: true 
+                            isNew: true
                         };
 
                         // Add the new availability to updateAvailabilities and the calendar
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         backgroundColor: removedEvent.background_color, // Change to backgroundColor
                         borderColor: removedEvent.border_color, // Change to borderColor
                         textColor: removedEvent.text_color // Change to textColor (if applicable)
-                    };                    
+                    };
 
                     // Add to deletedAvailabilities
                     deletedAvailabilities.push(formattedDeletedEvent);
@@ -183,15 +183,24 @@ document.addEventListener("DOMContentLoaded", function () {
             // Check if updateAvailabilities OR deletedAvailabilities has data
             if (updateAvailabilities.length === 0 && deletedAvailabilities.length === 0) {
                 console.warn("No tool availability updated.");
-                return; 
+                return;
             }
 
             console.log("Sending updateAvailabilities:", updateAvailabilities);
             console.log("Sending deletedAvailabilities:", deletedAvailabilities);
-
+            
+            // Prepare the payload with availabilities for update and delete actions
+            const payload = {
+                availabilities: {
+                    update: updateAvailabilities, // Assuming this is an array or object with the updated availabilities
+                    delete: deletedAvailabilities   // Assuming this is an array of IDs or objects to delete
+                }
+            };
+            
+            console.log('Payload:', payload);
 
             // Sending the data to the backend
-            axios.post(`/tool/update/availability/${toolId}/confirm`, {
+            axios.post(`/tool/update/availability/${toolId}/confirm`, payload, {
                 availabilities: {
                     update: updateAvailabilities,
                     delete: deletedAvailabilities
@@ -201,19 +210,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => {
-                console.log("Response from server:", response.data);
-                // Check if there is a redirect URL in the response
-                if (response.request.responseURL) {
-                    // Perform the redirection
-                    window.location.href = response.request.responseURL;
-                } else {
-                    console.log("No redirect URL detected. Handle success message or logic here.");
-                }
-            })
-            .catch(error => {
-                console.error("Error updating availabilities:", error);
-            });
+                .then(response => {
+                    console.log("Response from server:", response.data);
+                    // Check if there is a redirect URL in the response
+                    if (response.request.responseURL) {
+                        // Perform the redirection
+                        window.location.href = response.request.responseURL;
+                    } else {
+                        console.log("No redirect URL detected. Handle success message or logic here.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating availabilities:", error);
+                });
         });
     } else {
         console.log("Calendar not initialized");
