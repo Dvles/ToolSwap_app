@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Initial eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
 
         const toolId = calendarEl.dataset.toolId;
+        console.log("Tool ID:", toolId);
         const toolName = calendarEl.dataset.toolName;
 
         // Empty arrays to store modified & deleted availabilities
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             textColor: '#ffffff',
                             backgroundColor: '#42a5f5',
                             allDay: true,
-                            isNew: true // mark this as a new event
+                            isNew: true 
                         };
 
                         // Add the new availability to updateAvailabilities and the calendar
@@ -111,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
             eventClick: function (info) {
                 // Convert eventId to a number (since IDs in eventsJSONArray are numbers)
                 const eventId = Number(info.event.id); // Convert to number
-
                 console.log("Clicked Event ID:", eventId); // Log the clicked event ID
 
                 // Check if the event is in eventsJSONArray (existing events from the DB)
@@ -132,10 +132,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         start: removedEvent.start,
                         end: removedEvent.end,
                         allDay: removedEvent.allDay,
-                        backgroundColor: removedEvent.backgroundColor,
-                        borderColor: removedEvent.borderColor,
-                        textColor: removedEvent.textColor
-                    };
+                        backgroundColor: removedEvent.background_color, // Change to backgroundColor
+                        borderColor: removedEvent.border_color, // Change to borderColor
+                        textColor: removedEvent.text_color // Change to textColor (if applicable)
+                    };                    
 
                     // Add to deletedAvailabilities
                     deletedAvailabilities.push(formattedDeletedEvent);
@@ -183,13 +183,19 @@ document.addEventListener("DOMContentLoaded", function () {
             // Check if updateAvailabilities OR deletedAvailabilities has data
             if (updateAvailabilities.length === 0 && deletedAvailabilities.length === 0) {
                 console.warn("No tool availability updated.");
-                return; // Exit early if no data
+                return; 
             }
 
+            console.log("Sending updateAvailabilities:", updateAvailabilities);
+            console.log("Sending deletedAvailabilities:", deletedAvailabilities);
+
+
             // Sending the data to the backend
-            axios.post(`tool/update/availability/${tool_id}/confirm`, {
-                availabilities: updateAvailabilities,
-                deletedAvailabilities: deletedAvailabilities
+            axios.post(`/tool/update/availability/${toolId}/confirm`, {
+                availabilities: {
+                    update: updateAvailabilities,
+                    delete: deletedAvailabilities
+                }
             }, {
                 headers: {
                     'Content-Type': 'application/json'
