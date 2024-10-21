@@ -16,6 +16,20 @@ class ToolAvailabilityRepository extends ServiceEntityRepository
         parent::__construct($registry, ToolAvailability::class);
     }
 
+    // Deactivates ToolAvailability records that have a start date in the past 
+    public function deactivateExpiredAvailabilities(){
+
+        $currentDate = new \DateTime();
+        $queryBuilder = $this->createQueryBuilder('ta')
+        -> update()
+        ->set('ta.isAvailable', 'false')
+        ->where('ta.start < :currentDate')
+        ->setParameter('currentDate', $currentDate);
+
+        return $queryBuilder->getQuery()->execute();
+
+    }
+
     //    /**
     //     * @return ToolAvailability[] Returns an array of ToolAvailability objects
     //     */
