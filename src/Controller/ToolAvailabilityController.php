@@ -121,6 +121,13 @@ class ToolAvailabilityController extends AbstractController
             throw $this->createNotFoundException('Tool not found or you are not the owner.');
         }
 
+        
+        // Fetch ToolAvailability repository
+        $repToolAvailability = $doctrine->getRepository(ToolAvailability::class);
+
+        // Deactivate expired ToolAvailabilities
+        $repToolAvailability->deactivateExpiredAvailabilities();
+
         // Get all availabilities (not just available ones)
         $toolAvailabilities = $tool->getToolAvailabilities();
 
