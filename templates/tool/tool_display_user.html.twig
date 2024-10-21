@@ -23,11 +23,14 @@
             <a href="">
                 <button id="btnBorrowTool" type="button">Voir commentaires</button>
             </a>
-            <a href="">
-                <button id="btnBorrowTool" type="button">Modifier outil</button>
+            <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+                <button id="btnToolUpdate" type="button">modifier détails</button>
             </a>
-            <a href="">
-                <button id="btnBorrowTool" type="button">Supprimer outil</button>
+            <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+                <button id="btnToolUpdate" type="button">modifier disponibilités</button>
+            </a>
+            <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
+                <button id="btnToolDelete" type="button">supprimer</button>
             </a>
 
             <br><br>

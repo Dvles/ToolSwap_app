@@ -17,13 +17,13 @@
 
     {% if isOwner %}
         <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-            <button id="btnToolUpdate" type="button">modify tool</button>
+            <button id="btnToolUpdate" type="button">modifier détails</button>
         </a>
         <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-            <button id="btnToolUpdate" type="button">update availability</button>
+            <button id="btnToolUpdate" type="button">modifier disponibilités</button>
         </a>
         <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-            <button id="btnToolDelete" type="button">delete tool</button>
+            <button id="btnToolDelete" type="button">supprimer</button>
         </a>
 
     {% else %}
