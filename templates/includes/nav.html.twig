@@ -1,6 +1,7 @@
 <nav>
     {# liens sans connexion #}
-    <a href=" {{ path ('tool_display_all')}}">Rechercher</a> |
+    <a href="{{ path('tool_display_all') }}" style="color: black; font-weight: bold; font-size: 18px;text-decoration: none">TOOLSWAP©</a>      
+    <a href=" {{ path ('tool_display_all')}}"> Rechercher</a> |
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
         <a href="{{ path ('tool_upload')}}">+ Outils</a> |
