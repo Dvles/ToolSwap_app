@@ -374,21 +374,28 @@ class BorrowToolController extends AbstractController
             // Prepare borrowTool object data to avoid lazy loading and errors
             $borrowToolsData = [];
             foreach ($BorrowTools as $BorrowTool) {
+
+                $start = $BorrowTool->getStartDate();
+                $end = $BorrowTool->getEndDate();
+        
+                // Calculate the difference between start and end dates
+                $dateInterval = $start->diff($end);
+                $days = $dateInterval->days; // Get the total number of days
                 
                 $borrowToolsData[] = [
                     'userBorrower' => $BorrowTool->getUserBorrower()->getFirstName(),
                     'id' => $BorrowTool->getId(),
                     'tool' => $BorrowTool->getToolBeingBorrowed()->getName(),
-                    'start' => $BorrowTool->getStartDate()->format('d-m-Y'),
-                    'end' => $BorrowTool->getEndDate()->format('d-m-Y'),
-                    'status' => $BorrowTool->getStatus()->value
+                    'start' => $start->format('d-m-Y'),
+                    'end' => $end->format('d-m-Y'),
+                    'status' => $BorrowTool->getStatus()->value,
+                    'days' => $days,
+                    'toolID' => $BorrowTool->getStatus()->value
     
                 ];
             }
 
         }
-
-
 
         //dd($borrowToolsData);
 

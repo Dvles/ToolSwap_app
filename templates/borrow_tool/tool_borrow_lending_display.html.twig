@@ -14,12 +14,23 @@
 
     {% else %}
 
+
+
         <div class="tool-list">
             {% for borrowTool in borrowTools %}
                 <div class="tool-item">
-                    <h3>{{ borrowTool.tool }}</h3>
-                    <p><strong>Prêté à </strong> {{ borrowTool.userBorrower }} </p>
-                    <p><strong>Début:</strong> {{ borrowTool.start }} - <strong>Fin:</strong> {{ borrowTool.end }}</p>
+                    <h3>{{ borrowTool.tool }} <span style="font-size: 12px;">| Prêté à  <em>{{ borrowTool.userBorrower }} </em> </span></h3>
+
+                    <h4>Période</h4>
+                    {% if borrowTool.days > 1 %}
+                        <p> {{ borrowTool.days }} jours </p> 
+                        <p><strong>Début:</strong> {{ borrowTool.start }}</p>
+                         <strong>Fin:</strong> {{ borrowTool.end }}</p>
+                    {% else %}
+                        <p> {{ borrowTool.days }} jour </p>
+                        <p><strong>Début:</strong> {{ borrowTool.start }} <strong>
+
+                    {% endif %}
                     <p><strong>Statut:</strong> {{ borrowTool.status }} </p>
 
                     <a href="">
