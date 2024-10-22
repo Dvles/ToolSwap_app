@@ -324,10 +324,10 @@ class BorrowToolController extends AbstractController
         $em = $doctrine->getManager();
 
         // Fetch the user with their borrows using a Doctrine query to ensure the relation is loaded
-        $userOfBorrowTools = $em->getRepository(User::class)->find($user->getId());
+        $toolOfBorrowTools = $em->getRepository(User::class)->find($user->getId());
 
         // Check if tools are fetched
-        $BorrowTools = $userOfBorrowTools->getBorrowTools();
+        $BorrowTools = $toolOfBorrowTools->getBorrowTools();
 
         // Prepare borrowTool object data to avoid lazy loading and errors
         $borrowToolsData = [];
@@ -348,5 +348,52 @@ class BorrowToolController extends AbstractController
         $vars = ['borrowTools' => $borrowToolsData];
 
         return $this->render('borrow_tool/tool_borrow_display.html.twig', $vars);
+    }
+
+    #[Route('/tool/borrow/lending/display', name: 'tool_borrow_lending_display')]
+    public function borrowToolLendingUser(ManagerRegistry $doctrine)
+    {
+
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('No user is logged in.');
+        }
+
+        // Fetch the EntityManager
+        $em = $doctrine->getManager();
+
+        $userLendingTool = $em->getRepository(User::class)->find($user->getId());
+        $userTools = $userLendingTool ->getToolsOwned();
+
+        foreach ($userTools as $userTool){
+
+            // Check if tools are fetched
+            $BorrowTools = $userTool->getBorrowTools();
+
+            // Prepare borrowTool object data to avoid lazy loading and errors
+            $borrowToolsData = [];
+            foreach ($BorrowTools as $BorrowTool) {
+                
+                $borrowToolsData[] = [
+                    'userBorrower' => $BorrowTool->getUserBorrower()->getFirstName(),
+                    'id' => $BorrowTool->getId(),
+                    'tool' => $BorrowTool->getToolBeingBorrowed()->getName(),
+                    'start' => $BorrowTool->getStartDate()->format('d-m-Y'),
+                    'end' => $BorrowTool->getEndDate()->format('d-m-Y'),
+                    'status' => $BorrowTool->getStatus()->value
+    
+                ];
+            }
+
+        }
+
+
+
+        //dd($borrowToolsData);
+
+        $vars = ['borrowTools' => $borrowToolsData];
+
+        return $this->render('borrow_tool/tool_borrow_lending_display.html.twig', $vars);
     }
 }

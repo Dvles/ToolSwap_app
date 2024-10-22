@@ -6,7 +6,8 @@
         <a href="{{ path ('tool_upload')}}">+ Outils</a> |
         <a href="{{ path ('tool_display_user')}}">Mes Outils</a> |
         <a href="{{ path ('tool_borrow_display')}}">Mes Emprunts</a> |
-        <a href="">Profil</a>
+        <a href="{{ path ('tool_borrow_lending_display')}}">Mes Prêts</a> |
+        <a href="">Profil</a> |
     {% else %}
         <a href=" {{ path ('register')}} ">S'inscrire</a>
     {% endif %}
