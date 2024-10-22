@@ -209,7 +209,7 @@ class ToolController extends AbstractController
         return $this->redirectToRoute('tool_display_all');
     }
 
-    // modify tool method TBD
+
     #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]
     public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
     {
@@ -234,4 +234,7 @@ class ToolController extends AbstractController
 
         return $this->render('tool/tool_update.html.twig', $vars);
     }
+
+    
+    
 }

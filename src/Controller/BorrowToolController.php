@@ -345,20 +345,24 @@ class BorrowToolController extends AbstractController
                 $days = 1;
             }
 
-            //fetch tool
+            // fetch tool
             $tool = $BorrowTool->getToolBeingBorrowed();
+            $toolId = $tool->getId(); // Directly get the tool ID
+
+            // fetch owner
             $ownerId = $tool->getOwner();
             $owner = $em->getRepository(User::class)->find($ownerId);
 
 
             $borrowToolsData[] = [
                 'id' => $BorrowTool->getId(),
-                'tool' => $tool ->getName(),
+                'tool' => $tool->getName(),
                 'start' => $start->format('d-m-Y'),
                 'end' => $end->format('d-m-Y'),
                 'status' => $BorrowTool->getStatus()->value,
                 'days' => $days,
-                'owner' => $owner->getFirstName()
+                'owner' => $owner->getFirstName(),
+                'toolId' => $toolId
             ];
         }
 
@@ -406,6 +410,11 @@ class BorrowToolController extends AbstractController
                     $days = 1;
                 }
 
+                // fetch tool
+                $tool = $BorrowTool->getToolBeingBorrowed();
+                $toolId = $tool->getId(); // Directly get the tool ID
+
+
                 $borrowToolsData[] = [
                     'userBorrower' => $BorrowTool->getUserBorrower()->getFirstName(),
                     'id' => $BorrowTool->getId(),
@@ -414,7 +423,7 @@ class BorrowToolController extends AbstractController
                     'end' => $end->format('d-m-Y'),
                     'status' => $BorrowTool->getStatus()->value,
                     'days' => $days,
-                    'toolID' => $BorrowTool->getStatus()->value
+                    'toolId' => $toolId
 
                 ];
             }
