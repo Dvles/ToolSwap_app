@@ -200,7 +200,10 @@ class BorrowToolController extends AbstractController
                 return $this->redirectToRoute("app_login");
             }
 
-            // Sort availabilities by start date
+            // **** Sort availabilities by start date using usort()
+            // The comparison function converts the 'start' date strings to Unix timestamps 
+            // and returns the difference between them. This allows usort() to order the 
+            // availabilities based on the start date in ascending order.
             usort($content['availabilities'], function ($a, $b) {
                 return strtotime($a['start']) - strtotime($b['start']);
             });
@@ -208,8 +211,7 @@ class BorrowToolController extends AbstractController
             // Initialize variables for grouping consecutive availabilities
             $startDate = null;
             $endDate = null;
-            $borrowTool = new BorrowTool();
-            $borrowTool->setUserBorrower($user);
+            $currentBorrowTool = null;
 
             // Fetch the tool entity
             $toolBeingBorrowed = $manager->getRepository(Tool::class)->find($tool_id);
@@ -217,8 +219,6 @@ class BorrowToolController extends AbstractController
                 error_log('Tool not found with ID: ' . $tool_id);
                 return new JsonResponse(['error' => 'Tool not found'], 404);
             }
-            $borrowTool->setToolBeingBorrowed($toolBeingBorrowed);
-            $borrowTool->setStatus(ToolStatusEnum::PENDING);
 
             // Iterate through the availabilities
             foreach ($content['availabilities'] as $borrowToolAvailability) {
@@ -234,18 +234,27 @@ class BorrowToolController extends AbstractController
                 // Log the current availability being processed
                 error_log("Processing availability: Start - {$currentStartDate->format('Y-m-d H:i:s')}, End - {$currentEndDate->format('Y-m-d H:i:s')}");
 
-                // Initialize start and end dates if not set (first iteration)
-                if ($startDate === null || $endDate === null) {
+                // Check if we need to create a new BorrowTool
+                if ($currentBorrowTool === null) {
+                    // First availability, create a new BorrowTool
+                    $currentBorrowTool = new BorrowTool();
+                    $currentBorrowTool->setUserBorrower($user);
+                    $currentBorrowTool->setToolBeingBorrowed($toolBeingBorrowed);
+                    $currentBorrowTool->setStatus(ToolStatusEnum::PENDING);
                     $startDate = $currentStartDate;
                     $endDate = $currentEndDate;
                 } elseif ($endDate->modify('+1 day') == $currentStartDate) {
                     // If consecutive, extend the end date
                     $endDate = $currentEndDate;
                 } else {
-                    // Not consecutive, finalize the previous group
-                    $this->finalizeBorrowTool($borrowTool, $startDate, $endDate, $manager);
+                    // Not consecutive, finalize the previous BorrowTool
+                    $this->finalizeBorrowTool($currentBorrowTool, $startDate, $endDate, $manager);
 
-                    // Reset for the next group
+                    // Create a new BorrowTool for the current availability
+                    $currentBorrowTool = new BorrowTool();
+                    $currentBorrowTool->setUserBorrower($user);
+                    $currentBorrowTool->setToolBeingBorrowed($toolBeingBorrowed);
+                    $currentBorrowTool->setStatus(ToolStatusEnum::PENDING);
                     $startDate = $currentStartDate;
                     $endDate = $currentEndDate;
                 }
@@ -257,15 +266,15 @@ class BorrowToolController extends AbstractController
                     return new JsonResponse(['error' => 'ToolAvailability not found'], 404);
                 }
 
-                // Mark availability as unavailable and associate with the borrow tool
+                // Mark availability as unavailable and associate with the current BorrowTool
                 $toolAvailability->setIsAvailable(false);
-                $toolAvailability->setBorrowTool($borrowTool);
+                $toolAvailability->setBorrowTool($currentBorrowTool);
                 $manager->persist($toolAvailability);
             }
 
             // Finalize the last group of availabilities
-            if ($startDate !== null && $endDate !== null) {
-                $this->finalizeBorrowTool($borrowTool, $startDate, $endDate, $manager);
+            if ($currentBorrowTool !== null && $startDate !== null && $endDate !== null) {
+                $this->finalizeBorrowTool($currentBorrowTool, $startDate, $endDate, $manager);
             }
 
             // Save all changes to the database
@@ -292,6 +301,7 @@ class BorrowToolController extends AbstractController
         // Log the completed group of availabilities
         error_log("Saving borrow tool from {$startDate->format('Y-m-d H:i:s')} to {$endDate->format('Y-m-d H:i:s')}");
     }
+
 
 
 
