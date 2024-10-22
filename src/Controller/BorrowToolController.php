@@ -302,14 +302,51 @@ class BorrowToolController extends AbstractController
         error_log("Saving borrow tool from {$startDate->format('Y-m-d H:i:s')} to {$endDate->format('Y-m-d H:i:s')}");
     }
 
-
-
-
     #[Route('/tool/single/{tool_id}/borrow/success', name: 'tool_borrow_success')]
     public function borrowSuccess($tool_id)
     {
         return $this->render('borrow_tool/tool_borrow_success.html.twig', [
             'tool_id' => $tool_id,
         ]);
+    }
+
+    #[Route('/tool/borrow/display', name: 'tool_borrow_display')]
+    public function borrowToolUser(ManagerRegistry $doctrine)
+    {
+
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('No user is logged in.');
+        }
+
+        // Fetch the EntityManager
+        $em = $doctrine->getManager();
+
+        // Fetch the user with their borrows using a Doctrine query to ensure the relation is loaded
+        $userOfBorrowTools = $em->getRepository(User::class)->find($user->getId());
+
+        // Check if tools are fetched
+        $BorrowTools = $userOfBorrowTools->getBorrowTools();
+
+        // Prepare borrowTool object data to avoid lazy loading and errors
+        $borrowToolsData = [];
+        foreach ($BorrowTools as $BorrowTool) {
+            
+            $borrowToolsData[] = [
+                'id' => $BorrowTool->getId(),
+                'tool' => $BorrowTool->getToolBeingBorrowed()->getName(),
+                'start' => $BorrowTool->getStartDate()->format('d-m-Y'),
+                'end' => $BorrowTool->getEndDate()->format('d-m-Y'),
+                'status' => $BorrowTool->getStatus()->value
+
+            ];
+        }
+
+        //dd($borrowToolsData);
+
+        $vars = ['BorrowTools' => $borrowToolsData];
+
+        return $this->render('borrow_tool/tool_borrow_display.html.twig', $vars);
     }
 }
