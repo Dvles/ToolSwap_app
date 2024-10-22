@@ -32,12 +32,15 @@ class BorrowTool
     #[ORM\JoinColumn(nullable: false)]
     private ?Tool $toolBeingBorrowed = null;
 
-    #[ORM\ManyToOne(inversedBy: 'borrowTools')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?ToolAvailability $toolAvailability = null; // Needed to display toolAvailabilities when creating BorrowTool object
+    #[ORM\OneToMany(mappedBy: 'borrowTool', targetEntity: ToolAvailability::class, cascade: ['persist', 'remove'])]
+    private Collection $toolAvailabilities;
 
-    
-    
+    //#[ORM\ManyToOne(inversedBy: 'borrowTools')]
+   //#[ORM\JoinColumn(nullable: false)]
+    //private ?ToolAvailability $toolAvailability = null; // Needed to display toolAvailabilities when creating BorrowTool object
+
+
+
 
     public function getId(): ?int
     {
@@ -97,16 +100,36 @@ class BorrowTool
         return $this->toolBeingBorrowed;
     }
 
-    public function setToolBeingBorrowed(?Tool $toolBeingBorrowed): static
+    public function __construct()
     {
-        $this->toolBeingBorrowed = $toolBeingBorrowed;
-
+        $this->toolAvailabilities = new ArrayCollection();
+    }
+    
+    public function getToolAvailabilities(): Collection
+    {
+        return $this->toolAvailabilities;
+    }
+    
+    public function addToolAvailability(ToolAvailability $toolAvailability): self
+    {
+        if (!$this->toolAvailabilities->contains($toolAvailability)) {
+            $this->toolAvailabilities[] = $toolAvailability;
+            $toolAvailability->setBorrowTool($this); // Ensure the reverse association is set
+        }
+    
         return $this;
     }
-
-    public function getToolAvailability(): ?ToolAvailability
+    
+    public function removeToolAvailability(ToolAvailability $toolAvailability): self
     {
-        return $this->toolAvailability;
+        if ($this->toolAvailabilities->removeElement($toolAvailability)) {
+            // set the owning side to null (unless already changed)
+            if ($toolAvailability->getBorrowTool() === $this) {
+                $toolAvailability->setBorrowTool(null);
+            }
+        }
+    
+        return $this;
     }
 
     public function setToolAvailability(?ToolAvailability $toolAvailability): static
@@ -115,6 +138,4 @@ class BorrowTool
 
         return $this;
     }
-
-    
 }

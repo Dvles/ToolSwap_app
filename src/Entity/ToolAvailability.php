@@ -16,7 +16,7 @@ class ToolAvailability
     #[Groups(["tool:read"])]
     private ?int $id = null;
 
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(["tool:read"])]
     private ?string $title = null;
@@ -54,6 +54,10 @@ class ToolAvailability
     #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Tool $tool = null;
+
+    #[ORM\ManyToOne(inversedBy: 'toolAvailabilities')]
+    #[ORM\JoinColumn(nullable: true)] // Can be nullable because not every ToolAvailability will be borrowed
+    private ?BorrowTool $borrowTool = null;
 
     public function getId(): ?int
     {
@@ -159,15 +163,14 @@ class ToolAvailability
 
     public function getTool(): ?Tool
     {
-        return $this->tool; 
+        return $this->tool;
     }
 
     public function setTool(?Tool $tool): static
     {
-        $this->tool = $tool; 
+        $this->tool = $tool;
 
         return $this;
-    
     }
 
     public function isAvailable(): bool
@@ -178,6 +181,18 @@ class ToolAvailability
     public function setIsAvailable(bool $isAvailable): static
     {
         $this->isAvailable = $isAvailable;
+
+        return $this;
+    }
+
+    public function getBorrowTool(): ?BorrowTool
+    {
+        return $this->borrowTool;
+    }
+
+    public function setBorrowTool(?BorrowTool $borrowTool): self
+    {
+        $this->borrowTool = $borrowTool;
 
         return $this;
     }
