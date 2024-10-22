@@ -345,7 +345,7 @@ class BorrowToolController extends AbstractController
 
         //dd($borrowToolsData);
 
-        $vars = ['BorrowTools' => $borrowToolsData];
+        $vars = ['borrowTools' => $borrowToolsData];
 
         return $this->render('borrow_tool/tool_borrow_display.html.twig', $vars);
     }
