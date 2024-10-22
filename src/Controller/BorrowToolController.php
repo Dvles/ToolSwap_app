@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 
 
+
 class BorrowToolController extends AbstractController
 {
 
@@ -122,7 +123,7 @@ class BorrowToolController extends AbstractController
             throw $this->createNotFoundException('Tool not found');
         }
 
-        
+
         // Fetch ToolAvailability repository
         $repToolAvailability = $doctrine->getRepository(ToolAvailability::class);
 
@@ -187,7 +188,7 @@ class BorrowToolController extends AbstractController
             }
 
             // Log the entire content for debugging
-            error_log(print_r($content, true));
+            error_log('Incoming request data: ' . print_r($content, true));
 
             if (!isset($content['availabilities'])) {
                 return new JsonResponse(['error' => 'No availabilities provided'], 400);
@@ -199,44 +200,99 @@ class BorrowToolController extends AbstractController
                 return $this->redirectToRoute("app_login");
             }
 
+            // Sort availabilities by start date
+            usort($content['availabilities'], function ($a, $b) {
+                return strtotime($a['start']) - strtotime($b['start']);
+            });
+
+            // Initialize variables for grouping consecutive availabilities
+            $startDate = null;
+            $endDate = null;
+            $borrowTool = new BorrowTool();
+            $borrowTool->setUserBorrower($user);
+
+            // Fetch the tool entity
+            $toolBeingBorrowed = $manager->getRepository(Tool::class)->find($tool_id);
+            if (!$toolBeingBorrowed) {
+                error_log('Tool not found with ID: ' . $tool_id);
+                return new JsonResponse(['error' => 'Tool not found'], 404);
+            }
+            $borrowTool->setToolBeingBorrowed($toolBeingBorrowed);
+            $borrowTool->setStatus(ToolStatusEnum::PENDING);
+
+            // Iterate through the availabilities
             foreach ($content['availabilities'] as $borrowToolAvailability) {
                 // Check if required keys exist
                 if (!isset($borrowToolAvailability['start'], $borrowToolAvailability['end'], $borrowToolAvailability['toolId'], $borrowToolAvailability['id'])) {
                     return new JsonResponse(['error' => 'Missing required fields'], 400);
                 }
 
-                $startDate = new \DateTime($borrowToolAvailability['start']);
-                $endDate = new \DateTime($borrowToolAvailability['end']);
-                $toolId = $borrowToolAvailability['toolId'];
-                $toolAvailability = $borrowToolAvailability['id'];
+                $currentStartDate = new \DateTime($borrowToolAvailability['start']);
+                $currentEndDate = new \DateTime($borrowToolAvailability['end']);
+                $toolAvailabilityId = $borrowToolAvailability['id'];
 
-                // STEP 2 - Create BorrowTool objects
-                $borrowTool = new BorrowTool();
-                $borrowTool->setStartDate($startDate);
-                $borrowTool->setEndDate($endDate);
-                $borrowTool->setStatus(ToolStatusEnum::PENDING);
-                $borrowTool->setUserBorrower($user);
-                $borrowTool->setToolBeingBorrowed($manager->getRepository(Tool::class)->find($toolId)); // fetch the tool entity
-                $borrowTool->setToolAvailability($manager->getRepository(ToolAvailability::class)->find($toolAvailability)); // fetch the availability entity
+                // Log the current availability being processed
+                error_log("Processing availability: Start - {$currentStartDate->format('Y-m-d H:i:s')}, End - {$currentEndDate->format('Y-m-d H:i:s')}");
 
-                $manager->persist($borrowTool);
+                // Initialize start and end dates if not set (first iteration)
+                if ($startDate === null || $endDate === null) {
+                    $startDate = $currentStartDate;
+                    $endDate = $currentEndDate;
+                } elseif ($endDate->modify('+1 day') == $currentStartDate) {
+                    // If consecutive, extend the end date
+                    $endDate = $currentEndDate;
+                } else {
+                    // Not consecutive, finalize the previous group
+                    $this->finalizeBorrowTool($borrowTool, $startDate, $endDate, $manager);
 
-                // STEP 3 - Change ToolAvailability status
-                $availabilityEntity = $borrowTool->getToolAvailability();
-                if ($availabilityEntity) {
-                    $availabilityEntity->setIsAvailable(false); // mark the tool as unavailable
-                    $manager->persist($availabilityEntity); // persist the change
+                    // Reset for the next group
+                    $startDate = $currentStartDate;
+                    $endDate = $currentEndDate;
                 }
+
+                // Fetch the ToolAvailability entity
+                $toolAvailability = $manager->getRepository(ToolAvailability::class)->find($toolAvailabilityId);
+                if (!$toolAvailability) {
+                    error_log("ToolAvailability not found for ID: {$toolAvailabilityId}");
+                    return new JsonResponse(['error' => 'ToolAvailability not found'], 404);
+                }
+
+                // Mark availability as unavailable and associate with the borrow tool
+                $toolAvailability->setIsAvailable(false);
+                $toolAvailability->setBorrowTool($borrowTool);
+                $manager->persist($toolAvailability);
             }
 
+            // Finalize the last group of availabilities
+            if ($startDate !== null && $endDate !== null) {
+                $this->finalizeBorrowTool($borrowTool, $startDate, $endDate, $manager);
+            }
+
+            // Save all changes to the database
             $manager->flush();
 
             return $this->redirectToRoute('tool_borrow_success', ['tool_id' => $tool_id]);
         } catch (\Exception $e) {
-            error_log($e->getMessage()); // Log any exceptions
-            return new JsonResponse(['error' => 'Something went wrong'], 500);
+            // Log the exception with stack trace for more context
+            error_log('Error in toolBorrowCalendarConfirm: ' . $e->getMessage());
+            error_log($e->getTraceAsString());
+            return new JsonResponse(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Finalizes the borrow tool settings and persists it to the database.
+     */
+    private function finalizeBorrowTool(BorrowTool $borrowTool, \DateTime $startDate, \DateTime $endDate, EntityManagerInterface $manager)
+    {
+        $borrowTool->setStartDate($startDate);
+        $borrowTool->setEndDate($endDate);
+        $manager->persist($borrowTool);
+
+        // Log the completed group of availabilities
+        error_log("Saving borrow tool from {$startDate->format('Y-m-d H:i:s')} to {$endDate->format('Y-m-d H:i:s')}");
+    }
+
 
 
     #[Route('/tool/single/{tool_id}/borrow/success', name: 'tool_borrow_success')]

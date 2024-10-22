@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Enum\ToolStatusEnum;
-use App\Repository\BorrowToolRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\BorrowToolRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: BorrowToolRepository::class)]
 class BorrowTool
@@ -98,6 +100,13 @@ class BorrowTool
     public function getToolBeingBorrowed(): ?Tool
     {
         return $this->toolBeingBorrowed;
+    }
+
+    public function setToolBeingBorrowed(?Tool $toolBeingBorrowed): static
+    {
+        $this->toolBeingBorrowed = $toolBeingBorrowed;
+
+        return $this;
     }
 
     public function __construct()
