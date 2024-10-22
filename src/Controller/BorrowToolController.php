@@ -23,13 +23,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class BorrowToolController extends AbstractController
 {
-    #[Route('/borrow/tool', name: 'app_borrow_tool')]
-    public function index(): Response
-    {
-        return $this->render('borrow_tool/index.html.twig', [
-            'controller_name' => 'BorrowToolController',
-        ]);
-    }
+
 
     #[Route('/tool/single/{tool_id}/borrow', name: 'tool_borrow')]
     public function toolBorrow(ManagerRegistry $doctrine, Request $request, $tool_id): Response
