@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tool;
+use App\Entity\ToolReview;
 use App\Entity\User;
 use App\Form\ToolUploadType;
 use App\Repository\ToolRepository;
@@ -123,31 +124,45 @@ class ToolController extends AbstractController
     #[Route('/tool/single/{tool_id}', name: 'tool_display_single')]
     public function toolDisplaySingle(ManagerRegistry $doctrine, Request $request, $tool_id): Response
     {
-        $request->isMethod('POST');
-
         // Check if the user is logged in
         $user = $this->getUser();
-
-        // Grab tool from the DB
+    
+        // Grab the tool from the DB
         $repTools = $doctrine->getRepository(Tool::class);
         $tool = $repTools->find($tool_id);
-
+    
         // Check if the tool exists
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-
-        // Check if user is owner of the tool
-        $isOwner = $user && $tool->getOwner() == $user;
-        // dd($isOwner);
-
+    
+        // Check if the user is the owner of the tool
+        $isOwner = $user && $tool->getOwner() === $user;
+    
+        // Initialize the toolReviews collection
+        $toolReviews = $tool->getToolReviews();
+    
+        // Prepare the tool reviews data to avoid lazy loading and errors
+        $toolReviewData = [];
+        foreach ($toolReviews as $review) {
+            $toolReviewData[] = [
+                'id' => $review->getId(),
+                'comment' => $review->getComment(),
+                'rating' => $review->getRating(),
+                'reviewer' => $review->getUserOfReview()->getFirstName()
+            ];
+        }
+    
         $vars = [
             'tool' => $tool,
-            'isOwner' => $isOwner
+            'isOwner' => $isOwner,
+            'toolReviews' => $toolReviewData
         ];
+    
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
     }
+    
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
     public function toolDisplayUser(ManagerRegistry $doctrine)
@@ -177,13 +192,14 @@ class ToolController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/delete', name: 'tool_delete')]
-    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em){
+    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    {
 
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
         //dd($tool);
 
-        if(!$tool){
+        if (!$tool) {
             throw $this->createNotFoundException('No tool found');
         }
 
@@ -191,33 +207,31 @@ class ToolController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('tool_display_all');
-
     }
-    
+
     // modify tool method TBD
     #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]
-    public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em){
-         
+    public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    {
+
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
         //dd($tool);
 
-        if(!$tool){
+        if (!$tool) {
             throw $this->createNotFoundException('No tool found');
         }
 
         $form = $this->createForm(ToolUploadType::class, $tool);
-        $form-> handleRequest($request);
-        if ($form->isSubmitted()){
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
             $em->flush();
-            $vars = [ 'tool_id' => $tool_id];
+            $vars = ['tool_id' => $tool_id];
             return $this->redirectToRoute('tool_display_single', $vars);
         }
 
-        $vars = ['form' => $form ];
+        $vars = ['form' => $form];
 
         return $this->render('tool/tool_update.html.twig', $vars);
-
     }
-
 }

@@ -5,7 +5,7 @@
 
 {% block body %}
 
- <h1>{{ tool.name }}</h1>
+    <h1>{{ tool.name }}</h1>
 
     <div class="tool-detail">
         <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
@@ -26,33 +26,27 @@
             <button id="btnToolDelete" type="button">supprimer</button>
         </a>
 
-    {% else %}
-        <button id="btnComment" type="button">Commenter</button>
+    {% else %} 
 
-            <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+        <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
             <button id="btnBorrowTool2" type="button">Emprunter</button>
         </a>
-            </a>
-            <a href="{{ path('display_tool_calendar', {'tool_id': tool.id}) }}">
-            <button id="btnBorrowTool3" type="button">Disponibilités</button>
-        </a>
+            
     {% endif %}
 
 
-<br><br>
-<br><br>
-
-
+    <br><br>
+    <br><br>
     <h2> Commentaires </h2>
     <ul>
-        <li> bientot </li>
-         <li> bientot </li>
-          <li> bientot </li>
-           <li> bientot </li>
-    </ul>
-            
+    {% for toolReview in toolReviews %}
 
+        <li>
+        <h4>{{ toolReview.reviewer }} | {{ toolReview.rating }} / 5</H4>
+        <p>{{ toolReview.comment }}</p>
+        </li>
 
-
+    {% endfor %}
+    <ul>
 
 {% endblock %}
