@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ToolReviewController!{% endblock %}
+
+{% block body %}
+
+    <h2>{{ tool.name }} | Commentaires</h2>
+
+    <div class="tool-list">
+            <div class="tool-item">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;" />            
+
+            </div>  
+    </div>
+    <ul>
+    {% for toolReview in toolReviews %}
+
+        <li>
+        <h4>{{ toolReview.reviewer }} | {{ toolReview.rating }} / 5</H4>
+        <p>{{ toolReview.comment }}</p>
+        </li>
+
+    {% endfor %}
+    <ul>
+    
+    <a href="{{ path('tool_display_user', {'tool_id': tool.id}) }}">
+        <button type="button">retour</button>
+    </a>
+
+{% endblock %}

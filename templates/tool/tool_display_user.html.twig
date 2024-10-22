@@ -20,8 +20,8 @@
                     <strong>{{ tool.priceDay }} € </strong>/ jour
                 {% endif %}
             </p>
-            <a href="">
-                <button id="btnBorrowTool" type="button">Voir commentaires</button>
+            <a href="{{ path('tool_review_display',  {'tool_id': tool.id} )}}">
+                <button id="btnBorrowTool" type="button">commentaires</button>
             </a>
             <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
                 <button id="btnToolUpdate" type="button">modifier détails</button>
