@@ -1,0 +1,20 @@
+{# templates/tool/search.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Tools{% endblock %}
+
+{% block body %}
+    <h1>Search Tools</h1>
+
+    {% if tools is not empty %}
+        <h2>Search Results:</h2>
+        <ul>
+            {% for tool in tools %}
+                <li>{{ tool.name }} - {{ tool.description }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tools found.</p>
+    {% endif %}
+{% endblock %}

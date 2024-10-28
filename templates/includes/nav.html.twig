@@ -1,7 +1,11 @@
 <nav>
     {# liens sans connexion #}
     <a href="{{ path('tool_display_all') }}" style="color: black; font-weight: bold; font-size: 18px;text-decoration: none">TOOLSWAP©</a>      
-    <a href=" {{ path ('tool_display_all')}}"> Rechercher</a> |
+    {# Search Bar in Navigation #}
+    <form class="form-inline" action="{{ path('tool_search') }}" method="get" style="display: inline;">
+        <input class="form-control mr-2" type="search" placeholder="Search tools" aria-label="Search" name="keyword" required>
+        <button class="btn btn-outline-success" type="submit">Go</button>
+    </form>
     {# liens pour l'admin #}
     {% if is_granted('ROLE_USER') %}
         <a href="{{ path ('tool_upload')}}">+ Outils</a> |

@@ -50,9 +50,6 @@ class Tool
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
     private Collection $borrowTools;
 
-    
-
-
 
     #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]
     #[ORM\JoinColumn(nullable: false)]
@@ -71,105 +68,109 @@ class Tool
     private Collection $toolAvailabilities;
     // Added cascade to automatically persist or remove ToolAvailability entities when a Tool is saved or deleted
 
+    // This property is not persisted in the database
+    private ?string $keyword = null;
 
-
-
+    
+    
+    
+    
     public function __construct()
     {
         $this->borrowTools = new ArrayCollection();
         $this->toolReviews = new ArrayCollection();
         $this->toolAvailabilities = new ArrayCollection();
     }
-
+    
     public function getId(): ?int
     {
         return $this->id;
     }
-
+    
     public function getName(): ?string
     {
         return $this->name;
     }
-
+    
     public function setName(string $name): static
     {
         $this->name = $name;
-
+        
         return $this;
     }
-
+    
     public function getDescription(): ?string
     {
         return $this->description;
     }
-
+    
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
+        
         return $this;
     }
-
+    
     public function getToolCondition(): ?string
     {
         return $this->toolCondition;
     }
-
+    
     public function setToolCondition(string $toolCondition): static
     {
         $this->toolCondition = $toolCondition;
-
+        
         return $this;
     }
-
+    
     public function isAvailability(): ?bool
     {
         return $this->availability;
     }
-
+    
     public function setAvailability(?bool $availability): static
     {
         $this->availability = $availability;
-
+        
         return $this;
     }
-
+    
     public function getPriceDay(): ?string
     {
         return $this->priceDay;
     }
-
+    
     public function setPriceDay(?string $priceDay): static
     {
         $this->priceDay = $priceDay;
-
+        
         return $this;
     }
-
+    
     public function getImageTool(): ?string
     {
         return $this->imageTool;
     }
-
+    
     public function setImageTool(string $imageTool): static
     {
         $this->imageTool = $imageTool;
-
+        
         return $this;
     }
-
+    
     public function getOwner(): ?User
     {
         return $this->owner;
     }
-
+    
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
-
+        
         return $this;
     }
-
+    
     /**
      * @return Collection<int, BorrowTool>
      */
@@ -177,17 +178,17 @@ class Tool
     {
         return $this->borrowTools;
     }
-
+    
     public function addBorrowTool(BorrowTool $borrowTool): static
     {
         if (!$this->borrowTools->contains($borrowTool)) {
             $this->borrowTools->add($borrowTool);
             $borrowTool->setToolBeingBorrowed($this);
         }
-
+        
         return $this;
     }
-
+    
     public function removeBorrowTool(BorrowTool $borrowTool): static
     {
         if ($this->borrowTools->removeElement($borrowTool)) {
@@ -195,24 +196,24 @@ class Tool
                 $borrowTool->setToolBeingBorrowed(null);
             }
         }
-
+        
         return $this;
     }
-
-
-
+    
+    
+    
     public function getToolCategory(): ?ToolCategory
     {
         return $this->toolCategory;
     }
-
+    
     public function setToolCategory(?ToolCategory $toolCategory): static
     {
         $this->toolCategory = $toolCategory;
-
+        
         return $this;
     }
-
+    
     /**
      * @return Collection<int, ToolReview>
      */
@@ -220,17 +221,17 @@ class Tool
     {
         return $this->toolReviews;
     }
-
+    
     public function addToolReview(ToolReview $toolReview): static
     {
         if (!$this->toolReviews->contains($toolReview)) {
             $this->toolReviews->add($toolReview);
             $toolReview->setToolOfReview($this);
         }
-
+        
         return $this;
     }
-
+    
     public function removeToolReview(ToolReview $toolReview): static
     {
         if ($this->toolReviews->removeElement($toolReview)) {
@@ -238,10 +239,10 @@ class Tool
                 $toolReview->setToolOfReview(null);
             }
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @return Collection<int, ToolAvailability>
      */
@@ -249,17 +250,17 @@ class Tool
     {
         return $this->toolAvailabilities;
     }
-
+    
     public function addToolAvailability(ToolAvailability $toolAvailability): static
     {
         if (!$this->toolAvailabilities->contains($toolAvailability)) {
             $this->toolAvailabilities->add($toolAvailability);
             $toolAvailability->setTool($this);
         }
-
+        
         return $this;
     }
-
+    
     public function removeToolAvailability(ToolAvailability $toolAvailability): static
     {
         if ($this->toolAvailabilities->removeElement($toolAvailability)) {
@@ -268,9 +269,21 @@ class Tool
                 $toolAvailability->setTool(null);
             }
         }
-
+        
         return $this;
     }
+    
+    // Getter for keyword
+    public function getKeyword(): ?string
+    {
+        return $this->keyword;
+    }
 
-
+    // Setter for keyword
+    public function setKeyword(?string $keyword): self
+    {
+        $this->keyword = $keyword;
+        return $this;
+    }
+    
 }
