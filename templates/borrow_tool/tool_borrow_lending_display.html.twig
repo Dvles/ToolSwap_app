@@ -34,7 +34,9 @@
                     <p><strong>Statut:</strong> {{ borrowTool.status }} </p>
 
                     <a href="">
-                        <button type="button">modifier statut</button>
+                        <button type="button" {% if borrowTool.status == "completed" %}disabled{% endif %}>
+                            modifier statut
+                        </button>
                     </a>
                     <a href="{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}">
                         <button type="button">voir outil</button>
