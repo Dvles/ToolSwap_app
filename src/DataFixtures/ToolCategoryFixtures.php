@@ -17,12 +17,16 @@ class ToolCategoryFixtures extends Fixture
             'Outils pour l\'entretien des espaces verts et les travaux de jardinage',
             'Outils utilisés pour les travaux de construction et de rénovation',
         ];
-        
-        for ($i = 0; $i < 3; $i++){
+
+        for ($i = 0; $i < 3; $i++) {
             $toolCategory = new ToolCategory();
             $toolCategory->setName($toolCategories[$i]);
             $toolCategory->setDescription($toolCatDescriptions[$i]);
             $manager->persist($toolCategory);
+
+            // Set a reference for later use
+            $this->addReference('tool_category_' . ($i + 1), $toolCategory); 
+
         }
 
         $manager->flush();
