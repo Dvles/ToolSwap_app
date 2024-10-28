@@ -30,8 +30,10 @@
                     {% endif %}
                     <p><strong>Statut:</strong> {{ borrowTool.status }} </p>
 
+                    
 
-                    <a href="">
+
+                    <a href="{{ path('tool_review_add', {tool_id: borrowTool.toolId }) }}">
                         <button type="button">commenter</button>
                     </a>
                     <a href="">

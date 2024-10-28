@@ -49,7 +49,7 @@ class BorrowToolController extends AbstractController
         $repToolAvailability->deactivateExpiredAvailabilities();
 
 
-        // Create a new BorrowTool entity and pre-fill user and tool
+        // Create a new BorrowTool object and pre-fill user and tool
         $borrowTool = new BorrowTool();
 
         // Set default values
@@ -62,8 +62,6 @@ class BorrowToolController extends AbstractController
             'tool' => $tool, // Pass the current tool being borrowed
         ]);
         $form->handleRequest($request);
-
-        // Deactivate expired toolAvailability
 
 
         // If the form is submitted and valid, save the borrow tool request
