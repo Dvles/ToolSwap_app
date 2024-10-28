@@ -6,9 +6,9 @@
 
 <h2>Mes emprunts</h2>
 
-    {% if borrowTools == null %}
+    {% if borrowTools is empty %}
         <p> Vous n'avez pas encore emprunté d'outils. </p>
-        <a href=" {{ path ('tool_display_all')}}">
+        <a href="{{ path('tool_display_all') }}">
             <button type="button">Rechercher outil</button>
         </a>
 
@@ -22,26 +22,25 @@
                     {% if borrowTool.days > 1 %}
                         <p> {{ borrowTool.days }} jours </p> 
                         <p><strong>Début:</strong> {{ borrowTool.start }}</p>
-                         <strong>Fin:</strong> {{ borrowTool.end }}</p>
+                        <strong>Fin:</strong> {{ borrowTool.end }}</strong>
                     {% else %}
                         <p> {{ borrowTool.days }} jour </p>
                         <p><strong>Début:</strong> {{ borrowTool.start }} </p>
-
                     {% endif %}
                     <p><strong>Statut:</strong> {{ borrowTool.status }} </p>
 
-                    {% if borrowTool.status=="completed"%}
-
+                    {% if borrowTool.status == "completed" %}
                         <a href="{{ path('tool_review_add', {tool_id: borrowTool.toolId }) }}">
                             <button type="button">commenter</button>
                         </a>
-
                     {% endif %}
 
-                
                     <a href="">
-                        <button type="button">modifier statut</button>
+                        <button type="button" {% if borrowTool.status == "completed" %}disabled{% endif %}>
+                            modifier statut
+                        </button>
                     </a>
+                    
                     <a href="{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}">
                         <button type="button">voir outil</button>
                     </a>
@@ -53,6 +52,5 @@
         </div>
 
     {% endif %}
-
 
 {% endblock %}
