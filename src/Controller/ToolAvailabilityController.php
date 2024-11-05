@@ -56,7 +56,6 @@ class ToolAvailabilityController extends AbstractController
                 // Create a new ToolAvailability entity for each item
                 $toolAvailability = new ToolAvailability();
                 $toolAvailability->setTool($tool);
-                $toolAvailability->setTitle($availabilityData['title']);
                 $toolAvailability->setUser($this->getUser());
                 $toolAvailability->setStart(new \DateTime($availabilityData['start']));
                 $toolAvailability->setEnd(new \DateTime($availabilityData['end']));
@@ -152,7 +151,7 @@ class ToolAvailabilityController extends AbstractController
             return $this->redirectToRoute("app_login");
         }
 
-        //dd($availableToolAvailabilities);
+        // dd($availableToolAvailabilities);
 
         // Serealizing data
         $toolAvailabilitiesJSON = $serializer->serialize(
@@ -161,7 +160,7 @@ class ToolAvailabilityController extends AbstractController
             [AbstractNormalizer::GROUPS => ['tool:read']]
         );
 
-        //dd($toolAvailabilitiesJSON);
+        // dd($toolAvailabilitiesJSON);
 
         $vars = [
             'toolAvailabilitiesJSON' => $toolAvailabilitiesJSON,
@@ -246,7 +245,7 @@ class ToolAvailabilityController extends AbstractController
 
                     // Create new ToolAvailability object
                     $newToolAvailability = new ToolAvailability();
-                    $newToolAvailability->setTitle($updatedToolAvailability['title']);
+                    // $newToolAvailability->setTitle($updatedToolAvailability['title']);
                     $newToolAvailability->setIsAvailable(true);
                     $newToolAvailability->setStart($startDateTime);
                     $newToolAvailability->setEnd($endDateTime);

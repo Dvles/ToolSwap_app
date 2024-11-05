@@ -17,9 +17,9 @@ class ToolAvailability
     private ?int $id = null;
 
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["tool:read"])]
-    private ?string $title = null;
+    // #[ORM\Column(length: 255, nullable: true)]
+    // #[Groups(["tool:read"])]
+    // private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(["tool:read"])]
@@ -64,17 +64,17 @@ class ToolAvailability
         return $this->id;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
+    // public function getTitle(): ?string
+    // {
+    //     return $this->title;
+    // }
 
-    public function setTitle(?string $title): static
-    {
-        $this->title = $title;
+    // public function setTitle(?string $title): static
+    // {
+    //     $this->title = $title;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getStart(): ?\DateTimeInterface
     {

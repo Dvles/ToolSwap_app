@@ -23,12 +23,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const toolId = calendarEl.dataset.toolId;
         const toolName = calendarEl.dataset.toolName;
 
+        // add toolName to each object
+        evenementsJSONJSArray.forEach ( function (toolAvailabilities){
+            toolAvailabilities.title = toolName;
+
+        });
+        
+
         // Empty array to store ToolAvailabilities
         let borrowToolAvailabilities = [];
 
         // Debugging logs
+        console.log("toolAvailability:", toolAvailabilities);
         console.log("Tool ID:", toolId);
         console.log("Tool Name:", toolName);
+        console.log("evenementsJSONJSArray:", evenementsJSONJSArray);
 
         if (!toolId || !toolName) {
             console.error("Tool ID or Tool Name is missing from the dataset.");
@@ -117,24 +126,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => {
-                console.log("Response from server:", response.data);
-                // Check if there is a redirect URL in the response
-                if (response.request.responseURL) {
-                    // Perform the redirection
-                    window.location.href = response.request.responseURL;
-                } else {
-                    console.log("No redirect URL detected. Handle success message or logic here.");
-                }
-            })
-            .catch(error => {
-                console.error("There was an error sending the data:", error);
-            });
+                .then(response => {
+                    console.log("Response from server:", response.data);
+                    // Check if there is a redirect URL in the response
+                    if (response.request.responseURL) {
+                        // Perform the redirection
+                        window.location.href = response.request.responseURL;
+                    } else {
+                        console.log("No redirect URL detected. Handle success message or logic here.");
+                    }
+                })
+                .catch(error => {
+                    console.error("There was an error sending the data:", error);
+                });
         });
 
     } else {
         console.error("Calendar element not found.");
     }
-    
+
     console.log("Script executed.");
 });

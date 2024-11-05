@@ -14,18 +14,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Parse the JSON string into an array of event objects
         let eventsJSONArray = JSON.parse(eventsArray);
+        
         console.log("Initial eventsJSONArray:", JSON.stringify(eventsJSONArray, null, 2));
 
         const toolId = calendarEl.dataset.toolId;
         console.log("Tool ID:", toolId);
         const toolName = calendarEl.dataset.toolName;
 
+        // add toolName to each object
+        eventsJSONArray.forEach ( function (toolAvailability){
+            toolAvailability.title = toolName;
+
+        });
+
+        
+
         // Empty arrays to store modified & deleted availabilities
         let updateAvailabilities = [];
         let deletedAvailabilities = [];
 
+
+
         var calendar = new Calendar(calendarEl, {
-            events: eventsJSONArray,
+            events: eventsJSONArray, //data for the calendar
             displayEventTime: false,
             initialView: "dayGridMonth",
             initialDate: new Date(),

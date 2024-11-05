@@ -129,7 +129,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
                 }
 
 
-                $toolAvailability->setTitle($toolName);
+                // $toolAvailability->setTitle($toolName);
                 $toolAvailability->setStart($startDate);
                 $toolAvailability->setEnd($endDate);
                 $toolAvailability->setBackgroundColor('rgba(255, 179, 71, 1)');
@@ -175,7 +175,6 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
 
                 // Set ToolAvailability attributes
-                $toolAvailability->setTitle($toolName);
                 $toolAvailability->setStart($startDate);
                 $toolAvailability->setEnd($endDate);
                 $toolAvailability->setBackgroundColor('rgba(255, 179, 71, 1)');
@@ -197,7 +196,6 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
             $endDate = new \DateTime('2024-11-' . ($startDay + $i) . ' 10:00:00');
 
             $toolAvailabilityUser1 = new ToolAvailability();
-            $toolAvailabilityUser1->setTitle('échelle');
             $toolAvailabilityUser1->setStart($startDate);
             $toolAvailabilityUser1->setEnd($endDate);
             $toolAvailabilityUser1->setBackgroundColor('rgba(255, 179, 71, 1)');
