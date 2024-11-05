@@ -34,6 +34,7 @@ class SearchToolController extends AbstractController
     
         return $this->render('search_tool/search.html.twig', [
             'tools' => $tools,
+            'keyword' => $keyword
         ]);
     }
 }

@@ -7,7 +7,10 @@
 	<h1>Search Tools</h1>
 
 	{% if tools is not empty %}
-		<h2>Search Results:</h2>
+		<h2>Search Results
+			<strong>
+				{{ keyword }}
+			</strong>:</h2>
 		<ul>
 			{% for tool in tools %}
 				<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
@@ -22,13 +25,26 @@
 						</strong>/ jour
 					{% endif %}
 				</p>
-				<h6>
-					<a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">voir outil</a>
-				</h6>
-				<br><br>
-			{% endfor %}
-		</ul>
-	{% else %}
-		<p>No tools found.</p>
-	{% endif %}
-{% endblock %}
+
+				<a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">
+					<button id="btnToolUpdate" type="button">voir outil</button>
+				</a>
+
+
+				{% if app.user.id != tool.owner.id %}
+					<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+						<button id="btnBorrowTool2" type="button">Emprunter</button>
+					</a>
+				{% elseif app.user.id == tool.owner.id %}
+					<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+						<button id="btnBorrowTool2" type="button" disabled  title="Vous ne pouvez pas emprunter votre propre outil">Emprunter</button>
+					</a>
+				{% endif %}
+
+
+			<br><br>
+		{% endfor %}
+	</ul>
+{% else %}
+	<p>No tools found.</p>
+{% endif %}{% endblock %}
