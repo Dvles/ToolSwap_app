@@ -15,28 +15,25 @@ class SearchToolController extends AbstractController
     #[Route('/tools/search', name: 'tool_search')]
     public function search(Request $request, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(SearchToolType::class);
-        $form->handleRequest($request);
-        
+
+        // Retrieve the 'keyword' from the query parameters of the request URL 
+        $keyword = $request->query->get('keyword');
+         // Initialize an empty array for storing the search results.
         $tools = [];
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $keyword = $data['keyword'];
     
-            // Perform search based on the existing properties
+        // Check if a keyword was provided in the query parameters.
+        if ($keyword) {
+            // Perform search directly if the keyword exists
             $tools = $em->getRepository(Tool::class)->createQueryBuilder('t')
                 ->where('t.name LIKE :keyword OR t.description LIKE :keyword')
                 ->setParameter('keyword', '%' . $keyword . '%')
                 ->getQuery()
                 ->getResult();
         }
-
-        $vars = [
-            'form' => $form->createView(),
+    
+    
+        return $this->render('search_tool/search.html.twig', [
             'tools' => $tools,
-        ];
-
-        return $this->render('search_tool/search.html.twig', $vars);
+        ]);
     }
 }

@@ -18,7 +18,7 @@ class SearchToolType extends AbstractType
                 'label' => 'Recherche outil',
                 'attr' => [
                     'placeholder' => 'Recherche outil',
-                    'class' => 'form-control', // Bootstrap class
+                    'class' => 'form-control', // Bootstrap class to add later !!!!!!
                 ],
             ]);
     }
@@ -27,7 +27,7 @@ class SearchToolType extends AbstractType
     {
         // Set the data class to null, since we're not binding to an entity
         $resolver->setDefaults([
-            'data_class' => null,
+            
         ]);
     }
 }
