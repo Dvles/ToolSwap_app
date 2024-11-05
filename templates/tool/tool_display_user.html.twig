@@ -1,42 +1,60 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes outils{% endblock %}
+{% block title %}Mes outils
+{% endblock %}
 
 {% block body %}
 
-<h2>Mes outils</h2>
+	<h2>Mes outils</h2>
 
-<div class="tool-list">
-    {% for tool in tools %}
-        <div class="tool-item">
-            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;" />            
-            <h3>{{ tool.name }}</h3>
-            <p> <strong>état: </strong>{{ tool.toolCondition }}</p>
-            <p>{{ tool.description }}</p>
-            <p>
-                {% if tool.priceDay == 0 %}
-                    <strong>gratuit</strong>
-                {% else %}
-                    <strong>{{ tool.priceDay }} € </strong>/ jour
-                {% endif %}
-            </p>
-            <a href="{{ path('tool_review_display',  {'tool_id': tool.id} )}}">
-                <button id="btnBorrowTool" type="button">commentaires</button>
-            </a>
-            <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-                <button id="btnToolUpdate" type="button">modifier détails</button>
-            </a>
-            <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-                <button id="btnToolUpdate" type="button">modifier disponibilités</button>
-            </a>
-            <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-                <button id="btnToolDelete" type="button">supprimer</button>
-            </a>
+	<div class="tool-list">
 
-            <br><br>
-            <br><br>
-        </div>
-    {% endfor %}
-</div>
+
+		{% if tools is empty %}
+			<p>
+				Vous n'avez pas encore partagé d'outils.
+			</p>
+			<a href="{{ path ('tool_upload')}}">
+				<button type="button">Upload outil</button>
+			</a>
+
+		{% else %}
+			{% for tool in tools %}
+				<div class="tool-item">
+					<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+					<h3>{{ tool.name }}</h3>
+					<p>
+						<strong>état:
+						</strong>
+						{{ tool.toolCondition }}</p>
+					<p>{{ tool.description }}</p>
+					<p>
+						{% if tool.priceDay == 0 %}
+							<strong>gratuit</strong>
+						{% else %}
+							<strong>{{ tool.priceDay }}
+								€
+							</strong>/ jour
+						{% endif %}
+					</p>
+					<a href="{{ path('tool_review_display', {'tool_id': tool.id} )}}">
+						<button id="btnBorrowTool" type="button">commentaires</button>
+					</a>
+					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+						<button id="btnToolUpdate" type="button">modifier détails</button>
+					</a>
+					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+						<button id="btnToolUpdate" type="button">modifier disponibilités</button>
+					</a>
+					<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
+						<button id="btnToolDelete" type="button">supprimer</button>
+					</a>
+
+					<br><br>
+					<br><br>
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
 
 {% endblock %}
