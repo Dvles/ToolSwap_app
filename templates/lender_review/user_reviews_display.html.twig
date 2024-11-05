@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ owner.firstName }} Commentaires{% endblock %}
+
+{% block body %}
+
+    <h2>{{ owner.firstName }} | Commentaires</h2>
+
+
+    <ul>
+    {% for lenderReview in lenderReviews %}
+
+        <li>
+        <h4>{{ lenderReview.reviewer }} |{{ lenderReview.rating }} / 5</H4>
+        <p>{{ lenderReview.comment }}</p>
+        </li>
+
+    {% endfor %}
+    </ul>
+    
+
+
+{% endblock %}

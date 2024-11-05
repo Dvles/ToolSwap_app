@@ -393,51 +393,62 @@ class BorrowToolController extends AbstractController
         $userLendingTool = $em->getRepository(User::class)->find($user->getId());
         $userTools = $userLendingTool->getToolsOwned();
 
+
+        // Initialize borrowToolsData as an empty array
+        $borrowToolsData = [];
+
         foreach ($userTools as $userTool) {
 
             // Check if tools are fetched
-            $BorrowTools = $userTool->getBorrowTools();
+            $borrowTools = $userTool->getBorrowTools();
 
             // Prepare borrowTool object data to avoid lazy loading and errors
-            $borrowToolsData = [];
-            foreach ($BorrowTools as $BorrowTool) {
+            // $borrowToolsData = [];
 
-                $start = $BorrowTool->getStartDate();
-                $end = $BorrowTool->getEndDate();
+            if ($borrowTools) {
+                foreach ($borrowTools as $borrowTool) {
 
-                // Calculate the difference between start and end dates
-                $dateInterval = $start->diff($end);
-                $days = $dateInterval->days; // Get the total number of days
+                    $start = $borrowTool->getStartDate();
+                    $end = $borrowTool->getEndDate();
 
-                // handle cases where startDate = endDate
-                if ($days === 0) {
-                    $days = 1;
+                    // Calculate the difference between start and end dates
+                    $dateInterval = $start->diff($end);
+                    $days = $dateInterval->days; // Get the total number of days
+
+                    // handle cases where startDate = endDate
+                    if ($days === 0) {
+                        $days = 1;
+                    }
+
+                    // fetch tool
+                    $tool = $borrowTool->getToolBeingBorrowed();
+                    $toolId = $tool->getId(); // Directly get the tool ID
+
+
+                    $borrowToolsData[] = [
+                        'userBorrower' => $borrowTool->getUserBorrower()->getFirstName(),
+                        'userBorrowerId' => $borrowTool->getUserBorrower()->getId(),
+                        'owner' => $borrowTool->getToolBeingBorrowed()-> getOwner()->getFirstName(),
+                        'ownerId' => $borrowTool->getToolBeingBorrowed()-> getOwner()->getId(),
+                        'id' => $borrowTool->getId(),
+                        'tool' => $borrowTool->getToolBeingBorrowed()->getName(),
+                        'start' => $start->format('d-m-Y'),
+                        'end' => $end->format('d-m-Y'),
+                        'status' => $borrowTool->getStatus()->value,
+                        'days' => $days,
+                        'toolId' => $toolId
+                    ];
                 }
-
-                // fetch tool
-                $tool = $BorrowTool->getToolBeingBorrowed();
-                $toolId = $tool->getId(); // Directly get the tool ID
-
-
-                $borrowToolsData[] = [
-                    'userBorrower' => $BorrowTool->getUserBorrower()->getFirstName(),
-                    'id' => $BorrowTool->getId(),
-                    'tool' => $BorrowTool->getToolBeingBorrowed()->getName(),
-                    'start' => $start->format('d-m-Y'),
-                    'end' => $end->format('d-m-Y'),
-                    'status' => $BorrowTool->getStatus()->value,
-                    'days' => $days,
-                    'toolId' => $toolId
-
-                ];
             }
         }
 
         //dd($borrowToolsData);
-        // Sort the borrowToolsData array by start date in descending order
-        usort($borrowToolsData, function ($a, $b) {
-            return strtotime($b['start']) - strtotime($a['start']);
-        });
+        // Sort the borrowToolsData array by start date in descending order if not empty
+        if (!empty($borrowToolsData)) {
+            usort($borrowToolsData, function ($a, $b) {
+                return strtotime($b['start']) - strtotime($a['start']);
+            });
+        }
 
 
         $vars = ['borrowTools' => $borrowToolsData];

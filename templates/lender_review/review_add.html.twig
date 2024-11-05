@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commenter {{ userBeingReviewed }}{% endblock %}
+
+{% block body %}
+    <h1>Commenter {{ userBeingReviewed }}</h1>
+
+    {{ form_start(form) }}
+
+    {{ form_label(form.rating) }}<br>
+    {{ form_widget(form.rating) }}<br>
+
+    {{ form_label(form.comments) }}<br>
+    {{ form_widget(form.comments) }}<br>
+
+    <input type="submit" value="Insérer">
+    
+    {{ form_end(form) }}
+    
+{% endblock %}
