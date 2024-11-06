@@ -16,14 +16,14 @@ class ToolFilterType extends AbstractType
         // Add category selection dropdown
         $builder
             ->add('category', ChoiceType::class, [
-                'choices' => $options['categories'],
-                'placeholder' => 'Catégorie',
+                'choices' => $options['categories'], // 'categories' will be passed from the controller
+                'placeholder' => 'Sélectionner',
                 'required' => false,
             ])
             // Add community selection dropdown
             ->add('community', ChoiceType::class, [
-                'choices' => $options['communities'],
-                'placeholder' => 'Commune',
+                'choices' => $options['communities'], 
+                'placeholder' => 'Sélectionner',
                 'required' => false,
             ])
             // Add checkbox for filtering free tools

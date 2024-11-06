@@ -121,30 +121,41 @@ class ToolController extends AbstractController
         // Fetch categories and communities
         $categories = $em->getRepository(ToolCategory::class)->findAll();
         $communities = $userRepository->findCommunities();
-        
+
+        // Prepare category and community choices as associative arrays
+        $categoryChoices = [];
+        foreach ($categories as $category) {
+            $categoryChoices[$category->getName()] = $category->getId();  // Name as label, ID as value
+        }
+
+        $communityChoices = [];
+        foreach ($communities as $community) {
+            $communityChoices[$community['community']] = $community['community'];  // Community name
+        }
+
         // Create the form and handle request
         $form = $this->createForm(ToolFilterType::class, null, [
-            'categories' => $categories,
-            'communities' => $communities
+            'categories' => $categoryChoices,
+            'communities' => $communityChoices
         ]);
-        
+
         $form->handleRequest($request);
-        
+
         // Debug: Check if form is submitted and valid
         if ($form->isSubmitted()) {
             // dd($form->getData());  // Show data after form submission
         }
-    
+
         // Initialize tools variable to hold all tools initially
         $tools = $toolRepository->findAll();
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             // Get form data
             $data = $form->getData();
-    
+
             // Debug: Check form data before applying filters
             // dd('Form data:', $data);
-    
+
             // Filter tools based on form data
             $tools = $toolRepository->findByFilters(
                 $data['isFree'],
@@ -152,17 +163,17 @@ class ToolController extends AbstractController
                 $data['community']
             );
         }
-    
+
         $vars = [
             'tools' => $tools,
             'form' => $form->createView()
         ];
-    
+
         return $this->render('tool/tool_display_all.html.twig', $vars);
     }
-    
-    
-    
+
+
+
 
 
 
