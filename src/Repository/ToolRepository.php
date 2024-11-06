@@ -62,7 +62,8 @@ class ToolRepository extends ServiceEntityRepository
 
         // Filter by category if provided
         if ($category) {
-            $qb->andWhere('t.category = :category')
+            $qb->join('t.toolCategory', 'c')  // Join the ToolCategory entity
+                ->andWhere('c.id = :category')  // Filter by category ID
                 ->setParameter('category', $category);
         }
 
