@@ -21,9 +21,11 @@
 		{% for borrowTool in borrowTools %}
 			<div class="tool-item">
 				<h3>{{ borrowTool.tool }}
-					<span style="font-size: 12px;">| appartient à
-						<em>{{ borrowTool.owner }}
-						</em>
+					<span style="font-size: 12px;">| Appartient à
+						<a href="{{ path('user_profile', {'user_id': borrowTool.ownerId}) }}">
+							<strong>{{ borrowTool.owner }}</strong>
+						</a>
+
 					</span>
 				</h3>
 				<h4>Période</h4>

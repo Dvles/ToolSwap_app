@@ -19,9 +19,7 @@
 			{% for borrowTool in borrowTools %}
 				<div class="tool-item">
 					<h3>{{ borrowTool.tool }}
-						<span style="font-size: 12px;">| Prêté à
-							<em>{{ borrowTool.userBorrower }}
-							</em>
+						<span style="font-size: 12px;">| Prêté à <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}"><strong>{{ borrowTool.userBorrower }}</strong></a> 
 						</span>
 					</h3>
 

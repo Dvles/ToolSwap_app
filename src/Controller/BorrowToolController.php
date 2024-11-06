@@ -360,6 +360,7 @@ class BorrowToolController extends AbstractController
                 'status' => $BorrowTool->getStatus()->value,
                 'days' => $days,
                 'owner' => $owner->getFirstName(),
+                'ownerId' => $owner->getId(),
                 'toolId' => $toolId
             ];
         }
