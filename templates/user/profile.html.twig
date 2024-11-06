@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Profil {{ user.firstName }}
+{% endblock %}
+
+{% block body %}
+
+    <h2>{{ user.firstName }}</h2>
+
+    <strong>Commune:</strong> {{ user.community }} <br>
+    <strong>{{ borrowedToolsCount }}</strong> prêts <br>
+    <strong>{{ toolsOwnedByOwnerCount }}</strong> outils disponibles<br>
+    {% if freeToolsOwnedByOwnerCount != 0 %}
+        <strong>{{ freeToolsOwnedByOwnerCount }}</strong> outils gratuitement disponibles<br>
+    {% endif %}
+    <br>
+
+    <!-- Display up to 3 reviews with a "See More" button -->
+    <h3>Avis</h3>
+    <ul>
+        {% for review in reviews|slice(0, 3) %}
+            <li>
+                <h4><strong>{{ review.userLeavingReview.firstName }}</strong> | {{ review.rating }} / 5</h4>
+                <p>{{ review.comments }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if reviews|length > 3 %}
+        <a href="">Voir plus</a>
+    {% endif %}
+    <br>
+
+    <h3>Ses Outils</h3>
+    {% for tool in tools|slice(0, 3) %}
+        <div class="tool-item">
+            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+            <h4>{{ tool.name }}</h4>
+            <p>
+                <strong>{{ tool.priceDay }}</strong> € / jour
+            </p>
+            <h5>
+                <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">détails</a>
+            </h5>
+        </div>
+    {% endfor %}
+    <br>
+    {% if tools|length > 3 %}
+        <a href="">Voir tout ses outils</a>
+    {% endif %}
+
+{% endblock %}
