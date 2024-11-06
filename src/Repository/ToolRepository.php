@@ -55,20 +55,25 @@ class ToolRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
 
-        // Filter by "isFree" (only tools with priceDay = 0)
+        // Filter by "isFree" (only tools with priceDay = 0 or non-zero)
         if ($isFree !== null) {
-            $qb->andWhere('t.priceDay = 0');
+            if ($isFree) {
+                $qb->andWhere('t.priceDay = 0');  // Only free tools
+            } else {
+                $qb->andWhere('t.priceDay > 0');  // Only non-free tools
+            }
         }
 
+
         // Filter by category if provided
-        if ($category) {
+        if ($category !== null) {
             $qb->join('t.toolCategory', 'c')  // Join the ToolCategory entity
                 ->andWhere('c.id = :category')  // Filter by category ID
                 ->setParameter('category', $category);
         }
 
         // Filter by community if provided
-        if ($community) {
+        if ($community !== null) {
             $qb->join('t.owner', 'u')  // Join the user (owner) of the tool
                 ->andWhere('u.community = :community')  // Filter by the community field on the user
                 ->setParameter('community', $community);

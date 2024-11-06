@@ -141,10 +141,6 @@ class ToolController extends AbstractController
 
         $form->handleRequest($request);
 
-        // Debug: Check if form is submitted and valid
-        if ($form->isSubmitted()) {
-            // dd($form->getData());  // Show data after form submission
-        }
 
         // Initialize tools variable to hold all tools initially
         $tools = $toolRepository->findAll();
@@ -153,15 +149,24 @@ class ToolController extends AbstractController
             // Get form data
             $data = $form->getData();
 
-            // Debug: Check form data before applying filters
-            // dd('Form data:', $data);
+            // If a community is selected by name, look up its ID
+            $communityId = null;
+            if ($data['community']) {
+                // Look up the community ID based on name
+                $communityEntity = $userRepository->findOneBy(['community' => $data['community']]);
+                if ($communityEntity) {
+                    $communityId = $communityEntity->getId();
+                }
+            }
 
             // Filter tools based on form data
             $tools = $toolRepository->findByFilters(
                 $data['isFree'],
                 $data['category'],
-                $data['community']
+                $communityId 
             );
+
+            //dd($data);
         }
 
         $vars = [
