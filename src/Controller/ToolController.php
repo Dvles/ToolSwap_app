@@ -121,22 +121,30 @@ class ToolController extends AbstractController
         // Fetch categories and communities
         $categories = $em->getRepository(ToolCategory::class)->findAll();
         $communities = $userRepository->findCommunities();
-
+        
         // Create the form and handle request
         $form = $this->createForm(ToolFilterType::class, null, [
             'categories' => $categories,
             'communities' => $communities
         ]);
-
+        
         $form->handleRequest($request);
-
+        
+        // Debug: Check if form is submitted and valid
+        if ($form->isSubmitted()) {
+            // dd($form->getData());  // Show data after form submission
+        }
+    
         // Initialize tools variable to hold all tools initially
         $tools = $toolRepository->findAll();
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             // Get form data
             $data = $form->getData();
-
+    
+            // Debug: Check form data before applying filters
+            // dd('Form data:', $data);
+    
             // Filter tools based on form data
             $tools = $toolRepository->findByFilters(
                 $data['isFree'],
@@ -144,16 +152,15 @@ class ToolController extends AbstractController
                 $data['community']
             );
         }
-
+    
         $vars = [
             'tools' => $tools,
             'form' => $form->createView()
         ];
-
-
-
-        return $this->render('tool/tool_display_all.html.twig',$vars);
+    
+        return $this->render('tool/tool_display_all.html.twig', $vars);
     }
+    
     
     
 
