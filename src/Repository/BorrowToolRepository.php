@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BorrowTool;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,25 @@ class BorrowToolRepository extends ServiceEntityRepository
         parent::__construct($registry, BorrowTool::class);
     }
 
-    //    /**
-    //     * @return BorrowTool[] Returns an array of BorrowTool objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?BorrowTool
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function countBorrowedToolsByBorrower(User $user): int
+    {
+        return $this->createQueryBuilder('borrowTool') 
+            ->select('COUNT(DISTINCT borrowTool.id)')  // Use DISTINCT to count unique borrowTool entries
+            ->where('borrowTool.userBorrower = :borrower')  // Filter by the borrower
+            ->setParameter('borrower', $user)  // Bind the User entity parameter to the query
+            ->getQuery()
+            ->getSingleScalarResult();  // 
+    }
+
+    public function countBorrowedToolsByOwner(User $owner): int
+    {
+        return $this->createQueryBuilder('borrowTool')  
+            ->select('COUNT(DISTINCT borrowTool.id)')  
+            ->join('borrowTool.toolBeingBorrowed', 'tool') 
+            ->where('tool.owner = :owner') 
+            ->setParameter('owner', $owner) 
+            ->getQuery()
+            ->getSingleScalarResult(); 
+    }
 }
