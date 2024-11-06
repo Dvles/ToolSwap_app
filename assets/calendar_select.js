@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOMContentLoaded event fired");
+    console.log("DOMContentLoaded event fired - CALENDAR SELECT");
 
     // Get the calendar element
     let calendarEl = document.getElementById("availabilityCalendar");
@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const toolName = calendarEl.dataset.toolName;
 
         // add toolName to each object
-        evenementsJSONJSArray.forEach ( function (toolAvailabilities){
-            toolAvailabilities.title = toolName;
+        evenementsJSONJSArray.forEach ( function (toolAvailability){
+            toolAvailability.title = toolName;
 
         });
         
