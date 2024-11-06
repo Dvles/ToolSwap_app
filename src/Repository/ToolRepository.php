@@ -43,14 +43,36 @@ class ToolRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->select('COUNT(t.id)')
-
             ->where('t.owner = :owner')
-
             ->andWhere('t.availability = true')
-
             ->setParameter('owner', $owner)
-
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+
+    public function findByFilters(?bool $isFree, ?int $category, ?int $community): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        // Filter by "isFree" (only tools with priceDay = 0)
+        if ($isFree !== null) {
+            $qb->andWhere('t.priceDay = 0');
+        }
+
+        // Filter by category if provided
+        if ($category) {
+            $qb->andWhere('t.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        // Filter by community if provided
+        if ($community) {
+            $qb->join('t.owner', 'u')  // Join the user (owner) of the tool
+                ->andWhere('u.community = :community')  // Filter by the community field on the user
+                ->setParameter('community', $community);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

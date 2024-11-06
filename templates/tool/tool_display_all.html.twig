@@ -7,6 +7,20 @@
 
 <h2>Tout les outils</h2>
 
+<!-- Filter Form -->
+<form method="get" action="{{ path('tool_display_all') }}">
+    {{ form_start(form) }}
+    
+    {{ form_row(form.category) }}
+    {{ form_row(form.community) }}
+    {{ form_row(form.isFree) }}
+    
+    
+    {{ form_end(form) }}
+</form>
+
+
+
 <div class="tool-list">
     {% for tool in tools %}
         <div class="tool-item">

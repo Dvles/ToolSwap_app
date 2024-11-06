@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Tool;
+use App\Entity\ToolCategory;
 use App\Entity\ToolReview;
 use App\Entity\User;
+use App\Form\ToolFilterType;
 use App\Form\ToolUploadType;
 use App\Repository\ToolRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -111,37 +114,72 @@ class ToolController extends AbstractController
         return $this->render('tool/tool_display_availabilities.html.twig', $vars);
     }
 
-    #[Route('tool/display/all',  name: 'tool_display_all')]
-    public function toolDisplayAll(ManagerRegistry $doctrine)
+    // Display and filter method
+    #[Route('tool/display/all', name: 'tool_display_all')]
+    public function toolDisplayAll(Request $request, EntityManagerInterface $em, UserRepository $userRepository, ToolRepository $toolRepository): Response
     {
+        // Fetch categories and communities
+        $categories = $em->getRepository(ToolCategory::class)->findAll();
+        $communities = $userRepository->findCommunities();
 
-        $reptools = $doctrine->getRepository(Tool::class);
-        $tools = $reptools->findAll();
-        $vars = ['tools' => $tools];
-        return $this->render('tool/tool_display_all.html.twig', $vars);
+        // Create the form and handle request
+        $form = $this->createForm(ToolFilterType::class, null, [
+            'categories' => $categories,
+            'communities' => $communities
+        ]);
+
+        $form->handleRequest($request);
+
+        // Initialize tools variable to hold all tools initially
+        $tools = $toolRepository->findAll();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Get form data
+            $data = $form->getData();
+
+            // Filter tools based on form data
+            $tools = $toolRepository->findByFilters(
+                $data['isFree'],
+                $data['category'],
+                $data['community']
+            );
+        }
+
+        $vars = [
+            'tools' => $tools,
+            'form' => $form->createView()
+        ];
+
+
+
+        return $this->render('tool/tool_display_all.html.twig',$vars);
     }
+    
+    
+
+
 
     #[Route('/tool/single/{tool_id}', name: 'tool_display_single')]
     public function toolDisplaySingle(ManagerRegistry $doctrine, Request $request, $tool_id): Response
     {
         // Check if the user is logged in
         $user = $this->getUser();
-    
+
         // Grab the tool from the DB
         $repTools = $doctrine->getRepository(Tool::class);
         $tool = $repTools->find($tool_id);
-    
+
         // Check if the tool exists
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-    
+
         // Check if the user is the owner of the tool
         $isOwner = $user && $tool->getOwner() === $user;
-    
+
         // Initialize the toolReviews collection
         $toolReviews = $tool->getToolReviews();
-    
+
         // Prepare the tool reviews data to avoid lazy loading and errors
         $toolReviewData = [];
         foreach ($toolReviews as $review) {
@@ -153,17 +191,17 @@ class ToolController extends AbstractController
                 'reviewerId' => $review->getUserOfReview()->getId()
             ];
         }
-    
+
         $vars = [
             'tool' => $tool,
             'isOwner' => $isOwner,
             'toolReviews' => $toolReviewData
         ];
-    
+
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
     }
-    
+
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
     public function toolDisplayUser(ManagerRegistry $doctrine)
@@ -235,7 +273,4 @@ class ToolController extends AbstractController
 
         return $this->render('tool/tool_update.html.twig', $vars);
     }
-
-    
-    
 }
