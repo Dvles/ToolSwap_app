@@ -28,12 +28,13 @@
 
 					</span>
 				</h3>
-				<h4>Période</h4>
 				{% if borrowTool.days > 1 %}
 					<p>
+						<strong>Durée:</strong>
 						{{ borrowTool.days }}
-						jours
+						 jour(s)
 					</p>
+					<p></p>
 					<p>
 						<strong>Début:</strong>
 						{{ borrowTool.start }}</p>
@@ -41,9 +42,11 @@
 					{{ borrowTool.end }}</strong>
 			{% else %}
 				<p>
+					<strong>Durée:</strong>
 					{{ borrowTool.days }}
-					jour
+					 jour
 				</p>
+				<p></p>
 				<p>
 					<strong>Début:</strong>
 					{{ borrowTool.start }}

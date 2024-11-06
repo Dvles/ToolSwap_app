@@ -19,15 +19,17 @@
 			{% for borrowTool in borrowTools %}
 				<div class="tool-item">
 					<h3>{{ borrowTool.tool }}
-						<span style="font-size: 12px;">| Prêté à <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}"><strong>{{ borrowTool.userBorrower }}</strong></a> 
+						<span style="font-size: 12px;">| Prêté à
+							<a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
+								<strong>{{ borrowTool.userBorrower }}</strong>
+							</a>
 						</span>
 					</h3>
 
-					<h4>Période</h4>
 					{% if borrowTool.days > 1 %}
 						<p>
-							{{ borrowTool.days }}
-							jours
+							<strong>Durée:</strong>
+							{{ borrowTool.days }} jour(s)
 						</p>
 						<p>
 							<strong>Début:</strong>
@@ -36,8 +38,10 @@
 						{{ borrowTool.end }}</p>
 				{% else %}
 					<p>
-						{{ borrowTool.days }}
-						jour
+						<p>
+							<strong>Durée:</strong>
+							{{ borrowTool.days }} jour
+						</p>
 					</p>
 					<p>
 						<strong>Début:</strong>
