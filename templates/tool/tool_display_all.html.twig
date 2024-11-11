@@ -2,43 +2,52 @@
 
 {% block title %}ToolSwap{% endblock %}
 
-
 {% block body %}
+    <div class="container mt-4">
+        <!-- Page Title (Centered) -->
+        <h2 class="text-center mb-4 page-title">Tous les outils</h2>
 
-<h2>Tout les outils</h2>
-
-<!-- Filter Form -->
-<form method="post" action="{{ path('tool_display_all') }}">
-    {{ form_start(form) }}
-    {{ form_row(form.category) }}
-    {{ form_row(form.community) }}
-    {{ form_row(form.isFree) }}
-    {{ form_end(form) }}
-    
-</form>
-
-<!-- Custom Reset Button -->
-<a href="{{ path('tool_display_all') }}">
-    <button type="submit" name="reset" value="1" class="btn btn-secondary">Ré-initialiser</button>
-</a>
-<br>
-<br>
-
-<div class="tool-list">
-    {% for tool in tools %}
-        <div class="tool-item">
-            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;" />            
-            <h3>{{ tool.name }}</h3>
-            <p>{{ tool.owner.community }}</p>
-            <p><strong>{{ tool.priceDay }}</strong> €/jour</p>
-            <h6><a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">See more</a> </h6>
-            <br><br>
-            <br><br>
+        <!-- Filter Form (Centered) -->
+        <form method="post" action="{{ path('tool_display_all') }}" class="mb-4">
+            {{ form_start(form) }}
+            <div class="row justify-content-center mb-3">
+                <!-- Use col-md-3 for small screens, col-md-auto for auto-width, centered -->
+                <div class="col-md-auto mb-3">
+                    {{ form_row(form.category) }}
+                </div>
+                <div class="col-md-auto mb-3">
+                    {{ form_row(form.community) }}
+                </div>
+                <div class="col-md-auto mb-3">
+                    {{ form_row(form.isFree) }}
+                </div>
+            </div>
             
+            <!-- Filter Buttons (Apply Filters and Reset, on the same line) -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+                <a href="{{ path('tool_display_all') }}">
+                    <button type="button" class="btn btn-secondary">Ré-initialiser</button>
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </form>
 
+        <!-- Tools Results -->
+        <div class="row">
+            {% for tool in tools %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">{{ tool.name }}</h5>
+                            <p class="card-text">{{ tool.owner.community }}</p>
+                            <p class="card-text"><strong>{{ tool.priceDay }} €/jour</strong></p>
+                            <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-primary">See more</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
-
-
+    </div>
 {% endblock %}

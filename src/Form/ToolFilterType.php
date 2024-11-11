@@ -30,11 +30,8 @@ class ToolFilterType extends AbstractType
             ->add('isFree', CheckboxType::class, [
                 'label' => 'Gratuit',
                 'required' => false,
-            ])
-            // Submit button
-            ->add('submit', SubmitType::class, [
-                'label' => 'Filtrer',
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

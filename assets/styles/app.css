@@ -1,4 +1,198 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+/* Remove default margin/padding around navbar */
+.navbar {
+    background-color: #FF8819; /* Custom orange color */
+    margin-top: 0; /* Ensure no top margin */
+    padding: 0; /* Ensure no extra padding */
+}
+
+/* Navbar text color white by default */
+.navbar-nav .nav-link {
+    color: white !important; /* Ensure text color is white */
+}
+
+/* Navbar text color changes to light gray on hover */
+.navbar-nav .nav-link:hover {
+    color: rgb(34, 34, 34) !important; /* Light gray text on hover */
+}
+
+/* Active state of the navbar links */
+.navbar-nav .nav-item.active .nav-link {
+    color: black !important; /* Active link turns black */
+}
+
+/* Styling for + Outils, separated from other menu items */
+.navbar-nav .special-nav-item {
+    margin-right: 15px; /* Adds space between + Outils and other items */
+    border-right: 1px solid rgba(255, 255, 255, 0.4); /* Adds a white border separating it from other links */
+    padding-right: 15px; /* Adds padding to the right of + Outils */
+}
+
+/* Default state of the "Go" button - white background with black text */
+.navbar .btn-outline-success {
+    color: white;
+    border: 1px solid white;
+}
+
+/* Hover state of the "Go" button - black background with white text */
+.navbar .btn-outline-success:hover {
+    background-color: rgb(31, 31, 31);
+    border: 1px solid rgb(31, 31, 31);
+    color: white;
+}
+
+/* Active state of the "Go" button - black background with white text (when clicked) */
+.navbar .btn-outline-success:active {
+    background-color: black;
+    color: white;
+}
+
+/* Styling for the "Déconnexion" link */
+.navbar-nav .logout-link {
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Adds a black border around Déconnexion */
+    padding: 5px 10px; /* Adds padding to the border */
+    border-radius: 5px; /* Optionally rounds the corners */
+    color: black; /* Text color for Déconnexion */
+    font-weight: bold; /* Makes the text bold */
+    margin-left: 3% !important;
+}
+
+/* Hover effect for Déconnexion */
+.navbar-nav .logout-link:hover {
+    background-color: black; /* Turns background black on hover */
+    border: 1px solid black; /* Adds a black border around Déconnexion */
+    color: white !important; /* Turns text white on hover */
+}
+
+/* Navbar brand (Logo) - make it larger */
+.navbar .navbar-brand {
+    font-size: 24px !important; /* Adjust this value to make it bigger or smaller */
+    font-weight: bold; /* Optionally, make it bold */
+    color: white; /* If you want the text to be white */
+}
+
+/* Body styling */
 body {
     background-color: rgb(255, 250, 240);
     font-family: Arial, Helvetica, sans-serif !important;
+    margin-top: 0; /* Remove any margin at the top of the body */
+}
+
+.page-title{
+    font-size: 45px !important;
+    font-weight: bold !important;
+    }
+    
+
+/* Ensure body has some margin around the content (like navbar) */
+.container {
+    margin-top: 20px; /* Adjust this value as needed */
+    margin-bottom: 20px; /* You can add margin here for the bottom spacing */
+}
+
+
+
+
+
+/* Filter Form Inputs Styling */
+.filter-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: center; /* Ensure filters are aligned center */
+    gap: 20px; /* Adds space between the filter fields */
+}
+
+/* Card styling for tool results */
+.tool-list .card {
+    border: 1px solid #ddd; /* Adds border to the card */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+    transition: transform 0.3s ease; /* Smooth transition effect */
+}
+
+/* Hover effect for the card */
+.tool-list .card:hover {
+    transform: scale(1.05); /* Slightly enlarge the card */
+}
+
+/* Card image styles */
+.tool-list .card-img-top {
+    object-fit: cover;
+    height: 200px; /* Fix the height of images */
+}
+
+/* Filter Buttons (Apply Filters and Reset) */
+.filter-form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+
+.filter-form-buttons .apply-filter {
+    background-color: #FF8819; /* Orange color */
+    color: white;
+    border: none;
+}
+
+.filter-form-buttons .apply-filter:hover {
+    background-color: #e77d13; /* Darker shade for hover */
+}
+
+.filter-form-buttons .reset-filter {
+    background-color: #cccccc; /* Light gray color */
+    color: black;
+    border: none;
+}
+
+.filter-form-buttons .reset-filter:hover {
+    background-color: #b3b3b3; /* Darker gray for hover */
+}
+
+/* Ensure labels and controls are aligned side by side */
+.form-row {
+    display: flex;
+    justify-content: center; /* Ensure filters are aligned center */
+    gap: 20px; /* Adds space between the filter fields */
+    align-items: center; /* Align items vertically centered */
+}
+
+/* Ensure label and control are on the same line */
+.form-label {
+    margin-right: 10px;  /* Add space between label and control */
+    white-space: nowrap;  /* Prevent label text from wrapping */
+}
+
+/* Custom styling for the dropdown (make sure this applies to select controls) */
+.custom-dropdown {
+    background-color: black;  /* Set background color to black */
+    color: white;  /* Text color to white */
+    border: 1px solid white;  /* White border for better visibility */
+    width: 100%; /* Ensure the dropdown expands to the container width */
+}
+
+/* Custom checkbox styling */
+.custom-checkbox {
+    margin-top: 5px; /* Add some spacing above checkbox */
+}
+
+/* Ensure the focus effect is consistent with styling */
+.custom-dropdown:focus {
+    border-color: #FF8819; /* Change border on focus */
+    box-shadow: 0 0 0 0.25rem rgba(255, 136, 25, 0.25); /* Focus shadow */
+}
+
+.custom-checkbox:focus {
+    outline: none;  /* Remove the outline when focused */
 }
