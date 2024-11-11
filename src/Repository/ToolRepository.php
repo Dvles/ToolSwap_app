@@ -59,9 +59,7 @@ class ToolRepository extends ServiceEntityRepository
         if ($isFree !== null) {
             if ($isFree) {
                 $qb->andWhere('t.priceDay = 0');
-            } else {
-                $qb->andWhere('t.priceDay > 0');
-            }
+            } 
             //dd($qb->getQuery()->getResult()); // Check results after "isFree" filter
         }
 
