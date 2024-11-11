@@ -22,7 +22,7 @@ class ToolFilterType extends AbstractType
             ])
             // Add community selection dropdown
             ->add('community', ChoiceType::class, [
-                'choices' => $options['communities'], 
+                'choices' => $options['communities'],  // Uses communityChoices with name as label, ID as value
                 'placeholder' => '- Sélectionner -',
                 'required' => false,
             ])

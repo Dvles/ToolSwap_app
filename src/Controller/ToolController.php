@@ -121,62 +121,51 @@ class ToolController extends AbstractController
         // Fetch categories and communities
         $categories = $em->getRepository(ToolCategory::class)->findAll();
         $communities = $userRepository->findCommunities();
-
+    
         // Prepare category and community choices as associative arrays
         $categoryChoices = [];
         foreach ($categories as $category) {
             $categoryChoices[$category->getName()] = $category->getId();  // Name as label, ID as value
         }
-
+    
+        // Since communities are strings (not entities with IDs), we use names as both keys and values.
         $communityChoices = [];
         foreach ($communities as $community) {
             $communityChoices[$community['community']] = $community['community'];  // Community name
         }
-
+    
         // Create the form and handle request
         $form = $this->createForm(ToolFilterType::class, null, [
             'categories' => $categoryChoices,
             'communities' => $communityChoices
         ]);
-
+    
         $form->handleRequest($request);
-
-
+    
         // Initialize tools variable to hold all tools initially
         $tools = $toolRepository->findAll();
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             // Get form data
             $data = $form->getData();
-
-            // If a community is selected by name, look up its ID
-            $communityId = null;
-            if ($data['community']) {
-                // Look up the community ID based on name
-                $communityEntity = $userRepository->findOneBy(['community' => $data['community']]);
-                if ($communityEntity) {
-                    $communityId = $communityEntity->getId();
-                }
-            }
-
-            // Filter tools based on form data
+    
+            // Filter tools based on form data, using community name directly
             $tools = $toolRepository->findByFilters(
                 $data['isFree'],
                 $data['category'],
-                $communityId 
+                $data['community'] // Pass community name directly as it's a string
             );
-
-            //dd($data);
+                // dd($tools);
         }
-
+    
         $vars = [
             'tools' => $tools,
             'form' => $form->createView()
         ];
-
+    
         return $this->render('tool/tool_display_all.html.twig', $vars);
     }
-
+    
 
 
 

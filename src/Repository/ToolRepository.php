@@ -51,29 +51,37 @@ class ToolRepository extends ServiceEntityRepository
     }
 
 
-    public function findByFilters(?bool $isFree, ?int $category, ?int $community): array
+    public function findByFilters(?bool $isFree, ?int $category, ?string $community): array
     {
         $qb = $this->createQueryBuilder('t');
         
-        // Filter by "isFree" (only tools with priceDay = 0 or non-zero)
+        // Filter by "isFree" (priceDay = 0 for free tools)
         if ($isFree !== null) {
-            $qb->andWhere('t.priceDay = :priceDay')
-               ->setParameter('priceDay', $isFree ? 0 : 1);
+            if ($isFree) {
+                $qb->andWhere('t.priceDay = 0');
+            } else {
+                $qb->andWhere('t.priceDay > 0');
+            }
+            //dd($qb->getQuery()->getResult()); // Check results after "isFree" filter
         }
+
         
         // Filter by category if provided
         if ($category !== null) {
-            $qb->leftJoin('t.toolCategory', 'c')  // Use LEFT JOIN to avoid filtering out tools with no category
+            $qb->leftJoin('t.toolCategory', 'c')
                ->andWhere('c.id = :category')
                ->setParameter('category', $category);
+               //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
         
         // Filter by community if provided
         if ($community !== null) {
-            $qb->leftJoin('t.owner', 'u')  // Use LEFT JOIN for owners, just in case there are tools without owners (or to avoid exclusion)
+            $qb->leftJoin('t.owner', 'u')
                ->andWhere('u.community = :community')
                ->setParameter('community', $community);
+               //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
+
     
         return $qb->getQuery()->getResult();
     }

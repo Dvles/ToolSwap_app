@@ -35,10 +35,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function findCommunities(): array
     {
-        $qb = $this->createQueryBuilder('user')
-            ->select('DISTINCT user.community')
-            ->where('user.community IS NOT NULL');
-        
-        return $qb->getQuery()->getResult();
+        return $this->createQueryBuilder('u')
+                    ->select('u.community', 'u.id')  // Select both community name and ID
+                    ->distinct()
+                    ->getQuery()
+                    ->getArrayResult();
     }
 }
