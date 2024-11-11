@@ -348,3 +348,86 @@ body {
 label{
 font-weight: bold;
 }
+
+
+/* /\/\ Tool single page /\/\ */
+
+
+/* Add left padding inside the .col-md-7 section for tool details */
+.col-md-7 {
+    padding-left: 15px; 
+    padding-top: 15px; 
+}
+
+.center-text{
+    text-align: center;
+    }
+
+
+.orange-link-text{
+color: #FF8819 !important;
+}
+.orange-link-text:hover{
+    color: #c0630c !important;
+    }
+
+
+/* Button for "Emprunter" */
+.btn-orange {
+    background-color: #FF8819;  /* Orange background for "Emprunter" */
+    color: white;                /* White text */
+    border: none;                /* No border */
+    padding: 10px 20px;          /* Consistent padding */
+    border-radius: 5px;          /* Rounded corners */
+    transition: background-color 0.3s ease;
+    height: auto;                /* Keep height consistent */
+    line-height: 1.4;            /* Vertical centering */
+}
+
+.btn-orange:hover {
+    background-color: #e77d13;   /* Slightly darker orange on hover */
+}
+
+/* Custom Styling for "Recevoir Notifications" Button */
+.reset-filter-button {
+    display: inline-block;
+    background-color: rgba(255, 136, 26, 0.311); /* Light orange background */
+    color: #FF8819; /* Orange text */
+    border: 1px solid #FF8819; /* Orange border */
+    padding: 10px 20px; /* Consistent padding */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center; /* Center text */
+    height: auto;        /* Ensure the height is the same */
+    line-height: 1.4;    /* Maintain button text vertically centered */
+    text-decoration: none; /* Remove underline */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.reset-filter-button:hover {
+    background-color: #000000; /* Black background on hover */
+    color: #ffffff;            /* White text on hover */
+    border: 1px solid #000000; /* Black border on hover */
+}
+
+/* Ensure Both Buttons Align Horizontally and Look Uniform */
+.card-footer .d-flex {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.card-footer .btn {
+    margin-bottom: 20px; /* Bottom margin for spacing */
+}
+
+.card-footer .reset-filter-button {
+    width: auto; /* Ensure it doesn't take up the full width */
+    margin-left: 10px; /* Add space between buttons */
+    height: 100%; /* Ensure height matches "Emprunter" button */
+    line-height: 1.4; /* Maintain vertical text alignment */
+}
+
+.card-footer .btn-orange {
+    margin-right: 10px; /* Add margin to the right of the "Emprunter" button */
+}
+
+

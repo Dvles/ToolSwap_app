@@ -1,70 +1,71 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	{{ tool.name }}
+    {{ tool.name }}
 {% endblock %}
 
-
 {% block body %}
+<div class="container mt-5">
+    <!-- Tool Display Section -->
+    <div class="card mb-4 shadow-lg border-0">
+        <div class="row g-0">
+            <!-- Tool Image -->
+            <div class="col-md-5">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="img-fluid rounded-start w-100 h-100" style="object-fit: cover;">
+            </div>
+            <!-- Tool Details -->
+            <div class="col-md-7 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <h1 class="card-title mb-3">{{ tool.name }}</h1>
+                    <p class="card-subtitle text-muted mb-2"><em>{{ tool.owner.community }}</em></p>
+                    <p class="card-text mb-2"><strong>État:</strong> {{ tool.toolCondition }}</p>
+                    <p class="card-text mb-3">{{ tool.description }}</p>
+                    
+                    {% if tool.priceDay == 0 %}
+                        <p class="card-text-orange"><strong>gratuit</strong></p>
+                    {% else %}
+                        <p class="card-text"><strong>{{ tool.priceDay }} € / jour</strong></p>
+                    {% endif %}
+                </div>
+                <!-- Action Buttons, Bottom-Aligned -->
+                <div class="card-footer bg-white border-0 mt-auto pb-4">
+                    <div class="d-flex flex-column w-100">
+                        {% if isOwner %}
+                            <a href="{{ path('tool_update', {'tool_id': tool.id}) }}" class="btn btn-orange me-2">Modifier Détails</a>
+                            <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}" class="btn btn-orange me-2">Modifier Disponibilités</a>
+                            <a href="{{ path('tool_delete', {'tool_id': tool.id}) }}" class="btn btn-outline-danger">Supprimer</a>
+                        {% else %}
+                            <!-- Left Aligned Buttons on the Same Line -->
+                            <div class="d-flex">
+                                <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}" class="btn btn-orange align-self-start mb-3">Emprunter</a>
+                                <a href="" class="btn reset-filter-button align-self-start mb-3 ms-3">Recevoir Notifications</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<h1>{{ tool.name }}</h1>
+    <!-- Comments Section -->
+    <div class="comments-section mt-5">
+        <h2 class="mb-4 center-text">Commentaires</h2>
 
-	<div class="tool-detail">
-		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
-		<p>
-			<em>{{ tool.owner.community }}</em>
-		</p>
-		<p>
-			<strong>état:
-			</strong>
-			{{ tool.toolCondition }}</p>
-		<p>{{ tool.description }}</p>
-		<p>
-			<strong>{{ tool.priceDay }}</strong>
-			€ / jour</p>
-	</div>
-
-	{% if isOwner %}
-		<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-			<button id="btnToolUpdate" type="button">modifier détails</button>
-		</a>
-		<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-			<button id="btnToolUpdate" type="button">modifier disponibilités</button>
-		</a>
-		<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-			<button id="btnToolDelete" type="button">supprimer</button>
-		</a>
-
-	{% else %}
-
-		<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
-			<button id="btnBorrowTool2" type="button">Emprunter</button>
-		</a>
-
-	{% endif %}
-
-
-	<br><br>
-	<br><br>
-	<h2> Commentaires</h2>
-
-
-	{% if toolReviews  %}
-
-		{% for toolReview in toolReviews %}
-
-			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}"><strong>{{ toolReview.reviewer }}</strong></a> | {{ toolReview.rating }}/ 5
-			<p>{{ toolReview.comment }}</p>
-            <br><br>
-
-
-		{% endfor %}
-
-	{% else %}
-
-		L'outil n'a pas encore de commentaires.
-
-	{% endif %}
-
-
+        {% if toolReviews %}
+            <div class="list-group">
+                {% for toolReview in toolReviews %}
+                    <div class="list-group-item list-group-item-light mb-3">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}" class="fw-bold text-decoration-none orange-link-text">{{ toolReview.reviewer }}</a>
+                            <span class="badge bg-warning text-dark">{{ toolReview.rating }} / 5</span>
+                        </div>
+                        <p class="mt-2 mb-0">{{ toolReview.comment }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">L'outil n'a pas encore de commentaires.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
