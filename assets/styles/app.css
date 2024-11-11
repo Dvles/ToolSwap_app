@@ -82,6 +82,7 @@ body {
 .page-title{
     font-size: 45px !important;
     font-weight: bold !important;
+    margin-top: 5%;
     }
     
 
@@ -102,12 +103,13 @@ body {
     color: white; /* White text */
     border: none;
     transition: background-color 0.3s ease; /* Smooth transition on hover */
-    font-weight: bold;
+    
 }
 
 .apply-filter-button:hover {
     background-color: #ffa149; /* Darker orange on hover */
     color: white; /* White text */
+
 }
 
 /* Reset Button Styling */
@@ -120,6 +122,7 @@ body {
 
 .reset-filter-button:hover {
     background-color: #b3b3b3; /* Darker gray on hover */
+
 }
 
 /* See More Button Styling */
@@ -132,6 +135,7 @@ body {
 
 .see-more-button:hover {
     background-color: #e77d13; /* Darker orange on hover */
+    font-weight: bold;
 }
 
 
@@ -189,7 +193,7 @@ body {
 
 /* Apply Filter Button Styling */
 .apply-filter-button {
-    background-color: #FF8819; /* Orange color */
+    background-color: #ff9c40; /* Orange color */
     color: white; /* White text */
     border: none;
     padding: 10px 20px; /* Ensures consistent padding */
@@ -197,7 +201,7 @@ body {
 }
 
 .apply-filter-button:hover {
-    background-color: #f27500; 
+    background-color: #FF8819; 
 }
 
 /* Reset Filter Button Styling (as a link) */
@@ -220,21 +224,26 @@ body {
 
 /* See More Button Styling */
 .btn-primary {
-    background-color: #FF8819; /* Orange background */
+    background-color: 
+    #ff9c40; /* Orange background */
     color: white; /* White text */
     border: none;
     transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #e77d13; /* Darker orange on hover */
+    background-color: #FF8819; /* Darker orange on hover */
+    font-weight: bold;
 }
 
 
 
 
 
-
+.card-text-orange{
+    color: #ff9532; 
+    text-transform: uppercase;
+}
 
 
 
@@ -248,8 +257,59 @@ body {
 
 /* Ensure label and control are on the same line */
 .form-label {
-    margin-right: 10px;  /* Add space between label and control */
-    white-space: nowrap;  /* Prevent label text from wrapping */
+    margin-right: 10px !important;  /* Add space between label and control */
+    white-space: nowrap !important;  /* Prevent label text from wrapping */
+}
+
+/* Select all labels within the form's filter row */
+.container .justify-content-center .col-md-auto label {
+    margin-right: 10px !important;  /* Space between label and control */
+    white-space: nowrap !important;  /* Prevent label text from wrapping */
+    
+}
+
+/* Modern select styling with bottom border */
+.container .justify-content-center .col-md-auto select {
+    margin-right: 10px !important;  /* Space between label and control */
+    white-space: nowrap !important;  /* Prevent label text from wrapping */
+    background-color: transparent;  /* Make the background transparent */
+    border: none;  /* Remove the default border */
+    border-bottom: 2px solid #FF8819;  /* Add a custom bottom border */
+    padding: 4px 0;  /* Add vertical padding for spacing above and below text */
+    color: #333;  /* Text color */
+    font-size: 1rem;  /* Adjust font size */
+    width: 100%;  /* Ensure it takes full width of container */
+}
+
+/* Modern select styling with bottom border */
+.container .justify-content-center .col-md-auto input {
+    margin-right: 10px !important;  /* Space between label and control */
+    white-space: nowrap !important;  /* Prevent label text from wrapping */
+    background-color: transparent;  /* Make the background transparent */
+    padding: 4px 0;  /* Add vertical padding for spacing above and below text */
+    color: #333;  /* Text color */
+    font-size: 1rem;  /* Adjust font size */
+    width: 100%;  /* Ensure it takes full width of container */
+}
+
+#tool_filter_community:focus {
+    outline: none;  /* Remove default outline on focus */
+    border-bottom-color: #e77d13;  /* Change border color on focus for effect */
+    color: #333;
+    
+}
+
+
+
+
+
+/* Apply specific spacing for dropdown and checkbox controls */
+.form-control, .custom-checkbox {
+    margin-left: 10px; /* Add space between the control and label */
+}
+
+.tools{
+    margin-top: 7%; 
 }
 
 /* Custom styling for the dropdown (make sure this applies to select controls) */
@@ -273,4 +333,18 @@ body {
 
 .custom-checkbox:focus {
     outline: none;  /* Remove the outline when focused */
+}
+
+
+#tool_filter_community{
+    margin-left: 0.5px;
+}
+
+#tool_filter_isFree:hover {
+    background-color: #FF8819; /* Darker orange on hover */
+    font-weight: bold;
+}
+
+label{
+font-weight: bold;
 }

@@ -37,7 +37,7 @@
 		</form>
 
 		<!-- Tools Results -->
-		<div class="row">
+		<div class="row tools">
 			{% for tool in tools %}
 				<div class="col-md-4 mb-4">
 					<div class="card">
@@ -45,10 +45,22 @@
 						<div class="card-body">
 							<h5 class="card-title">{{ tool.name }}</h5>
 							<p class="card-text">{{ tool.owner.community }}</p>
-							<p class="card-text">
-								<strong>{{ tool.priceDay }}
-									€/jour</strong>
-							</p>
+
+							{% if tool.priceDay == 0%}
+
+								<p class="card-text-orange">
+									<strong>
+										gratuit</strong>
+								</p>
+
+							{% else %}
+
+								<p class="card-text">
+									<strong>{{ tool.priceDay }}
+										€ / jour</strong>
+								</p>
+
+							{% endif %}
 							<a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-primary">+</a>
 						</div>
 					</div>
