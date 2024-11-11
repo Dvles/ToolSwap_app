@@ -94,6 +94,50 @@ body {
 
 
 
+/* BUTTONS */
+
+/* Apply Filters Button Styling */
+.apply-filter-button {
+    background-color: #FF8819; /* Orange background */
+    color: white; /* White text */
+    border: none;
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+    font-weight: bold;
+}
+
+.apply-filter-button:hover {
+    background-color: #ffa149; /* Darker orange on hover */
+    color: white; /* White text */
+}
+
+/* Reset Button Styling */
+.reset-filter-button {
+    background-color: #FF8819; /* Light gray background */
+    color: black; /* Black text */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.reset-filter-button:hover {
+    background-color: #b3b3b3; /* Darker gray on hover */
+}
+
+/* See More Button Styling */
+.see-more-button {
+    background-color: #FF8819; /* Orange background */
+    color: white; /* White text */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.see-more-button:hover {
+    background-color: #e77d13; /* Darker orange on hover */
+}
+
+
+
+
+
 
 /* Filter Form Inputs Styling */
 .filter-form-container {
@@ -130,6 +174,11 @@ body {
     height: 200px; /* Fix the height of images */
 }
 
+
+
+
+
+
 /* Filter Buttons (Apply Filters and Reset) */
 .filter-form-buttons {
     display: flex;
@@ -138,27 +187,56 @@ body {
     margin-top: 20px;
 }
 
-
-
-.filter-form-buttons .apply-filter {
+/* Apply Filter Button Styling */
+.apply-filter-button {
     background-color: #FF8819; /* Orange color */
-    color: white;
+    color: white; /* White text */
     border: none;
+    padding: 10px 20px; /* Ensures consistent padding */
+    transition: background-color 0.3s ease;
 }
 
-.filter-form-buttons .apply-filter:hover {
-    background-color: #e77d13; /* Darker shade for hover */
+.apply-filter-button:hover {
+    background-color: #f27500; 
 }
 
-.filter-form-buttons .reset-filter {
-    background-color: #cccccc; /* Light gray color */
-    color: black;
+/* Reset Filter Button Styling (as a link) */
+.reset-filter-button {
+    display: inline-block; /* Ensures it behaves like a button */
+    background-color: rgba(255, 136, 26, 0.311); /* Light orange background */
+    color: #FF8819; /* Orange text */
+    border: 1px solid #FF8819; /* Orange border */
+    padding: 10px 20px; /* Consistent padding */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center; /* Center text */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.reset-filter-button:hover {
+    background-color: #000000; /* Black background on hover */
+    color: #ffffff; /* White text on hover */
+    border: 1px solid #000000; /* Black border on hover */
+}
+
+/* See More Button Styling */
+.btn-primary {
+    background-color: #FF8819; /* Orange background */
+    color: white; /* White text */
     border: none;
+    transition: background-color 0.3s ease;
 }
 
-.filter-form-buttons .reset-filter:hover {
-    background-color: #b3b3b3; /* Darker gray for hover */
+.btn-primary:hover {
+    background-color: #e77d13; /* Darker orange on hover */
 }
+
+
+
+
+
+
+
+
 
 /* Ensure labels and controls are aligned side by side */
 .form-row {
