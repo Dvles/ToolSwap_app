@@ -30,6 +30,10 @@ class ToolController extends AbstractController
         $tool = new Tool();
         $form = $this->createForm(ToolUploadType::class, $tool);
 
+        // !!HACK!! Replace all images until image upload service exists
+
+
+
         $form->handleRequest($request);
 
         // Handle form submission
@@ -40,6 +44,9 @@ class ToolController extends AbstractController
                 // Handle the case where the user is not logged in
                 throw $this->createAccessDeniedException('You must be logged in to add a tool.');
             }
+
+            $tool->setImageTool('https://via.placeholder.com/500x500'); // Placeholder image URL
+
 
             if (!$form->isValid()) {
                 $errors = $form->getErrors(true);
@@ -121,51 +128,51 @@ class ToolController extends AbstractController
         // Fetch categories and communities
         $categories = $em->getRepository(ToolCategory::class)->findAll();
         $communities = $userRepository->findCommunities();
-    
+
         // Prepare category and community choices as associative arrays
         $categoryChoices = [];
         foreach ($categories as $category) {
             $categoryChoices[$category->getName()] = $category->getId();  // Name as label, ID as value
         }
-    
+
         // Since communities are strings (not entities with IDs), we use names as both keys and values.
         $communityChoices = [];
         foreach ($communities as $community) {
             $communityChoices[$community['community']] = $community['community'];  // Community name
         }
-    
+
         // Create the form and handle request
         $form = $this->createForm(ToolFilterType::class, null, [
             'categories' => $categoryChoices,
             'communities' => $communityChoices
         ]);
-    
+
         $form->handleRequest($request);
-    
+
         // Initialize tools variable to hold all tools initially
         $tools = $toolRepository->findAll();
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             // Get form data
             $data = $form->getData();
-    
+
             // Filter tools based on form data, using community name directly
             $tools = $toolRepository->findByFilters(
                 $data['isFree'],
                 $data['category'],
                 $data['community'] // Pass community name directly as it's a string
             );
-                // dd($tools);
+            // dd($tools);
         }
-    
+
         $vars = [
             'tools' => $tools,
             'form' => $form->createView()
         ];
-    
+
         return $this->render('tool/tool_display_all.html.twig', $vars);
     }
-    
+
 
 
 
