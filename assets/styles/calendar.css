@@ -1,9 +1,17 @@
-body {
-    background-color: rgb(170, 186, 255);
+
+/* Availability Calendar Styling */
+#availabilityCalendar {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
 }
 
-#availabilityCalendar
-{
-    width:50%;
-    height:50%;
-} 
+/* Bootstrap Calendar and Button Adjustments */
+.calendar {
+    max-width: 600px; /* Adjust width for a centered, smaller calendar */
+    margin: auto;
+}
+
+.btn-primary, .btn-secondary {
+    width: auto;
+}
