@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello StatusController!{% endblock %}
+
+{% block body %}
+<form method="post" action="{{ path('status_update', { tool_id: tool_id }) }}">
+    <label for="status">Status:</label>
+    <select id="status" name="status">
+        {% for status in statuses %}
+            <option value="{{ status.value }}" {% if status.value == currentStatus.value %}selected{% endif %}>
+                {{ status.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Update</button>
+</form>
+
+{% endblock %}

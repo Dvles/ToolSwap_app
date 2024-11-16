@@ -63,7 +63,7 @@
 				</a>
 			{% endif %}
 
-			<a href="">
+			<a href=" {{ path ('status_update', {tool_id: borrowTool.toolId } )}}">
 				<button type="button" {% if borrowTool.status == "completed" %} disabled {% endif %}>
 					modifier statut
 				</button>
