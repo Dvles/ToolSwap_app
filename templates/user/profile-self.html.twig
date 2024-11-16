@@ -1,0 +1,81 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Profil
+	{{ user.firstName }}
+{% endblock %}
+
+{% block body %}
+
+	<h2>{{ user.firstName }}</h2>
+
+	<strong>Commune:</strong>
+	{{ user.community }}
+	<br>
+	<strong>{{ borrowedToolsCount }}</strong>
+	emprunt(s)
+	<br>
+	<strong>{{ lentToolsCount }}</strong>
+	prêt(s)
+	<br>
+	<strong>{{ toolsOwnedByOwnerCount }}</strong>
+	outil(s) disponible(s)<br>
+
+	{% if freeToolsOwnedByOwnerCount != 0 %}
+		<strong>{{ freeToolsOwnedByOwnerCount }}</strong>
+		outils gratuitement disponibles<br>
+	{% endif %}
+	<br>
+
+	<h3>Avis</h3>
+	{% if reviews|length > 0 %}
+
+		{% for review in reviews|slice(0, 3) %}
+			<a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}">
+				<strong>{{ review.userLeavingReview.firstName }}</strong>
+			</a>
+			|
+			{{ review.rating }}
+			/ 5<br>
+			{{ review.comments }}
+			<br><br>
+		{% endfor %}
+
+		{% if reviews|length > 3 %}
+			<a href="">Voir plus</a>
+		{% endif %}
+	{% else %}
+		<p>Pas d'avis disponibles pour cet utilisateur.</p>
+	{% endif %}
+	<br>
+
+	<h3>Outils</h3>
+	{% if tools|length > 0 %}
+		{% for tool in tools|slice(0, 3) %}
+			<div class="tool-item">
+				<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+				<h4>{{ tool.name }}</h4>
+				<p>
+					<strong>{{ tool.priceDay }}</strong>
+					€ / jour
+				</p>
+				<h5>
+					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+						<button id="btnToolUpdate" type="button">modifier détails</button>
+					</a>
+					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+						<button id="btnToolUpdate" type="button">modifier disponibilités</button>
+					</a>
+					<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
+						<button id="btnToolDelete" type="button">supprimer</button>
+					</a>
+				</div>
+			{% endfor %}
+			{% if tools|length > 3 %}
+				        <a href="{{ path ('tool_display_user')}}">Voir tous mes outils</a> 
+			{% endif %}
+		{% else %}
+			<p>L'utilisateur n'a pas encore partagé d'outils.</p>
+		{% endif %}
+
+	{% endblock %}

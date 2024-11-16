@@ -17,48 +17,25 @@
 
 
 {% block body %}
-<div class="container mt-5">
-    <!-- Tool Display Section -->
-    <div class="card mb-4 shadow-lg border-0">
-        <div class="row g-0">
-            <!-- Tool Image -->
-            <div class="col-md-5">
-                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="img-fluid rounded-start w-100 h-100" style="object-fit: cover;">
-            </div>
-            <!-- Tool Details -->
-            <div class="col-md-7 d-flex flex-column">
-                <div class="card-body flex-grow-1">
-                    <h1 class="card-title mb-3">{{ tool.name }}</h1>
-                    <p class="card-subtitle text-muted mb-2"><em>{{ tool.owner.community }}</em></p>
-                    <p class="card-text mb-2"><strong>État:</strong> {{ tool.toolCondition }}</p>
-                    <p class="card-text mb-3">{{ tool.description }}</p>
-                    
-                    {% if tool.priceDay == 0 %}
-                        <p class="card-text-orange"><strong>gratuit</strong></p>
-                    {% else %}
-                        <p class="card-text"><strong>{{ tool.priceDay }} € / jour</strong></p>
-                    {% endif %}
-					
-                </div>
-                <!-- Action Buttons, Bottom-Aligned -->
-                <div class="card-footer bg-white border-0 mt-auto pb-4">
-                    <div class="d-flex flex-column w-100">
-                            <!-- Left Aligned Buttons on the Same Line -->
-                            <div class="d-flex">
-                                <a href="" class="btn reset-filter-button align-self-start mb-3 ms-3">Recevoir Notifications</a>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<h1>{{ tool.name }}</h1>
 
-
-
-
-
+	<div class="tool-detail">
+		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
+		<p>
+			<em>{{ tool.owner.community }}</em>
+		</p>
+		<p>
+			<strong>état:</strong>
+			{{ tool.toolCondition }}
+		</p>
+		<p>{{ tool.description }}</p>
+		<p>
+			<strong>{{ tool.priceDay }}</strong>
+			€ / jour
+		</p>
+	</div>
 	<br><br>
-	<h2>Emprunter push</h2>
+	<h2>Emprunter</h2>
 
 	<div id="availabilityCalendar" 
 		data-calendar='{{ toolAvailabilitiesJSON|raw }}' 

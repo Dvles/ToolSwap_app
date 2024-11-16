@@ -32,6 +32,7 @@ class UserController extends AbstractController
         $reviews = $user->getReviewsReceived();
         $vars = [
             'user' => $user,
+            'userId' => $user_id,
             'tools' => $tools,
             'reviews' => $reviews,
             'borrowedToolsCount' => $borrowedToolsCount,
@@ -46,5 +47,39 @@ class UserController extends AbstractController
         //dd($reviews);
         
         return $this->render('user/profile.html.twig', $vars);
+    }
+
+    #[Route('/user/self/profile', name: 'my_profile')]
+    public function myProfile(ToolRepository $toolRepository, BorrowToolRepository $borrowToolRepository): Response
+    {
+
+        $user = $this->getUser();
+        //dd($user);
+
+        $tools = $user->getToolsOwned();
+        // repository method to get the count
+        $borrowedToolsCount = $borrowToolRepository->countBorrowedToolsByBorrower($user);
+        $lentToolsCount = $borrowToolRepository->countBorrowedToolsByOwner($user);
+        $toolsOwnedByOwnerCount = $toolRepository->countToolsOwnedByOwner($user);
+        $freeToolsOwnedByOwnerCount = $toolRepository->countFreeToolsOwnedByOwner($user);
+
+
+        $reviews = $user->getReviewsReceived();
+        $vars = [
+            'user' => $user,
+            'tools' => $tools,
+            'reviews' => $reviews,
+            'borrowedToolsCount' => $borrowedToolsCount,
+            'toolsOwnedByOwnerCount' => $toolsOwnedByOwnerCount,
+            'freeToolsOwnedByOwnerCount' => $freeToolsOwnedByOwnerCount,
+            'lentToolsCount' => $lentToolsCount
+
+        ];
+
+        //dd($user);
+        //dd($tools);
+        //dd($reviews);
+        
+        return $this->render('user/profile-self.html.twig', $vars);
     }
 }

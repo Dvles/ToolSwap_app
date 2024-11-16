@@ -1,56 +1,27 @@
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <div class="container">
-        {# Logo and main link #}
-        <a href="{{ path('tool_display_all') }}" class="navbar-brand">TOOLSWAP©</a>
+<nav>
+    {# liens sans connexion #}
+    <a href="{{ path('tool_display_all') }}" style="color: black; font-weight: bold; font-size: 18px;text-decoration: none">TOOLSWAP©</a>      
+    {# Search Bar in Navigation #}
+    <form class="form-inline" action="{{ path('tool_search') }}" method="get" style="display: inline;">
+        <input class="form-control mr-2" type="search" placeholder="Search tools" aria-label="Search" name="keyword" required>
+        <button class="btn btn-outline-success" type="submit">Go</button>
+    </form>
+    {# liens pour l'admin #}
+    {% if is_granted('ROLE_USER') %}
+        <a href="{{ path ('tool_upload')}}">+ Outils</a> |
+        <a href="{{ path ('tool_display_user')}}">Mes Outils</a> |
+        <a href="{{ path ('tool_borrow_display')}}">Mes Emprunts</a> |
+        <a href="{{ path ('tool_borrow_lending_display')}}">Mes Prêts</a> |
+        <a href=" {{ path ('my_profile')}}">Profil</a> |
+    {% else %}
+        <a href=" {{ path ('register')}} ">S'inscrire</a>
+    {% endif %}
 
-        {# Search Bar in Navigation #}
-        <form class="d-flex ms-auto" action="{{ path('tool_search') }}" method="get">
-            <input class="form-control me-2" type="search" placeholder="Search tools" aria-label="Search" name="keyword" required>
-            <button class="btn btn-outline-success" type="submit">Go</button>
-        </form>
-
-        {# Toggling the navbar on smaller screens #}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        {# Links depending on the user's role #}
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                {# Separate + Outils from the rest #}
-                {% if is_granted('ROLE_USER') %}
-                    <li class="nav-item special-nav-item">
-                        <a href="{{ path('tool_upload') }}" class="nav-link">+ Outils</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('tool_display_user') }}" class="nav-link">Mes Outils</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('tool_borrow_display') }}" class="nav-link">Emprunts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('tool_borrow_lending_display') }}" class="nav-link">Prêts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Profil</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a href="{{ path('register') }}" class="nav-link">S'inscrire</a>
-                    </li>
-                {% endif %}
-
-                {# Links for all users (Logged in or not) #}
-                {% if app.user %}
-                    <li class="nav-item">
-                        <a href="{{ path('app_logout') }}" class="nav-link logout-link">Déconnexion </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a href="{{ path('app_login') }}" class="nav-link logout-link">Connexion</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
+    {# liens pour tout user#}
+    {% if app.user %}
+        <a href=" {{ path ('app_logout')}} ">Déconnexion</a>
+    {% else %}
+        <a href=" {{ path ('app_login')}} ">Connexion</a>
+    {% endif %}
+    
 </nav>
