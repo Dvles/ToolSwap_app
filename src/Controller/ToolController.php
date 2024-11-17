@@ -270,11 +270,14 @@ class ToolController extends AbstractController
     
         // Initialize a flag for active borrowings
         $activeBorrowTool = false;
+        // Initialize empty borrowTools 
+        $borrowTools = [];
+
     
         // Check if any tool has active borrowings
         foreach ($userTools as $tool) {
+            $borrowTools = $tool->getBorrowTools();
             if ($tool->getBorrowTools()->count() > 0) {
-                $borrowTools = $tool->getBorrowTools();
                 // If there's any active borrowing for this tool, set the flag to true
                 $activeBorrowTool = true;
                 break; // No need to check further, one active borrowing is enough
