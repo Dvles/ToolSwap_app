@@ -13,4 +13,10 @@ class HomepageController extends AbstractController
     {
         return $this->render('homepage/index.html.twig');
     }
+
+    #[Route('/coming/soon', name: 'coming_soon')]
+    public function comingSoon(): Response
+    {
+        return $this->render('homepage/coming_soon.html.twig');
+    }
 }
