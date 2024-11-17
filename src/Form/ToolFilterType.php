@@ -30,7 +30,16 @@ class ToolFilterType extends AbstractType
             ->add('isFree', CheckboxType::class, [
                 'label' => 'Gratuit',
                 'required' => false,
+            ])
+            
+            ->add('search', SubmitType::class, [ // Add submit button
+                'label' => 'Filtrer', 
+                'attr' => [
+                    'class' => 'btn btn-primary', // Add Bootstrap class for styling
+                ],
             ]);
+
+
 
     }
 
