@@ -4,7 +4,6 @@
 	{{ tool.name }}
 {% endblock %}
 
-
 {% block body %}
 
 	<h1>{{ tool.name }}</h1>
@@ -31,8 +30,9 @@
 		<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
 			<button id="btnToolUpdate" type="button">modifier disponibilités</button>
 		</a>
+
 		<form method="POST">
-			<button type="submit" name="delete_tool" value="yes">Supprimer</button>
+			<button type="button" onclick="showModal({{ tool.id }})">Supprimer</button>
 		</form>
 	{% else %}
 		<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
@@ -42,31 +42,42 @@
 
 	{# Modal for Deleting Tool with Active Borrowings #}
 	{% if activeBorrowTool %}
+
 		<div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3>Attention</h3>
-					<button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
-				</div>
-				<div class="modal-body">
-					<p>Vous ne pouvez pas supprimer l'outil "{{ tool.name }}" car il a des emprunts actifs :</p>
-					<p>Veuillez annuler les emprunts avant de supprimer l'outil.</p>
-					<a href="{{ path('tool_borrow_lending_display') }}">Modifier mes prêts</a>
+			<div class="modal-position">
+				
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3>Attention</h3>
+						<button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
+					</div>
+					<div class="modal-body">
+						<p>Vous ne pouvez pas supprimer l'outil
+							<span>{{ tool.name }}</span>
+							car un ou plusieurs emprunts actifs.</p>
+						<p>Veuillez annuler les emprunts avant de supprimer l'outil.<br>
+							<a href="{{ path('coming_soon')}} " style="font-size: 12px">
+								<span>Comment faire?<span></a><br>
+								</p>
+								<p>
+									<a href="{{ path('tool_borrow_lending_display') }}">
+										<button id="btnUpdate2" type="button">Modifier mes prêts</button>
+									</a>
+								</p>
+							</div>
+						</p>
+					</p>
 				</div>
 
 			</div>
 		</div>
 	{% endif %}
 
-
-	<br><br><br><br>
+	<br><br>
 	<h2>Commentaires</h2>
 
-
-	{% if toolReviews  %}
-
+	{% if toolReviews %}
 		{% for toolReview in toolReviews %}
-
 			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}">
 				<strong>{{ toolReview.reviewer }}</strong>
 			</a>
@@ -74,15 +85,138 @@
 			{{ toolReview.rating }}/ 5
 			<p>{{ toolReview.comment }}</p>
 			<br><br>
-
-
 		{% endfor %}
-
 	{% else %}
-
 		L'outil n'a pas encore de commentaires.
-
 	{% endif %}
 
+{% endblock %}
 
+{% block javascripts %}
+	 <script>
+			function showModal(toolId) {
+				const modal = document.getElementById(`deleteToolModal${toolId}`);
+				if (modal) {
+					modal.style.display = "block"; // Show the modal
+				}
+			}
+		
+			function closeModal(toolId) {
+				const modal = document.getElementById(`deleteToolModal${toolId}`);
+				if (modal) {
+					modal.style.display = "none"; // Close the modal
+				}
+			}
+		
+			// Close modal when clicking outside of it
+			window.onclick = function(event) {
+				const modals = document.querySelectorAll('.custom-modal');
+				modals.forEach(modal => {
+					if (event.target === modal) {
+						modal.style.display = "none"; // Close modal when clicking outside
+					}
+				});
+			};
+	</script>
+
+	<style>
+		/* Modal Background */
+		.custom-modal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 10;
+			display: flex; /* Flexbox for centering */
+			align-items: center; /* Center vertically */
+			justify-content: center; /* Center horizontally */
+			overflow: hidden; /* Prevent any scrollbars */
+		}
+
+
+		.modal-position {
+			margin-top: 10%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+		}
+
+		/* Modal Content */
+		.modal-content {
+			width: 90%;
+			max-width: 600px;
+			background-color: white;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+			padding: 20px;
+			box-sizing: border-box; /* Include padding in width/height */
+		}
+
+		/* Modal Header */
+		.modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 0;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.modal-header h3 {
+			margin: 0;
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+
+		/* Close Button */
+		.close-modal {
+			background: none;
+			border: none;
+			font-size: 1.5rem;
+			cursor: pointer;
+			color: #333;
+		}
+
+		.close-modal:hover {
+			color: #e38427;
+		}
+
+		/* Modal Body */
+		.modal-body {
+			padding: 15px 0;
+		}
+
+
+		.modal-body li {
+			margin-bottom: 10px;
+			font-size: 1rem;
+		}
+
+		.modal-body span {
+			font-weight: bold;
+			color: #f28f2c;
+		}
+
+		/* Buttons */
+		.modal-body button {
+			cursor: pointer;
+			padding: 10px 15px;
+			border: none;
+			border-radius: 4px;
+			background-color: #f28f2c;
+			color: white;
+			font-size: 1rem;
+		}
+
+		.modal-body button:hover {
+			background-color: #e38427;
+		}
+
+		button:disabled {
+			background-color: #ccc;
+			cursor: not-allowed;
+		}
+	</style>
 {% endblock %}
