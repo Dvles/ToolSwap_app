@@ -14,9 +14,7 @@ class StatusController extends AbstractController
 {
     #[Route('/status/update/{tool_id}', name: 'status_update')]
     public function statusUpdate(
-        int $tool_id,
-        Request $request,
-        EntityManagerInterface $entityManager
+        int $tool_id, Request $request, EntityManagerInterface $entityManager
     ): Response {
         $user = $this->getUser();
 
@@ -30,6 +28,8 @@ class StatusController extends AbstractController
         if (!$borrowTool) {
             throw $this->createNotFoundException('Tool not found.');
         }
+
+        //dd($tool_id);
 
         // Fetch possible statuses
         $statuses = ToolStatusEnum::cases();

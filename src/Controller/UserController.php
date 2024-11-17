@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserUpdateType;
 use App\Repository\BorrowToolRepository;
 use App\Repository\ToolRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,4 +84,26 @@ class UserController extends AbstractController
         
         return $this->render('user/profile-self.html.twig', $vars);
     }
+
+    #[Route('/user/self/profile/update', name: 'my_profile')]
+    public function userUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    {
+
+        $user = $this->getUser();
+        //dd($user);
+
+
+
+        $form = $this->createForm(UserUpdateType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->flush();
+            return $this->redirectToRoute('tool_display_single');
+        }
+
+        $vars = ['form' => $form];
+
+        return $this->render('user/profile-self-update.html.twig', $vars);
+    }
+
 }

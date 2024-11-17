@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Profil{% endblock %}
+
+{% block body %}
+    <h1>Modifier Profil</h1>
+
+    {{ form_start(form) }}
+
+    <!-- email -->
+    {{ form_label(form.email, 'Email') }}<br>
+    {{ form_widget(form.email) }}<br><br>
+
+
+    <!-- First Name -->
+    {{ form_label(form.firstName, 'Prénom') }}<br>
+    {{ form_widget(form.firstName) }}<br><br>
+
+    <!-- Last Name -->
+    {{ form_label(form.lastName, 'Nom de famille') }}<br>
+    {{ form_widget(form.lastName) }}<br><br>
+
+    <!-- Phone Number -->
+    {{ form_label(form.phoneNumber, 'Numéro de téléphone') }}<br>
+    {{ form_widget(form.phoneNumber) }}<br><br>
+
+    <!-- Image -->
+    {{ form_label(form.image, 'Photo de profil (url)') }}<br>
+    {{ form_widget(form.image) }}<br><br>
+
+    <!-- Community -->
+    {{ form_label(form.community, 'Région') }}<br>
+    {{ form_widget(form.community) }}<br><br>
+
+
+    <input type="submit" value="Enregistrer">
+    
+    {{ form_end(form) }}
+{% endblock %}
