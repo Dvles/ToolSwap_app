@@ -1,35 +1,88 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
 {% block title %}
-	Profil
+	Profil -
 	{{ user.firstName }}
 {% endblock %}
 
 {% block body %}
+	<!-- PART A: Profile Details Form -->
+	<h2>Bonjour,
+		{{ user.firstName }}!</h2>
 
-	<h2>{{ user.firstName }}</h2>
+	{{ form_start(form) }}
 
-	<strong>Commune:</strong>
-	{{ user.community }}
-	<br>
+	<!-- Email -->
+	<div>
+		{{ form_label(form.email, 'Email') }}<br>
+		{{ form_widget(form.email, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- First Name -->
+	<div>
+		{{ form_label(form.firstName, 'Prénom') }}<br>
+		{{ form_widget(form.firstName, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- Last Name -->
+	<div>
+		{{ form_label(form.lastName, 'Nom') }}<br>
+		{{ form_widget(form.lastName, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- Phone Number -->
+	<div>
+		{{ form_label(form.phoneNumber, 'Téléphone') }}<br>
+		{{ form_widget(form.phoneNumber, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- Image -->
+	<div>
+		{{ form_label(form.image, 'Photo de profil (URL)') }}<br>
+		{{ form_widget(form.image, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- Community -->
+	<div>
+		{{ form_label(form.community, 'Région') }}<br>
+		{{ form_widget(form.community, {'attr': {'disabled': 'disabled', 'class': 'editable-field'}}) }}<br><br>
+	</div>
+
+	<!-- Save and Edit Buttons -->
+	<div>
+		<button id="btnEdit" type="button">Modifier</button>
+		<button id="btnSave" type="submit" style="display: none;">Enregistrer</button>
+	</div>
+
+	{{ form_end(form) }}
+
+	<hr>
+
+	<!-- PART B: Profile Statistics -->
+	<h3>Contributions</h3>
+
+	<!-- Borrowing/Lending Counts -->
 	<strong>{{ borrowedToolsCount }}</strong>
-	emprunt(s)
-	<br>
+	emprunt(s)<br>
 	<strong>{{ lentToolsCount }}</strong>
-	prêt(s)
-	<br>
+	prêt(s)<br>
 	<strong>{{ toolsOwnedByOwnerCount }}</strong>
 	outil(s) disponible(s)<br>
 
+	<!-- Free Tools Count -->
 	{% if freeToolsOwnedByOwnerCount != 0 %}
 		<strong>{{ freeToolsOwnedByOwnerCount }}</strong>
 		outils gratuitement disponibles<br>
 	{% endif %}
 	<br>
 
-	<h3>Avis</h3>
-	{% if reviews|length > 0 %}
+	<hr>
 
+	<!-- Reviews -->
+	<h3>
+		Avis
+	</h3>
+	{% if reviews|length > 0 %}
 		{% for review in reviews|slice(0, 3) %}
 			<a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}">
 				<strong>{{ review.userLeavingReview.firstName }}</strong>
@@ -37,18 +90,19 @@
 			|
 			{{ review.rating }}
 			/ 5<br>
-			{{ review.comments }}
-			<br><br>
+			{{ review.comments }}<br><br>
 		{% endfor %}
 
 		{% if reviews|length > 3 %}
-			<a href="">Voir plus</a>
+			<a href="#">Voir plus</a>
 		{% endif %}
 	{% else %}
 		<p>Pas d'avis disponibles pour cet utilisateur.</p>
 	{% endif %}
 	<br>
 
+
+	<!-- Tools Section -->
 	<h3>Outils</h3>
 	{% if tools|length > 0 %}
 		{% for tool in tools|slice(0, 3) %}
@@ -57,25 +111,52 @@
 				<h4>{{ tool.name }}</h4>
 				<p>
 					<strong>{{ tool.priceDay }}</strong>
-					€ / jour
-				</p>
-				<h5>
+					€ / jour</p>
+				<div>
 					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-						<button id="btnToolUpdate" type="button">modifier détails</button>
+						<button type="button">Modifier détails</button>
 					</a>
 					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-						<button id="btnToolUpdate" type="button">modifier disponibilités</button>
+						<button type="button">Modifier disponibilités</button>
 					</a>
 					<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-						<button id="btnToolDelete" type="button">supprimer</button>
+						<button type="button">Supprimer</button>
 					</a>
 				</div>
-			{% endfor %}
-			{% if tools|length > 3 %}
-				        <a href="{{ path ('tool_display_user')}}">Voir tous mes outils</a> 
-			{% endif %}
-		{% else %}
-			<p>L'utilisateur n'a pas encore partagé d'outils.</p>
-		{% endif %}
+			</div>
+		{% endfor %}
 
-	{% endblock %}
+		{% if tools|length > 3 %}
+			<a href="{{ path('tool_display_user') }}">
+				<button type="button">Voir tous mes outils</button>
+			</a>
+		{% endif %}
+	{% else %}
+		<p>Vous n'avez pas encore partagé d'outils.</p>
+		<a href="{{ path('tool_upload') }}">
+			<button type="button">Partager outil</button>
+		</a>
+	{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+	 <script>
+	    document.addEventListener('DOMContentLoaded', () => {
+	        const editButton = document.getElementById('btnEdit');
+	        const saveButton = document.getElementById('btnSave');
+	        const editableFields = document.querySelectorAll('.editable-field');
+	
+	        editButton.addEventListener('click', () => {
+	            // Enable all fields
+	            editableFields.forEach(field => field.removeAttribute('disabled'));
+	
+	            // Show the save button, hide the edit button
+	            editButton.style.display = 'none';
+	            saveButton.style.display = 'inline-block';
+	        });
+	    });
+	</script>
+
+{% endblock %}

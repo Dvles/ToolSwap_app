@@ -52,7 +52,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/self/profile', name: 'my_profile')]
-    public function myProfile(ToolRepository $toolRepository, BorrowToolRepository $borrowToolRepository): Response
+    public function myProfile(ToolRepository $toolRepository, BorrowToolRepository $borrowToolRepository, Request $request, EntityManagerInterface $em): Response
     {
 
         $user = $this->getUser();
@@ -66,6 +66,15 @@ class UserController extends AbstractController
         $freeToolsOwnedByOwnerCount = $toolRepository->countFreeToolsOwnedByOwner($user);
 
 
+        $form = $this->createForm(UserUpdateType::class, $user);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->flush();
+        }
+
+
+
         $reviews = $user->getReviewsReceived();
         $vars = [
             'user' => $user,
@@ -74,7 +83,8 @@ class UserController extends AbstractController
             'borrowedToolsCount' => $borrowedToolsCount,
             'toolsOwnedByOwnerCount' => $toolsOwnedByOwnerCount,
             'freeToolsOwnedByOwnerCount' => $freeToolsOwnedByOwnerCount,
-            'lentToolsCount' => $lentToolsCount
+            'lentToolsCount' => $lentToolsCount,
+            'form' => $form
 
         ];
 
@@ -85,7 +95,7 @@ class UserController extends AbstractController
         return $this->render('user/profile-self.html.twig', $vars);
     }
 
-    #[Route('/user/self/profile/update', name: 'my_profile')]
+    #[Route('/user/self/profile/update', name: 'my_profile_update')]
     public function userUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
     {
 
@@ -98,7 +108,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $em->flush();
-            return $this->redirectToRoute('tool_display_single');
+            return $this->redirectToRoute('my_profile');
         }
 
         $vars = ['form' => $form];
