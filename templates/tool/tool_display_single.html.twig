@@ -34,21 +34,33 @@
 		<form method="POST">
 			<button type="submit" name="delete_tool" value="yes">Supprimer</button>
 		</form>
-
-
 	{% else %}
-
 		<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
 			<button id="btnBorrowTool2" type="button">Emprunter</button>
 		</a>
+	{% endif %}
 
+	{# Modal for Deleting Tool with Active Borrowings #}
+	{% if activeBorrowTool %}
+		<div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Attention</h3>
+					<button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Vous ne pouvez pas supprimer l'outil "{{ tool.name }}" car il a des emprunts actifs :</p>
+					<p>Veuillez annuler les emprunts avant de supprimer l'outil.</p>
+					<a href="{{ path('tool_borrow_lending_display') }}">Modifier mes prêts</a>
+				</div>
+
+			</div>
+		</div>
 	{% endif %}
 
 
-	<br><br>
-	<br><br>
-	<h2>
-		Commentaires</h2>
+	<br><br><br><br>
+	<h2>Commentaires</h2>
 
 
 	{% if toolReviews  %}

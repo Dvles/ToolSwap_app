@@ -1,74 +1,226 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes outils{% endblock %}
+{% block title %}Mes outils
+{% endblock %}
 
 {% block body %}
-    <h2>Mes outils</h2>
+	<h2>Mes outils</h2>
 
-    <div class="tool-list">
-        {% if tools is empty %}
-            <p>Vous n'avez pas encore partagé d'outils.</p>
-            <a href="{{ path('tool_upload') }}">
-                <button type="button">Upload outil</button>
-            </a>
-        {% else %}
-            {% for tool in tools %}
-                <div class="tool-item">
-                    <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
-                    <h3>{{ tool.name }}</h3>
-                    <p><strong>état:</strong> {{ tool.toolCondition }}</p>
-                    <p>{{ tool.description }}</p>
-                    <p>
-                        {% if tool.priceDay == 0 %}
-                            <strong>gratuit</strong>
-                        {% else %}
-                            <strong>{{ tool.priceDay }} €</strong>/ jour
-                        {% endif %}
-                    </p>
+	<div class="tool-list">
+		{% if tools is empty %}
+			<p>Vous n'avez pas encore partagé d'outils.</p>
+			<a href="{{ path('tool_upload') }}">
+				<button type="button">Upload outil</button>
+			</a>
+		{% else %}
+			{% for tool in tools %}
+				<div class="tool-item">
+					<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+					<h3>{{ tool.name }}</h3>
+					<p>
+						<strong>état:</strong>
+						{{ tool.toolCondition }}</p>
+					<p>{{ tool.description }}</p>
+					<p>
+						{% if tool.priceDay == 0 %}
+							<strong>gratuit</strong>
+						{% else %}
+							<strong>{{ tool.priceDay }}
+								€</strong>/ jour
+						{% endif %}
+					</p>
 
-                    <a href="{{ path('tool_review_display', {'tool_id': tool.id}) }}">
-                        <button id="btnComment" type="button">commentaires</button>
-                    </a>
-                    <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-                        <button id="btnUpdate1" type="button">modifier détails</button>
-                    </a>
-                    <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-                        <button id="btnUpdate2" type="button">modifier disponibilités</button>
-                    </a>
-                    <button id="btnDelete" type="button" onclick="showModal({{ tool.id }})">
-                        supprimer
-                    </button>
+					<a href="{{ path('tool_review_display', {'tool_id': tool.id}) }}">
+						<button id="btnComment" type="button">commentaires</button>
+					</a>
+					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+						<button id="btnUpdate1" type="button">modifier détails</button>
+					</a>
+					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+						<button id="btnUpdate2" type="button">modifier disponibilités</button>
+					</a>
+					<button id="btnDelete" type="button" onclick="showModal({{ tool.id }})">
+						supprimer
+					</button>
 
-                    <br><br><br><br>
-                </div>
+					<br><br><br><br>
+				</div>
 
-                {# Modal for Deleting Tool with Active Borrowings #}
-                {% if activeBorrowTool %}
-                    <div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3>Attention</h3>
-                                <button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Vous ne pouvez pas supprimer l'outil "{{ tool.name }}" car il a des emprunts actifs :</p>
-                                <ul>
-                                    {% for borrowTool in borrowTools %}
-                                        <li>
-                                            Emprunté par :
-                                            {{ borrowTool.userBorrower.firstName }} {{ borrowTool.userBorrower.lastName }}<br>
-                                            Emprunté jusqu'au : {{ borrowTool.endDate|date("Y-m-d") }}<br>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                <p>Veuillez annuler les emprunts avant de supprimer l'outil.</p>
-                                <a href="{{ path('tool_borrow_lending_display') }}">Modifier mes prêts</a>
-                            </div>
+				{# Modal for Deleting Tool with Active Borrowings #}
+				{% if activeBorrowTool %}
+					<div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
+						<div class="modal-position">
 
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    </div>
-{% endblock %}
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3>Attention</h3>
+									<button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
+								</div>
+								<div class="modal-body">
+									<p>Vous ne pouvez pas supprimer l'outil <span>{{ tool.name }}</span>
+										car il a un ou plusieurs emprunts actif(s):
+									</p>
+									<ul id="borrowToolsList{{ tool.id }}">
+										{% for borrowTool in borrowTools|slice(0, 5) %}
+											<li>
+												Emprunté par :
+												<strong>{{ borrowTool.userBorrower.firstName }}
+													{{ borrowTool.userBorrower.lastName }}</strong>
+												- jusqu'au :
+												{{ borrowTool.endDate|date("Y-m-d") }}<br>
+											</li>
+										{% endfor %}
+									</ul>
+									<br>
+	
+									<p>Veuillez annuler les emprunts avant de supprimer l'outil.<br>
+										<a href="{{ path('coming_soon')}} " style="font-size: 12px"><span>Comment faire?<span></a><br>
+									</p>
+									<p>
+										<a href="{{ path('tool_borrow_lending_display') }}">
+												<button id="btnUpdate2" type="button">Modifier mes prêts</button>
+											</a>
+										</div>
+									</p>
+								</div>
+
+
+						</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		</div>
+	{% endblock %}
+	{% block javascripts %}
+		 <script>
+				function showModal(toolId) {
+					const modal = document.getElementById(`deleteToolModal${toolId}`);
+						if (modal) {
+							modal.style.display = "block";
+						}
+					}
+				
+					function closeModal(toolId) {
+						const modal = document.getElementById(`deleteToolModal${toolId}`);
+						if (modal) {
+							modal.style.display = "none";
+						}
+					}
+				
+					// Close modal when clicking outside of it
+					window.onclick = function (event) {
+						const modals = document.querySelectorAll('.custom-modal');
+						modals.forEach(modal => {
+							if (event.target === modal) {
+								modal.style.display = "none";
+							}
+						});
+					};
+				</script>
+
+
+		<style>
+/* Modal Background */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    overflow: hidden; /* Prevent any scrollbars */
+}
+
+
+.modal-position {
+    margin-top: 10%;
+	display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    overflow: hidden; /* Prevent any scrollbars */
+}
+
+/* Modal Content */
+.modal-content {
+    width: 90%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Close Button */
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-modal:hover {
+    color: #e38427;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 15px 0;
+}
+
+
+
+.modal-body li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.modal-body span {
+    font-weight: bold;
+    color: #f28f2c;
+}
+
+/* Buttons */
+.modal-body button {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f28f2c;
+    color: white;
+    font-size: 1rem;
+}
+
+.modal-body button:hover {
+    background-color:#e38427;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+		</style>
+	{% endblock %}
