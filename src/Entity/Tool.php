@@ -34,43 +34,48 @@ class Tool
     #[ORM\Column(nullable: true)]
     private ?bool $availability = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isDisabled = false; // Default to false (tool enabled in listing)
+
+    
+    
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $priceDay = null; 
-
+    
     #[ORM\Column(length: 255)]
     private ?string $imageTool = null;
-
+    
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'toolsOwned')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
-
+    
     /**
      * @var Collection<int, BorrowTool>
      */
     #[ORM\OneToMany(targetEntity: BorrowTool::class, mappedBy: 'toolBeingBorrowed')]
     private Collection $borrowTools;
-
-
+    
+    
     #[ORM\ManyToOne(inversedBy: 'toolsInCategory')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ToolCategory $toolCategory = null;
-
+    
     /**
      * @var Collection<int, ToolReview>
      */
     #[ORM\OneToMany(targetEntity: ToolReview::class, mappedBy: 'toolOfReview', orphanRemoval: true)]
     private Collection $toolReviews;
-
+    
     /**
      * @var Collection<int, ToolAvailability>
      */
     #[ORM\OneToMany(targetEntity: ToolAvailability::class, mappedBy: 'tool', cascade: ['persist', 'remove'])]
     private Collection $toolAvailabilities;
     // Added cascade to automatically persist or remove ToolAvailability entities when a Tool is saved or deleted
-
+    
     // This property is not persisted in the database
     private ?string $keyword = null;
-
+    
     
     
     
@@ -278,7 +283,7 @@ class Tool
     {
         return $this->keyword;
     }
-
+    
     // Setter for keyword
     public function setKeyword(?string $keyword): self
     {
@@ -286,4 +291,15 @@ class Tool
         return $this;
     }
     
+    public function isDisabled(): bool
+    {
+        return $this->isDisabled;
+    }
+    
+    public function setIsDisabled(bool $isDisabled): static
+    {
+        $this->isDisabled = $isDisabled;
+    
+        return $this;
+    }
 }

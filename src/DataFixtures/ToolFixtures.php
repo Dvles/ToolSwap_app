@@ -37,21 +37,35 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
 
         // Tools for 'Électroménager' (Home Appliances as per ToolCategory static fixtures)
         $electromenagerTools = [
-            'Sèche-cheveux',        // Hairdryer
-            'Aspirateur',           // Vacuum cleaner
-            'Four à micro-ondes',   // Microwave oven
-            'Grille-pain',          // Toaster
-            'Mixeur',               // Blender
-            'Cafetière',            // Coffee maker
-            'Fer à repasser',       // Iron
-            'Lave-linge',           // Washing machine
-            'Réfrigérateur',        // Refrigerator
-            'Lave-vaisselle',       // Dishwasher
-            'Ventilateur',          // Fan
-            'Friteuse',             // Deep fryer
-            'Bouilloire électrique',// Electric kettle
-            'Cuisinière électrique',// Electric stove
-            'Centrifugeuse',        // Juicer
+            'Sèche-cheveux',           // Hairdryer
+            'Aspirateur',              // Vacuum cleaner
+            'Four à micro-ondes',      // Microwave oven
+            'Grille-pain',             // Toaster
+            'Mixeur',                  // Blender
+            'Cafetière',               // Coffee maker
+            'Fer à repasser',          // Iron
+            'Furêt',                   // Washing machine
+            'Réfrigérateur',           // Refrigerator
+            'Ventilateur',             // Fan
+            'Friteuse',                // Deep fryer
+            'Bouilloire électrique',   // Electric kettle
+            'Cuisinière électrique',   // Electric stove
+            'Centrifugeuse',           // Juicer
+            'Grille-pain à croissants', // Croissant toaster
+            'Presse-agrumes',          // Citrus press
+            'Rôtisserie',              // Rotisserie
+            'Hachoir',                 // Meat grinder
+            'Appareil à raclette',     // Raclette machine
+            'Appareil à fondue',       // Fondue machine
+            'Moulin à café',           // Coffee grinder
+            'Déshumidificateur',       // Dehumidifier
+            'Nettoyeur vapeur',        // Steam cleaner
+            'Extracteur de jus',       // Juice extractor
+            'Fondue',                  // Fondue machine
+            'Pasta maker',             // Pasta machine
+            'Four à Tarte Flambée',    // Portable Flammenkuche oven
+
+
         ];
 
         // Tools for 'Jardinage' (Gardening)
@@ -73,27 +87,43 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             'Tamis de jardin',      // Garden sieve
         ];
 
+
         // Tools for 'Construction' (Construction)
         $constructionTools = [
-            'Marteau',              // Hammer
-            'Perceuse',             // Drill
-            'Niveau à bulle',       // Spirit level
-            'Scie à métaux',        // Hacksaw
-            'Pince',                // Pliers
-            'Tournevis',            // Screwdriver
-            'Mètre ruban',          // Tape measure
-            'Clé à molette',        // Adjustable wrench
-            'Ponceuse',             // Sander
-            'Ciseau à bois',        // Wood chisel
-            'Pied de biche',        // Crowbar
-            'Truelle',              // Trowel
-            'Bétonnière',           // Cement mixer
-            'Échafaudage',          // Scaffolding
-            'Meuleuse',             // Angle grinder
+            'Marteau',               // Hammer
+            'Perceuse',              // Drill
+            'Niveau à bulle',        // Spirit level
+            'Scie à métaux',         // Hacksaw
+            'Pince',                 // Pliers
+            'Tournevis',             // Screwdriver
+            'Mètre ruban',           // Tape measure
+            'Clé à molette',         // Adjustable wrench
+            'Ponceuse',              // Sander
+            'Ciseau à bois',         // Wood chisel
+            'Pied de biche',         // Crowbar
+            'Truelle',               // Trowel
+            'Bétonnière',            // Cement mixer
+            'Échafaudage',           // Scaffolding
+            'Meuleuse',              // Angle grinder
+            'Scie circulaire',       // Circular saw
+            'Perforateur',           // Hammer drill
+            'Clé à pipe',            // Socket wrench
+            'Compresseur',           // Air compressor
+            'Chiffon abrasif',       // Sandpaper
+            'Clé à griffe',          // Pipe wrench
+            'Pelle',                 // Shovel
+            'Niveau laser',          // Laser level
+            'Boulonneuse',           // Impact wrench
+            'Cisaille',              // Shears
+            'Détecteur de métaux',   // Metal detector
+            'Tarière',               // Auger
+            'Mèche',                 // Drill bit
+            'Boite à outils',        // Tool box
+
         ];
 
         // realistic conditions
-        $toolConditions = ["vieux", "neuf", "bon"];
+        $toolConditions = ["vieux", "neuf", "bon", "reconditioné"];
         
         // conditional per category that is linked to right category Entity
         for ($i = 0; $i < 30; $i++){

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tool Not Deleted{% endblock %}
+
+{% block body %}
+    <h2>Tool Deletion Warning</h2>
+    <p>You cannot delete the tool "{{ tool.name }}" as it has active borrowings.</p>
+
+    <p>Remaining Borrowings:</p>
+    <ul>
+        {% for borrowTool in borrowTools %}
+            <li>
+                Borrowed by: {{ borrowTool.borrower.firstName }} {{ borrowTool.borrower.lastName }}<br>
+                Borrowed until: {{ borrowTool.endDate|date("Y-m-d") }}<br>
+                <a href="{{ path('borrow_tool_detail', {'borrow_tool_id': borrowTool.id}) }}">View Borrowing</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Please complete or cancel the borrowings before deleting the tool.</p>
+{% endblock %}

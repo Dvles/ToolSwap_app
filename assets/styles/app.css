@@ -1,4 +1,6 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap';
+
 body {
     background-color: rgb(255, 250, 240);
     font-family: Arial, Helvetica, sans-serif !important;

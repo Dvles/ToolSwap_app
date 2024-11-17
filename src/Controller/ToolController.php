@@ -8,6 +8,8 @@ use App\Entity\ToolReview;
 use App\Entity\User;
 use App\Form\ToolFilterType;
 use App\Form\ToolUploadType;
+use App\Repository\BorrowToolRepository;
+use App\Repository\ToolAvailabilityRepository;
 use App\Repository\ToolRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\PersistentCollection;
@@ -179,26 +181,32 @@ class ToolController extends AbstractController
 
 
     #[Route('/tool/single/{tool_id}', name: 'tool_display_single')]
-    public function toolDisplaySingle(ManagerRegistry $doctrine, Request $request, $tool_id): Response
-    {
+    public function toolDisplaySingle(
+        ManagerRegistry $doctrine,
+        Request $request,
+        $tool_id,
+        ToolRepository $repTools,
+        EntityManagerInterface $em,
+        BorrowToolRepository $borrowToolRep,
+        ToolAvailabilityRepository $toolAvailabilityRep
+    ): Response {
         // Check if the user is logged in
         $user = $this->getUser();
-
+    
         // Grab the tool from the DB
-        $repTools = $doctrine->getRepository(Tool::class);
         $tool = $repTools->find($tool_id);
-
+    
         // Check if the tool exists
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-
+    
         // Check if the user is the owner of the tool
         $isOwner = $user && $tool->getOwner() === $user;
-
+    
         // Initialize the toolReviews collection
         $toolReviews = $tool->getToolReviews();
-
+    
         // Prepare the tool reviews data to avoid lazy loading and errors
         $toolReviewData = [];
         foreach ($toolReviews as $review) {
@@ -210,47 +218,82 @@ class ToolController extends AbstractController
                 'reviewerId' => $review->getUserOfReview()->getId()
             ];
         }
+    
+        // Check if the user clicked the delete button
+        if ($request->isMethod('POST') && $request->request->get('delete_tool') === 'yes') {
+            // Call the refactored private method to handle tool deletion
+            $result = $this->handleToolDeletion($tool_id, $repTools, $em, $borrowToolRep, $toolAvailabilityRep);
+    
+            // After deletion, redirect to tool list page
+            return $this->redirectToRoute('tool_display_user');
+        }
+    
+        // Get the activeBorrowTool flag from handleToolDeletion if it's set
+        $activeBorrowTool = false; // default
+        if ($tool->getBorrowTools()->count() > 0) {
+            // Check if there are any active borrowings for this tool
+            $activeBorrowTool = true;
+        }
 
+    
+        // No deletion, so continue rendering the single tool
         $vars = [
             'tool' => $tool,
             'isOwner' => $isOwner,
-            'toolReviews' => $toolReviewData
+            'toolReviews' => $toolReviewData,
+            'activeBorrowTool' => $activeBorrowTool
         ];
-
+    
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
     }
+    
 
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
-    public function toolDisplayUser(ManagerRegistry $doctrine)
+    public function toolDisplayUser(ManagerRegistry $doctrine, BorrowToolRepository $borrowToolRep)
     {
-
         $user = $this->getUser();
-
+    
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-
+    
         // Fetch the EntityManager
         $em = $doctrine->getManager();
-
+    
         // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
         $userWithTools = $em->getRepository(User::class)->find($user->getId());
-
+    
         // Check if tools are fetched
         $userTools = $userWithTools->getToolsOwned();
-
-        // Debugging check for fetched data
-        //dd($user->getToolsOwned()->toArray());
-
-        $vars = ['tools' => $userTools];
-
+    
+        // Initialize a flag for active borrowings
+        $activeBorrowTool = false;
+    
+        // Check if any tool has active borrowings
+        foreach ($userTools as $tool) {
+            if ($tool->getBorrowTools()->count() > 0) {
+                $borrowTools = $tool->getBorrowTools();
+                // If there's any active borrowing for this tool, set the flag to true
+                $activeBorrowTool = true;
+                break; // No need to check further, one active borrowing is enough
+            }
+        }
+    
+        // Pass tools and the activeBorrowTool flag to the template
+        $vars = [
+            'tools' => $userTools,
+            'activeBorrowTool' => $activeBorrowTool, 
+            'borrowTools' => $borrowTools, 
+        ];
+    
         return $this->render('tool/tool_display_user.html.twig', $vars);
     }
+    
 
-    #[Route('/tool/single/{tool_id}/delete', name: 'tool_delete')]
-    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    #[Route('/tool/single/{tool_id}/delete/simple', name: 'tool_delete_simple')]
+    public function toolDeleteSimple(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
     {
 
         $tool_id = $request->get('tool_id');
@@ -264,8 +307,155 @@ class ToolController extends AbstractController
         $em->remove($tool);
         $em->flush();
 
-        return $this->redirectToRoute('tool_display_all');
+        return $this->redirectToRoute('tool_display_user');
     }
+
+    #[Route('/tool/single/{tool_id}/delete/', name: 'tool_delete')]
+    public function toolDelete(
+        Request $request,
+        ToolRepository $repTools,
+        EntityManagerInterface $em,
+        BorrowToolRepository $borrowToolRep,
+        ToolAvailabilityRepository $toolAvailabilityRep
+    ) {
+        $tool_id = $request->get('tool_id');
+        $tool = $repTools->find($tool_id);
+        $tools = $repTools->findAll();
+
+        if (!$tool) {
+            throw $this->createNotFoundException('No tool found');
+        }
+
+        // Get the borrowings for the tool
+        $borrowTools = $borrowToolRep->findBy(['toolBeingBorrowed' => $tool]);
+
+        // Initialize activeBorrowTool flag
+        $activeBorrowTool = false;
+
+        // Check if there are any active borrowings
+        foreach ($borrowTools as $borrowTool) {
+            // If any borrowing has an active date (ToolStatus != completed or returned), set the flag
+            if ($borrowTool->getEndDate() > new \DateTime()) {
+                $activeBorrowTool = true;
+                break;
+            }
+        }
+
+        // If there are active borrowings, handle availability
+        if ($activeBorrowTool) {
+            $toolAvailabilities = $toolAvailabilityRep->findBy(['tool' => $tool]);
+            foreach ($toolAvailabilities as $availability) {
+                $availability->setIsAvailable(false);
+                $em->persist($availability);
+            }
+
+            // Flush to ensure changes are saved
+            $em->flush();
+
+            // Prepare variables for the template
+            $vars = [
+                'tool' => $tool,
+                'tools' => $tools,
+                'borrowTools' => $borrowTools,
+                'activeBorrowTool' => $activeBorrowTool, // Pass the flag as true
+            ];
+
+            // Render the template with the modal
+            return $this->render('tool/tool_display_user.html.twig', $vars);
+        }
+
+        // If there are borrowTools but no active borrowings, mark tool as disabled
+        if ($borrowTools) {
+            $toolAvailabilities = $toolAvailabilityRep->findBy(['tool' => $tool]);
+            foreach ($toolAvailabilities as $availability) {
+                $availability->setIsAvailable(false);
+                $em->persist($availability);
+            }
+
+            $tool->setIsDisabled(true); // Ensure the tool is marked as disabled
+
+            $em->flush();
+
+            return $this->redirectToRoute('tool_display_user');
+        } else {
+            // If no borrowings, safely delete the tool
+            $em->remove($tool);
+            $em->flush();
+
+            return $this->redirectToRoute('tool_display_user');
+        }
+    }
+
+    // reusable action for future delete buttons in application
+    // In the same controller
+
+    private function handleToolDeletion(
+        $tool_id,
+        ToolRepository $repTools,
+        EntityManagerInterface $em,
+        BorrowToolRepository $borrowToolRep,
+        ToolAvailabilityRepository $toolAvailabilityRep
+    ) {
+        $tool = $repTools->find($tool_id);
+        if (!$tool) {
+            throw $this->createNotFoundException('No tool found');
+        }
+
+        // Get the borrowings for the tool
+        $borrowTools = $borrowToolRep->findBy(['toolBeingBorrowed' => $tool]);
+
+        // Initialize activeBorrowTool flag
+        $activeBorrowTool = false;
+
+        // Check if there are any active borrowings
+        foreach ($borrowTools as $borrowTool) {
+            if ($borrowTool->getEndDate() > new \DateTime()) {
+                $activeBorrowTool = true;
+                break;
+            }
+        }
+
+        // If there are active borrowings, handle availability
+        if ($activeBorrowTool) {
+            $toolAvailabilities = $toolAvailabilityRep->findBy(['tool' => $tool]);
+            foreach ($toolAvailabilities as $availability) {
+                $availability->setIsAvailable(false);
+                $em->persist($availability);
+            }
+            $em->flush();
+
+            return [
+                'tool' => $tool,
+                'borrowTools' => $borrowTools,
+                'activeBorrowTool' => $activeBorrowTool
+            ];
+        }
+
+        // If there are borrowTools but no active borrowings, mark tool as disabled
+        if ($borrowTools) {
+            $toolAvailabilities = $toolAvailabilityRep->findBy(['tool' => $tool]);
+            foreach ($toolAvailabilities as $availability) {
+                $availability->setIsAvailable(false);
+                $em->persist($availability);
+            }
+
+            $tool->setIsDisabled(true); // Mark tool as disabled
+            $em->flush();
+
+            return ['tool' => $tool];
+        } else {
+            // If no borrowings, safely delete the tool
+            $em->remove($tool);
+            $em->flush();
+
+            return null;
+        }
+    }
+
+
+
+
+
 
 
     #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]

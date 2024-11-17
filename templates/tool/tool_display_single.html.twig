@@ -31,9 +31,10 @@
 		<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
 			<button id="btnToolUpdate" type="button">modifier disponibilités</button>
 		</a>
-		<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-			<button id="btnToolDelete" type="button">supprimer</button>
-		</a>
+		<form method="POST">
+			<button type="submit" name="delete_tool" value="yes">Supprimer</button>
+		</form>
+
 
 	{% else %}
 
@@ -46,16 +47,21 @@
 
 	<br><br>
 	<br><br>
-	<h2> Commentaires</h2>
+	<h2>
+		Commentaires</h2>
 
 
 	{% if toolReviews  %}
 
 		{% for toolReview in toolReviews %}
 
-			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}"><strong>{{ toolReview.reviewer }}</strong></a> | {{ toolReview.rating }}/ 5
+			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}">
+				<strong>{{ toolReview.reviewer }}</strong>
+			</a>
+			|
+			{{ toolReview.rating }}/ 5
 			<p>{{ toolReview.comment }}</p>
-            <br><br>
+			<br><br>
 
 
 		{% endfor %}

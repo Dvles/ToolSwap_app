@@ -1,60 +1,74 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes outils
-{% endblock %}
+{% block title %}Mes outils{% endblock %}
 
 {% block body %}
+    <h2>Mes outils</h2>
 
-	<h2>Mes outils</h2>
+    <div class="tool-list">
+        {% if tools is empty %}
+            <p>Vous n'avez pas encore partagé d'outils.</p>
+            <a href="{{ path('tool_upload') }}">
+                <button type="button">Upload outil</button>
+            </a>
+        {% else %}
+            {% for tool in tools %}
+                <div class="tool-item">
+                    <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+                    <h3>{{ tool.name }}</h3>
+                    <p><strong>état:</strong> {{ tool.toolCondition }}</p>
+                    <p>{{ tool.description }}</p>
+                    <p>
+                        {% if tool.priceDay == 0 %}
+                            <strong>gratuit</strong>
+                        {% else %}
+                            <strong>{{ tool.priceDay }} €</strong>/ jour
+                        {% endif %}
+                    </p>
 
-	<div class="tool-list">
+                    <a href="{{ path('tool_review_display', {'tool_id': tool.id}) }}">
+                        <button id="btnComment" type="button">commentaires</button>
+                    </a>
+                    <a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
+                        <button id="btnUpdate1" type="button">modifier détails</button>
+                    </a>
+                    <a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
+                        <button id="btnUpdate2" type="button">modifier disponibilités</button>
+                    </a>
+                    <button id="btnDelete" type="button" onclick="showModal({{ tool.id }})">
+                        supprimer
+                    </button>
 
+                    <br><br><br><br>
+                </div>
 
-		{% if tools is empty %}
-			<p>
-				Vous n'avez pas encore partagé d'outils.
-			</p>
-			<a href="{{ path ('tool_upload')}}">
-				<button type="button">Upload outil</button>
-			</a>
+                {# Modal for Deleting Tool with Active Borrowings #}
+                {% if activeBorrowTool %}
+                    <div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Attention</h3>
+                                <button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Vous ne pouvez pas supprimer l'outil "{{ tool.name }}" car il a des emprunts actifs :</p>
+                                <ul>
+                                    {% for borrowTool in borrowTools %}
+                                        <li>
+                                            Emprunté par :
+                                            {{ borrowTool.userBorrower.firstName }} {{ borrowTool.userBorrower.lastName }}<br>
+                                            Emprunté jusqu'au : {{ borrowTool.endDate|date("Y-m-d") }}<br>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <p>Veuillez annuler les emprunts avant de supprimer l'outil.</p>
+                                <a href="{{ path('tool_borrow_lending_display') }}">Modifier mes prêts</a>
+                            </div>
 
-		{% else %}
-			{% for tool in tools %}
-				<div class="tool-item">
-					<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
-					<h3>{{ tool.name }}</h3>
-					<p>
-						<strong>état:
-						</strong>
-						{{ tool.toolCondition }}</p>
-					<p>{{ tool.description }}</p>
-					<p>
-						{% if tool.priceDay == 0 %}
-							<strong>gratuit</strong>
-						{% else %}
-							<strong>{{ tool.priceDay }}
-								€
-							</strong>/ jour
-						{% endif %}
-					</p>
-					<a href="{{ path('tool_review_display', {'tool_id': tool.id} )}}">
-						<button id="btnBorrowTool" type="button">commentaires</button>
-					</a>
-					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-						<button id="btnToolUpdate" type="button">modifier détails</button>
-					</a>
-					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-						<button id="btnToolUpdate" type="button">modifier disponibilités</button>
-					</a>
-					<a href="{{ path('tool_delete', {'tool_id': tool.id}) }}">
-						<button id="btnToolDelete" type="button">supprimer</button>
-					</a>
-
-					<br><br>
-					<br><br>
-				</div>
-			{% endfor %}
-		{% endif %}
-	</div>
-
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
 {% endblock %}
