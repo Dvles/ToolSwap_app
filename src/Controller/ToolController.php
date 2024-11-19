@@ -278,15 +278,25 @@ class ToolController extends AbstractController
         // Initialize empty borrowTools 
         $borrowTools = [];
         $tool_id = 0;
+        $pastBorrowToolsIds = [];
+        $activeBorrowToolsIds = [];
 
 
         // Check if any tool has active borrowings
         foreach ($userTools as $tool) {
             $borrowTools = $tool->getBorrowTools();
-            if ($tool->getBorrowTools()->count() > 0) {
-                // Store ToolID and Tool
-                $activeBorrowToolsIds[] = $tool->getId();
-                $activeBorrowTools[] = $tool;
+            if ($borrowTools->count() > 0) {
+                foreach ($borrowTools as $borrowTool) {
+                    // Store ToolID and Tool
+                    if ($borrowTool->getEndDate() > new \DateTime()) {
+                        $activeBorrowToolsIds[] = $tool->getId();
+                        $activeBorrowTools[] = $tool;
+                    } else {
+                        $pastBorrowToolsIds[] = $tool->getId();
+                    }
+
+
+                }
             }
         }
 
@@ -301,6 +311,8 @@ class ToolController extends AbstractController
             'activeBorrowTools' => $activeBorrowTools,
             'borrowTools' => $borrowTools,
             'tool_id' => $tool_id,
+            'pastBorrowToolsIds' => $pastBorrowToolsIds,
+
         ];
 
         return $this->render('tool/tool_display_user.html.twig', $vars);
