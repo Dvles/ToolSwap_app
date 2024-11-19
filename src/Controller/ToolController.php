@@ -192,21 +192,21 @@ class ToolController extends AbstractController
     ): Response {
         // Check if the user is logged in
         $user = $this->getUser();
-    
+
         // Grab the tool from the DB
         $tool = $repTools->find($tool_id);
-    
+
         // Check if the tool exists
         if (!$tool) {
             throw $this->createNotFoundException('Tool not found');
         }
-    
+
         // Check if the user is the owner of the tool
         $isOwner = $user && $tool->getOwner() === $user;
-    
+
         // Initialize the toolReviews collection
         $toolReviews = $tool->getToolReviews();
-    
+
         // Prepare the tool reviews data to avoid lazy loading and errors
         $toolReviewData = [];
         foreach ($toolReviews as $review) {
@@ -218,57 +218,68 @@ class ToolController extends AbstractController
                 'reviewerId' => $review->getUserOfReview()->getId()
             ];
         }
-    
+
 
         // Get the activeBorrowTool flag from handleToolDeletion if it's set
         $activeBorrowTool = false; // default
+        $pastBorrowTool = false; // default
+
         if ($tool->getBorrowTools()->count() > 0) {
             // Check if there are any active borrowings for this tool
-            $activeBorrowTool = true;
+            foreach ($tool->getBorrowTools() as $borrowTool) {
+                if ($borrowTool->getEndDate() > new \DateTime()) {
+                    $activeBorrowTool = true;
+                    break; // No need to continue if an active borrowing is found
+                } else {
+                    $pastBorrowTool = true; // default
+                    break;
+                }
+            }
         }
 
-    
+
         // No deletion, so continue rendering the single tool
         $vars = [
             'tool' => $tool,
             'isOwner' => $isOwner,
             'toolReviews' => $toolReviewData,
-            'activeBorrowTool' => $activeBorrowTool
+            'activeBorrowTool' => $activeBorrowTool,
+            'pastBorrowTool' => $pastBorrowTool,
         ];
-    
+
         // Render the template with the tool data
         return $this->render('tool/tool_display_single.html.twig', $vars);
     }
-    
+
 
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
     public function toolDisplayUser(ManagerRegistry $doctrine, BorrowToolRepository $borrowToolRep)
     {
         $user = $this->getUser();
-    
+
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-    
+
         // Fetch the EntityManager
         $em = $doctrine->getManager();
-    
+
         // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
         $userWithTools = $em->getRepository(User::class)->find($user->getId());
-    
+
         // Check if tools are fetched
         $userTools = $userWithTools->getToolsOwned();
-    
+
         // Initialize a flag for active borrowings
-        $activeBorrowToolsIds= [];
-        $activeBorrowTools= [];
+        $activeBorrowToolsIds = [];
+        $activeBorrowTools = [];
 
         // Initialize empty borrowTools 
         $borrowTools = [];
         $tool_id = 0;
 
-    
+
         // Check if any tool has active borrowings
         foreach ($userTools as $tool) {
             $borrowTools = $tool->getBorrowTools();
@@ -282,19 +293,19 @@ class ToolController extends AbstractController
 
         //dd($activeBorrowToolsIds);
         //dd($activeBorrowTools);
-    
+
         // Pass tools and the activeBorrowTool flag to the template
         $vars = [
             'tools' => $userTools,
-            'activeBorrowToolsIds' => $activeBorrowToolsIds, 
-            'activeBorrowTools' => $activeBorrowTools, 
-            'borrowTools' => $borrowTools, 
+            'activeBorrowToolsIds' => $activeBorrowToolsIds,
+            'activeBorrowTools' => $activeBorrowTools,
+            'borrowTools' => $borrowTools,
             'tool_id' => $tool_id,
         ];
-    
+
         return $this->render('tool/tool_display_user.html.twig', $vars);
     }
-    
+
 
     #[Route('/tool/single/{tool_id}/delete/simple', name: 'tool_delete_simple')]
     public function toolDeleteSimple(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
@@ -312,6 +323,31 @@ class ToolController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('tool_display_user');
+    }
+
+    #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]
+    public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    {
+
+        $tool_id = $request->get('tool_id');
+        $tool = $repTools->find($tool_id);
+        //dd($tool);
+
+        if (!$tool) {
+            throw $this->createNotFoundException('No tool found');
+        }
+
+        $form = $this->createForm(ToolUploadType::class, $tool);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em->flush();
+            $vars = ['tool_id' => $tool_id];
+            return $this->redirectToRoute('tool_display_single', $vars);
+        }
+
+        $vars = ['form' => $form];
+
+        return $this->render('tool/tool_update.html.twig', $vars);
     }
 
     #[Route('/tool/single/{tool_id}/delete/', name: 'tool_delete')]
@@ -456,34 +492,19 @@ class ToolController extends AbstractController
         }
     }
 
-
-
-
-
-
-
-    #[Route('/tool/single/{tool_id}/update', name: 'tool_update')]
-    public function toolUpdate(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
-    {
-
+    #[Route('/tool/single/{tool_id}/disable/', name: 'tool_disable')]
+    public function toolDisable(Request $request, ToolRepository $repTools,EntityManagerInterface $em) {
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
-        //dd($tool);
+        $tools = $repTools->findAll();
 
         if (!$tool) {
             throw $this->createNotFoundException('No tool found');
         }
 
-        $form = $this->createForm(ToolUploadType::class, $tool);
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $em->flush();
-            $vars = ['tool_id' => $tool_id];
-            return $this->redirectToRoute('tool_display_single', $vars);
+        $tool->setIsDisabled(true);
+        $em->flush();
+
+            return $this->redirectToRoute('tool_display_user');
         }
-
-        $vars = ['form' => $form];
-
-        return $this->render('tool/tool_update.html.twig', $vars);
     }
-}
