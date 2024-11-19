@@ -269,26 +269,35 @@ class ToolController extends AbstractController
         $userTools = $userWithTools->getToolsOwned();
     
         // Initialize a flag for active borrowings
-        $activeBorrowTool = false;
+        $activeBorrowToolsIds= [];
+        $activeBorrowTools= [];
+
         // Initialize empty borrowTools 
         $borrowTools = [];
+        $tool_id = 0;
 
     
         // Check if any tool has active borrowings
         foreach ($userTools as $tool) {
             $borrowTools = $tool->getBorrowTools();
             if ($tool->getBorrowTools()->count() > 0) {
-                // If there's any active borrowing for this tool, set the flag to true
-                $activeBorrowTool = true;
-                break; // No need to check further, one active borrowing is enough
+                // Store ToolID and Tool
+                $activeBorrowToolsIds[] = $tool->getId();
+                $activeBorrowTools[] = $tool;
             }
         }
+
+
+        //dd($activeBorrowToolsIds);
+        //dd($activeBorrowTools);
     
         // Pass tools and the activeBorrowTool flag to the template
         $vars = [
             'tools' => $userTools,
-            'activeBorrowTool' => $activeBorrowTool, 
+            'activeBorrowToolsIds' => $activeBorrowToolsIds, 
+            'activeBorrowTools' => $activeBorrowTools, 
             'borrowTools' => $borrowTools, 
+            'tool_id' => $tool_id,
         ];
     
         return $this->render('tool/tool_display_user.html.twig', $vars);
