@@ -219,15 +219,7 @@ class ToolController extends AbstractController
             ];
         }
     
-        // Check if the user clicked the delete button
-        if ($request->isMethod('POST') && $request->request->get('delete_tool') === 'yes') {
-            // Call the refactored private method to handle tool deletion
-            $result = $this->handleToolDeletion($tool_id, $repTools, $em, $borrowToolRep, $toolAvailabilityRep);
-    
-            // After deletion, redirect to tool list page
-            return $this->redirectToRoute('tool_display_user');
-        }
-    
+
         // Get the activeBorrowTool flag from handleToolDeletion if it's set
         $activeBorrowTool = false; // default
         if ($tool->getBorrowTools()->count() > 0) {

@@ -31,9 +31,9 @@
 			<button id="btnToolUpdate" type="button">modifier disponibilités</button>
 		</a>
 
-		<form method="POST">
-			<button type="button" onclick="showModal({{ tool.id }})">Supprimer</button>
-		</form>
+		<button id="btnDelete" type="button" {% if activeBorrowTool %} onclick="showModal({{ tool.id }})" {% else %} onclick="location.href='{{ path('tool_delete', {'tool_id': tool.id}) }}'" {% endif %}>
+			supprimer
+		</button>
 	{% else %}
 		<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
 			<button id="btnBorrowTool2" type="button">Emprunter</button>
@@ -45,7 +45,7 @@
 
 		<div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
 			<div class="modal-position">
-				
+
 				<div class="modal-content">
 					<div class="modal-header">
 						<h3>Attention</h3>
@@ -94,30 +94,30 @@
 
 {% block javascripts %}
 	 <script>
-			function showModal(toolId) {
-				const modal = document.getElementById(`deleteToolModal${toolId}`);
-				if (modal) {
-					modal.style.display = "block"; // Show the modal
-				}
-			}
-		
-			function closeModal(toolId) {
-				const modal = document.getElementById(`deleteToolModal${toolId}`);
-				if (modal) {
-					modal.style.display = "none"; // Close the modal
-				}
-			}
-		
-			// Close modal when clicking outside of it
-			window.onclick = function(event) {
-				const modals = document.querySelectorAll('.custom-modal');
-				modals.forEach(modal => {
-					if (event.target === modal) {
-						modal.style.display = "none"; // Close modal when clicking outside
+				function showModal(toolId) {
+					const modal = document.getElementById(`deleteToolModal${toolId}`);
+					if (modal) {
+						modal.style.display = "block"; // Show the modal
 					}
-				});
-			};
-	</script>
+				}
+			
+				function closeModal(toolId) {
+					const modal = document.getElementById(`deleteToolModal${toolId}`);
+					if (modal) {
+						modal.style.display = "none"; // Close the modal
+					}
+				}
+			
+				// Close modal when clicking outside of it
+				window.onclick = function(event) {
+					const modals = document.querySelectorAll('.custom-modal');
+					modals.forEach(modal => {
+						if (event.target === modal) {
+							modal.style.display = "none"; // Close modal when clicking outside
+						}
+					});
+				};
+		</script>
 
 	<style>
 		/* Modal Background */
