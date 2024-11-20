@@ -220,22 +220,35 @@ class ToolController extends AbstractController
         }
 
 
-        // Get the activeBorrowTool flag from handleToolDeletion if it's set
-        $activeBorrowTool = false; // default
-        $pastBorrowTool = false; // default
+        // Initialize flags
+        $activeBorrowTool = false; // Default is no active borrow tools
+        $pastBorrowTool = false;   // Default is no past borrow tools
+
+        // Ensure both the end date and the current date are in the same timezone
+        $currentDate = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
 
         if ($tool->getBorrowTools()->count() > 0) {
-            // Check if there are any active borrowings for this tool
+            // Loop through all borrow tools
             foreach ($tool->getBorrowTools() as $borrowTool) {
-                if ($borrowTool->getEndDate() > new \DateTime()) {
-                    $activeBorrowTool = true;
-                    break; // No need to continue if an active borrowing is found
+                // Get the end date of the borrow tool
+                $borrowEndDate = $borrowTool->getEndDate();
+
+                // Normalize the borrow tool's end date to the same timezone
+                $borrowEndDate->setTimezone(new \DateTimeZone('Europe/Berlin'));
+
+                // Debugging: Show the dates after normalizing
+                //dd($borrowEndDate, $currentDate);
+
+                if ($borrowEndDate > $currentDate) {
+                    $activeBorrowTool = true; // Found at least one active borrow tool
+                    break; 
                 } else {
-                    $pastBorrowTool = true; // default
-                    break;
+                    $pastBorrowTool = true; 
                 }
             }
         }
+
+        //dd($activeBorrowTool, $pastBorrowTool);
 
 
         // No deletion, so continue rendering the single tool
@@ -261,7 +274,7 @@ class ToolController extends AbstractController
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-    
+
         // Fetch only active tools of the logged-in user
         $userTools = $repTools->findActiveTools($user);
 
@@ -289,8 +302,6 @@ class ToolController extends AbstractController
                     } else {
                         $pastBorrowToolsIds[] = $tool->getId();
                     }
-
-
                 }
             }
         }
@@ -358,7 +369,12 @@ class ToolController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/delete/', name: 'tool_delete')]
-    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em, BorrowToolRepository $borrowToolRep, ToolAvailabilityRepository $toolAvailabilityRep
+    public function toolDelete(
+        Request $request,
+        ToolRepository $repTools,
+        EntityManagerInterface $em,
+        BorrowToolRepository $borrowToolRep,
+        ToolAvailabilityRepository $toolAvailabilityRep
     ) {
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
@@ -495,7 +511,8 @@ class ToolController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/disable/', name: 'tool_disable')]
-    public function toolDisable(Request $request, ToolRepository $repTools,EntityManagerInterface $em) {
+    public function toolDisable(Request $request, ToolRepository $repTools, EntityManagerInterface $em)
+    {
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
         $tools = $repTools->findAll();
@@ -507,6 +524,6 @@ class ToolController extends AbstractController
         $tool->setIsDisabled(true);
         $em->flush();
 
-            return $this->redirectToRoute('tool_display_user');
-        }
+        return $this->redirectToRoute('tool_display_user');
     }
+}
