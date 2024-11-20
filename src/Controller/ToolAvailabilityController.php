@@ -104,11 +104,8 @@ class ToolAvailabilityController extends AbstractController
     }
 
     #[Route('tool/update/availability/{tool_id}', name: 'tool_availability_update')]
-    public function updateToolAvailability(
-        SerializerInterface $serializer,
-        ManagerRegistry $doctrine,
-        $tool_id
-    ): Response {
+    public function updateToolAvailability(SerializerInterface $serializer, ManagerRegistry $doctrine, ToolAvailabilityRepository $repToolAvailabilities, $tool_id): Response
+    {
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute("app_login");
@@ -120,38 +117,34 @@ class ToolAvailabilityController extends AbstractController
             throw $this->createNotFoundException('Tool not found or you are not the owner.');
         }
 
-        
-        // Fetch ToolAvailability repository
-        $repToolAvailability = $doctrine->getRepository(ToolAvailability::class);
+        // DEACTIVATE PAST Availabilities - Call the repository method here
+        $repToolAvailabilities->deactivateExpiredAvailabilities($tool); // Pass the tool to the repository method
 
-        // Deactivate expired ToolAvailabilities
-        $repToolAvailability->deactivateExpiredAvailabilities();
+        // Get all availabilities for the tool
 
-        // Get all availabilities (not just available ones)
         $toolAvailabilities = $tool->getToolAvailabilities();
 
         if ($toolAvailabilities instanceof PersistentCollection && !$toolAvailabilities->isInitialized()) {
-            $toolAvailabilities->initialize();
+            $toolAvailabilities->initialize(); // Forces loading the collection
         }
+
 
         // Filter availabilities to include only those that are available
         $availableToolAvailabilities = array_filter($toolAvailabilities->toArray(), function ($availability) {
             return $availability->isAvailable() === true;
         });
 
-        // After filtering availableToolAvailabilities
-        $availableToolAvailabilities = array_filter($toolAvailabilities->toArray(), function ($availability) {
-            return $availability->isAvailable() === true;
-        });
 
         // Check if there are available tool availabilities
         if (empty($availableToolAvailabilities)) {
-            // UX -> Optionally inform the user that no availabilities are found
-            // UX -> Add a flash message here if needed
-            return $this->redirectToRoute("app_login");
+            $this->addFlash('warning', 'No tool availabilities found.');
+            $vars = [
+                'tool_id' => $tool_id
+            ];
+            return $this->redirectToRoute("tool_add_availability", $vars);
         }
 
-        // dd($availableToolAvailabilities);
+        //dd($availableToolAvailabilities);
 
         // Serealizing data
         $toolAvailabilitiesJSON = $serializer->serialize(
@@ -160,7 +153,7 @@ class ToolAvailabilityController extends AbstractController
             [AbstractNormalizer::GROUPS => ['tool:read']]
         );
 
-        // dd($toolAvailabilitiesJSON);
+        //dd($toolAvailabilitiesJSON);
 
         $vars = [
             'toolAvailabilitiesJSON' => $toolAvailabilitiesJSON,
@@ -218,7 +211,7 @@ class ToolAvailabilityController extends AbstractController
 
             //dd($toolAvailabilityToDelete);
 
-            
+
             // Loop through updated availabilities
             if (isset($content['availabilities']['update'])) {
                 foreach ($content['availabilities']['update'] as $updatedToolAvailability) {
@@ -226,15 +219,15 @@ class ToolAvailabilityController extends AbstractController
                     if (!isset($updatedToolAvailability['start'], $updatedToolAvailability['end'], $updatedToolAvailability['toolId'], $updatedToolAvailability['id'], $updatedToolAvailability['title'], $updatedToolAvailability['backgroundColor'], $updatedToolAvailability['borderColor'], $updatedToolAvailability['textColor'])) {
                         return new JsonResponse(['error' => 'Missing required fields in update'], 400);
                     }
-                    
+
                     // Fetch tool entity using toolId
                     $tool = $repTools->find($updatedToolAvailability['toolId']);
                     if (!$tool) {
                         return new JsonResponse(['error' => 'Tool not found'], 404);
                     }
-                    
+
                     //dd($tool);
-                    
+
                     // Validate date formats
                     $startDateTime = \DateTime::createFromFormat(DATE_ATOM, $updatedToolAvailability['start']);
                     $endDateTime = \DateTime::createFromFormat(DATE_ATOM, $updatedToolAvailability['end']);
@@ -253,7 +246,7 @@ class ToolAvailabilityController extends AbstractController
                     $newToolAvailability->setBorderColor($updatedToolAvailability['borderColor']);
                     $newToolAvailability->setTextColor($updatedToolAvailability['textColor']);
                     $newToolAvailability->setUser($user); // Assuming you want to set the current user
-                    $newToolAvailability->setTool($tool); 
+                    $newToolAvailability->setTool($tool);
 
                     $em->persist($newToolAvailability);
                 }

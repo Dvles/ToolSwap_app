@@ -14,7 +14,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 {
     public function getRandomDate()
     {
-        $month = random_int(10, 12);
+        $month = random_int(11, 12);
         switch ($month) {
             case 11:
                 $maxDay = 30;
@@ -29,6 +29,26 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $dayFormatted = str_pad($day, 2, '0', STR_PAD_LEFT);
         return '2024-' . $monthFormatted . '-' . $dayFormatted;
     }
+
+    public function getRandomDate2025()
+    {
+        $month = random_int(1, 3);
+        switch ($month) {
+            case 2:
+                $maxDay = 31;
+                break;
+            default:
+                $maxDay = 28;
+                break;
+        }
+        $day = random_int(1, $maxDay);
+        $monthFormatted = str_pad($month, 2, '0', STR_PAD_LEFT);
+        $dayFormatted = str_pad($day, 2, '0', STR_PAD_LEFT);
+        return '2025-' . $monthFormatted . '-' . $dayFormatted;
+    }
+
+
+
 
     public function getRandomPastDate()
     {
@@ -87,7 +107,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $user1Tool->setOwner($user1);
         $user1Tool->setToolCategory($toolCategory);
         $user1Tool->setToolCondition('neuf');
-        $user1Tool->setDescription('A short and sweet description about the amazing tool.');
+        $user1Tool->setDescription("Acheté chez Brico l'été derier - Mon échelle All Round est une échelle en aluminium léger qui convient parfaitement au bricolage dans et aux alentours de la maison. Equipée de sangles de sécurité, stabilisateur et roulettes de façade. Comfort de travail supplémentaire grâce à la large (32 mm) surface d'appui horizontale de l'échelon en D. Le stabilisateur empêche tout enfoncement. Garantie encore valable 5 ans - profitons ensemble!");
         $user1Tool->setPriceDay(mt_rand(0, 5));
         $user1Tool->setImageTool('https://via.placeholder.com/500x500');
         $manager->persist($user1Tool);
@@ -110,6 +130,49 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
                 // Check for existing start date
                 while (in_array($startDate->format('Y-m-d H:i:s'), $existingStartDates)) {
                     $date = $this->getRandomDate(); // Generate a new date
+                    $startDate = new \DateTime($date . ' 10:00:00'); // Create a new start date
+                }
+                $existingStartDates[] = $startDate->format('Y-m-d H:i:s');
+                $endDate = new \DateTime($date . ' 10:00:00');
+
+                $toolAvailability = new ToolAvailability();
+                $toolName = $tool->getName();
+                $user = $tool->getOwner();
+
+                // Check if the user exists
+                if (!$user) {
+                    throw new \Exception("Tool {$toolName} has no owner");
+                }
+
+                if (!$tool || !$tool->getToolCategory()) {
+                    throw new \Exception("Tool {$toolName} is missing a valid category or does not exist.");
+                }
+
+
+                // $toolAvailability->setTitle($toolName);
+                $toolAvailability->setStart($startDate);
+                $toolAvailability->setEnd($endDate);
+                $toolAvailability->setBackgroundColor('rgba(255, 179, 71, 1)');
+                $toolAvailability->setBorderColor('rgba(255, 140, 0, 1)');
+                $toolAvailability->setTextColor('#000000');
+                $toolAvailability->setTool($tool);
+                $toolAvailability->setUser($user);
+
+                $manager->persist($toolAvailability);
+            }
+        }
+
+        // Random ToolAvailabilities in 2025 for each tool
+        foreach ($tools as $tool) {
+            $existingStartDates = []; // Array to track existing start dates
+            for ($i = 0; $i < 20; $i++) {
+                // Ensure the date is unique
+                $date = $this->getRandomDate2025();
+                $startDate = new \DateTime($date . ' 10:00:00');
+
+                // Check for existing start date
+                while (in_array($startDate->format('Y-m-d H:i:s'), $existingStartDates)) {
+                    $date = $this->getRandomDate2025(); // Generate a new date
                     $startDate = new \DateTime($date . ' 10:00:00'); // Create a new start date
                 }
                 $existingStartDates[] = $startDate->format('Y-m-d H:i:s');

@@ -126,7 +126,7 @@ class BorrowToolController extends AbstractController
         $repToolAvailability = $doctrine->getRepository(ToolAvailability::class);
 
         // Deactivate expired ToolAvailabilities
-        $repToolAvailability->deactivateExpiredAvailabilities();
+        //$repToolAvailability->deactivateExpiredAvailabilities();
 
         //dd($tool);
 

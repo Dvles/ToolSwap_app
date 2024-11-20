@@ -29,16 +29,16 @@
 								€</strong>/ jour
 						{% endif %}
 					</p>
+					<button id="btnComment" type="button" onclick="location.href='{{ path('tool_review_display', {'tool_id': tool.id}) }}'">
+						commentaires
+					</button>
+					<button id="btnUpdate1" type="button" onclick="location.href='{{ path('tool_update', {'tool_id': tool.id}) }}'">
+						modifier détails
+					</button>
+					<button id="btnUpdate2" type="button" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">
+						modifier disponibilités
+					</button>
 
-					<a href="{{ path('tool_review_display', {'tool_id': tool.id}) }}">
-						<button id="btnComment" type="button">commentaires</button>
-					</a>
-					<a href="{{ path('tool_update', {'tool_id': tool.id}) }}">
-						<button id="btnUpdate1" type="button">modifier détails</button>
-					</a>
-					<a href="{{ path('tool_availability_update', {'tool_id': tool.id}) }}">
-						<button id="btnUpdate2" type="button">modifier disponibilités</button>
-					</a>
 
 					{% if tool.id in activeBorrowToolsIds %}
 						<button id="btnDelete" type="button" onclick="showModal({{ tool.id }})">
@@ -109,30 +109,30 @@
 	{% endblock %}
 	{% block javascripts %}
 		 <script>
-																		function showModal(toolId) {
-																			const modal = document.getElementById(`deleteToolModal${toolId}`);
-																				if (modal) {
-																					modal.style.display = "block";
-																				}
-																			}
-																		
-																			function closeModal(toolId) {
-																				const modal = document.getElementById(`deleteToolModal${toolId}`);
-																				if (modal) {
-																					modal.style.display = "none";
-																				}
-																			}
-																		
-																			// Close modal when clicking outside of it
-																			window.onclick = function (event) {
-																				const modals = document.querySelectorAll('.custom-modal');
-																				modals.forEach(modal => {
-																					if (event.target === modal) {
-																						modal.style.display = "none";
+																				function showModal(toolId) {
+																					const modal = document.getElementById(`deleteToolModal${toolId}`);
+																						if (modal) {
+																							modal.style.display = "block";
+																						}
 																					}
-																				});
-																			};
-																		</script>
+																				
+																					function closeModal(toolId) {
+																						const modal = document.getElementById(`deleteToolModal${toolId}`);
+																						if (modal) {
+																							modal.style.display = "none";
+																						}
+																					}
+																				
+																					// Close modal when clicking outside of it
+																					window.onclick = function (event) {
+																						const modals = document.querySelectorAll('.custom-modal');
+																						modals.forEach(modal => {
+																							if (event.target === modal) {
+																								modal.style.display = "none";
+																							}
+																						});
+																					};
+																				</script>
 
 
 		<style>

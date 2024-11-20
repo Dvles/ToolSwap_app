@@ -6,9 +6,6 @@ use App\Entity\ToolAvailability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<ToolAvailability>
- */
 class ToolAvailabilityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,42 +13,19 @@ class ToolAvailabilityRepository extends ServiceEntityRepository
         parent::__construct($registry, ToolAvailability::class);
     }
 
-    // Deactivates ToolAvailability records that have a start date in the past 
-    public function deactivateExpiredAvailabilities(){
-
-        $currentDate = new \DateTime();
+    /**
+     * Deactivates ToolAvailability records that have a start date in the past.
+     */
+    public function deactivateExpiredAvailabilities()
+    {
+        $currentDate = new \DateTime(); // Current date and time
         $queryBuilder = $this->createQueryBuilder('ta')
-        -> update()
-        ->set('ta.isAvailable', 'false')
-        ->where('ta.start < :currentDate')
-        ->setParameter('currentDate', $currentDate);
+            ->update()
+            ->set('ta.isAvailable', ':false')
+            ->where('ta.start < :currentDate') // Check if start date is in the past
+            ->setParameter('currentDate', $currentDate) // Pass current date parameter
+            ->setParameter('false', false); // Set isAvailable to false for past events
 
-        return $queryBuilder->getQuery()->execute();
-
+        return $queryBuilder->getQuery()->execute(); // Execute the update
     }
-
-    //    /**
-    //     * @return ToolAvailability[] Returns an array of ToolAvailability objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ToolAvailability
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
