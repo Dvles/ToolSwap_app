@@ -72,8 +72,10 @@
 
 
 			<a href="{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}">
-				<button type="button" {% if borrowTool.isDisabled %} disabled {% endif %}>voir outil</button>
+				<button type="button" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>voir outil</button>
 			</a>
+
+
 
 			<br><br>
 			<br><br>

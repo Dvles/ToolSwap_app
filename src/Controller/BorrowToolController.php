@@ -351,6 +351,9 @@ class BorrowToolController extends AbstractController
             $ownerId = $tool->getOwner();
             $owner = $em->getRepository(User::class)->find($ownerId);
 
+            // Fetch the 'isDisabled' status for the tool
+            $isDisabled = $tool->isDisabled();
+
 
             $borrowToolsData[] = [
                 'id' => $BorrowTool->getId(),
@@ -361,7 +364,9 @@ class BorrowToolController extends AbstractController
                 'days' => $days,
                 'owner' => $owner->getFirstName(),
                 'ownerId' => $owner->getId(),
-                'toolId' => $toolId
+                'toolId' => $toolId,
+                'isDisabled' => $isDisabled
+
             ];
         }
 
@@ -426,7 +431,7 @@ class BorrowToolController extends AbstractController
                     $toolId = $tool->getId(); // Directly get the tool ID
 
                     // Fetch the 'isDisabled' status for the tool
-                    $isDisabled = $tool->isDisabled(); // Get the disabled status of the tool
+                    $isDisabled = $tool->isDisabled(); 
 
                     $borrowToolsData[] = [
                         'userBorrower' => $borrowTool->getUserBorrower()->getFirstName(),
