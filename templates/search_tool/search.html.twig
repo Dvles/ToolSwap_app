@@ -25,26 +25,25 @@
 						</strong>/ jour
 					{% endif %}
 				</p>
-
-				<a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">
-					<button id="btnToolUpdate" type="button">voir outil</button>
-				</a>
-
+				<button id="btnToolUpdate" type="button" onclick="location.href='{{ path('tool_display_single', {'tool_id': tool.id}) }}'">
+					voir outil
+				</button>
 
 				{% if app.user.id != tool.owner.id %}
-					<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
-						<button id="btnBorrowTool2" type="button">Emprunter</button>
-					</a>
+					<button id="btnBorrowTool2" type="button" onclick="location.href='{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}'">
+						Emprunter
+					</button>
 				{% elseif app.user.id == tool.owner.id %}
-					<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
-						<button id="btnBorrowTool2" type="button" disabled  title="Vous ne pouvez pas emprunter votre propre outil">Emprunter</button>
-					</a>
+					<button id="btnBorrowTool2" type="button" disabled title="Vous ne pouvez pas emprunter votre propre outil">
+						Emprunter
+					</button>
 				{% endif %}
 
 
-			<br><br>
-		{% endfor %}
-	</ul>
-{% else %}
-	<p>No tools found.</p>
-{% endif %}{% endblock %}
+				<br><br>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>No tools found.</p>
+	{% endif %}
+{% endblock %}

@@ -1,10 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tool Availability update success{% endblock %}
+{% block title %}Disponibilités modifiées!{% endblock %}
 
 {% block body %}
-    <h1>Update tool Availability</h1>
-    <p>Successfully updates tool Availability  requests for Tool ID: {{ tool_id }}</p>
+    <h1>Disponibilités modifiées!</h1>
+    <p>Bravo! Mise à jour des disponibilité réussie</p>
 
-    {# Add more content here as needed #}
+    <p>Vous serez redirigé(e) automatiquement dans 5 secondes...</p>
+    <h3 id="countdown">5</h3>
+
+    <script>
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+
+        setInterval(() => {
+            if (countdown > 1) {
+                countdown--;
+                countdownElement.textContent = countdown;
+            } else {
+                window.location.href = '{{ path('tool_display_user') }}'; // Redirect after countdown
+            }
+        }, 1000); // 1 second interval
+    </script>
+
 {% endblock %}
