@@ -425,19 +425,22 @@ class BorrowToolController extends AbstractController
                     $tool = $borrowTool->getToolBeingBorrowed();
                     $toolId = $tool->getId(); // Directly get the tool ID
 
+                    // Fetch the 'isDisabled' status for the tool
+                    $isDisabled = $tool->isDisabled(); // Get the disabled status of the tool
 
                     $borrowToolsData[] = [
                         'userBorrower' => $borrowTool->getUserBorrower()->getFirstName(),
                         'userBorrowerId' => $borrowTool->getUserBorrower()->getId(),
-                        'owner' => $borrowTool->getToolBeingBorrowed()-> getOwner()->getFirstName(),
-                        'ownerId' => $borrowTool->getToolBeingBorrowed()-> getOwner()->getId(),
+                        'owner' => $borrowTool->getToolBeingBorrowed()->getOwner()->getFirstName(),
+                        'ownerId' => $borrowTool->getToolBeingBorrowed()->getOwner()->getId(),
                         'id' => $borrowTool->getId(),
-                        'tool' => $borrowTool->getToolBeingBorrowed()->getName(),
+                        'tool' => $tool->getName(),
                         'start' => $start->format('d-m-Y'),
                         'end' => $end->format('d-m-Y'),
                         'status' => $borrowTool->getStatus()->value,
                         'days' => $days,
-                        'toolId' => $toolId
+                        'toolId' => $toolId,
+                        'isDisabled' => $isDisabled
                     ];
                 }
             }
