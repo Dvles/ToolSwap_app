@@ -36,7 +36,6 @@ class UserFixtures extends Fixture
             "Molenbeek-saint-jean", 
             "Saint-gilles",  
             "Saint-josse-ten-noode", 
-            "Saint-michel",  
             "Uccle"       
         ];
 

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ tool.name }} Commentaires{% endblock %}
+{% block title %}{{ tool.name }} Avis{% endblock %}
 
 {% block body %}
 
-    <h2>{{ tool.name }} | Commentaires</h2>
+    <h2>{{ tool.name }} | Avis</h2>
 
     <div class="tool-list">
             <div class="tool-item">
@@ -16,7 +16,10 @@
     {% for toolReview in toolReviews %}
 
         <li>
-        <h4>{{ toolReview.reviewer }} | {{ toolReview.rating }} / 5</H4>
+
+        <h4>            			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}">
+				<strong>{{ toolReview.reviewer }}</strong>
+			</a>| {{ toolReview.rating }} / 5</H4>
         <p>{{ toolReview.comment }}</p>
         </li>
 

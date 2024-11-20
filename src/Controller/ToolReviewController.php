@@ -40,7 +40,8 @@ class ToolReviewController extends AbstractController
                 'id' => $review->getId(),
                 'comment' => $review->getComment(),
                 'rating' => $review->getRating(),
-                'reviewer' => $review->getUserOfReview()->getFirstName()
+                'reviewer' => $review->getUserOfReview()->getFirstName(),
+                'reviewerId'=> $review->getUserOfReview()->getId()
             ];
         }
 
