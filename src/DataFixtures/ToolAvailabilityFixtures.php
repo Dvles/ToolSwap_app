@@ -121,19 +121,16 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
         // Random ToolAvailabilities for each tool
         foreach ($tools as $tool) {
-            $existingStartDates = []; // Array to track existing start dates
-            for ($i = 0; $i < 30; $i++) {
-                // Ensure the date is unique
-                $date = $this->getRandomDate();
-                $startDate = new \DateTime($date . ' 10:00:00');
+            $usedStartDates = []; // Track used dates for this tool
+            for ($i = 0; $i < 20; $i++) {
+                do {
+                    $date = $this->getRandomDate();
+                } while (in_array($date, $usedStartDates)); // Ensure uniqueness for this tool
 
-                // Check for existing start date
-                while (in_array($startDate->format('Y-m-d H:i:s'), $existingStartDates)) {
-                    $date = $this->getRandomDate(); // Generate a new date
-                    $startDate = new \DateTime($date . ' 10:00:00'); // Create a new start date
-                }
-                $existingStartDates[] = $startDate->format('Y-m-d H:i:s');
-                $endDate = new \DateTime($date . ' 10:00:00');
+                $usedStartDates[] = $date;
+
+                $startDate = new \DateTime($date . ' 10:00:00');
+                $endDate = clone $startDate;
 
                 $toolAvailability = new ToolAvailability();
                 $toolName = $tool->getName();
@@ -164,19 +161,17 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
         // Random ToolAvailabilities in 2025 for each tool
         foreach ($tools as $tool) {
-            $existingStartDates = []; // Array to track existing start dates
+            $usedStartDates = []; 
             for ($i = 0; $i < 20; $i++) {
-                // Ensure the date is unique
-                $date = $this->getRandomDate2025();
-                $startDate = new \DateTime($date . ' 10:00:00');
+                do {
+                    $date = $this->getRandomDate2025();
+                } while (in_array($date, $usedStartDates)); 
 
-                // Check for existing start date
-                while (in_array($startDate->format('Y-m-d H:i:s'), $existingStartDates)) {
-                    $date = $this->getRandomDate2025(); // Generate a new date
-                    $startDate = new \DateTime($date . ' 10:00:00'); // Create a new start date
-                }
-                $existingStartDates[] = $startDate->format('Y-m-d H:i:s');
-                $endDate = new \DateTime($date . ' 10:00:00');
+                $usedStartDates[] = $date;
+
+                $startDate = new \DateTime($date . ' 10:00:00');
+                $endDate = clone $startDate;
+
 
                 $toolAvailability = new ToolAvailability();
                 $toolName = $tool->getName();
@@ -207,21 +202,16 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
         // Random Past ToolAvailability
         foreach ($tools as $tool) {
-            $existingStartDates = []; // Array to track existing start dates
-            for ($i = 0; $i < 30; $i++) {
-                // Generate a past date that is unique
-                $date = $this->getRandomPastDate(); // Assuming this function returns a date in the past
+            $usedStartDates = []; // Track used dates for this tool
+            for ($i = 0; $i < 20; $i++) {
+                do {
+                    $date = $this->getRandomPastDate();
+                } while (in_array($date, $usedStartDates));
+
+                $usedStartDates[] = $date;
+
                 $startDate = new \DateTime($date . ' 10:00:00');
-
-                // Ensure unique start date by checking against existing start dates
-                while (in_array($startDate->format('Y-m-d H:i:s'), $existingStartDates)) {
-                    $date = $this->getRandomPastDate(); // Generate a new past date
-                    $startDate = new \DateTime($date . ' 10:00:00');
-                }
-                $existingStartDates[] = $startDate->format('Y-m-d H:i:s');
-
-                // Create an end date also in the past, ensuring it's after the start date
-                $endDate = new \DateTime($date . ' 10:00:00');
+                $endDate = clone $startDate;
 
                 $toolAvailability = new ToolAvailability();
                 $toolName = $tool->getName();
@@ -254,9 +244,15 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
         // User 1 ToolAvailability x 10
         for ($i = 0; $i < 10; $i++) {
-            $startDay = 11;
-            $startDate = new \DateTime('2024-11-' . ($startDay + $i) . ' 10:00:00');
-            $endDate = new \DateTime('2024-11-' . ($startDay + $i) . ' 10:00:00');
+            $usedStartDates = []; 
+            do {
+                $date = $this->getRandomDate();
+            } while (in_array($date, $usedStartDates)); 
+
+            $usedStartDates[] = $date;
+
+            $startDate = new \DateTime($date . ' 10:00:00');
+            $endDate = clone $startDate;
 
             $toolAvailabilityUser1 = new ToolAvailability();
             $toolAvailabilityUser1->setStart($startDate);

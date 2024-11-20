@@ -7,6 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ToolAvailabilityRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
+#[ORM\Table(name: "tool_availability", uniqueConstraints: [
+    new ORM\UniqueConstraint(name: "unique_tool_start", columns: ["tool_id", "start"])
+])]
+
 #[ORM\Entity(repositoryClass: ToolAvailabilityRepository::class)]
 class ToolAvailability
 {
@@ -15,11 +20,6 @@ class ToolAvailability
     #[ORM\Column]
     #[Groups(["tool:read"])]
     private ?int $id = null;
-
-
-    // #[ORM\Column(length: 255, nullable: true)]
-    // #[Groups(["tool:read"])]
-    // private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(["tool:read"])]
