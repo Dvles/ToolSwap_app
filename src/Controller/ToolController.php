@@ -254,23 +254,16 @@ class ToolController extends AbstractController
 
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
-    public function toolDisplayUser(ManagerRegistry $doctrine, ToolRepository $repTools, BorrowToolRepository $borrowToolRep)
+    public function toolDisplayUser(ToolRepository $repTools)
     {
         $user = $this->getUser();
 
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-
-        // Fetch the EntityManager
-        $em = $doctrine->getManager();
-
-        // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
-        $userWithTools = $em->getRepository(User::class)->find($user->getId());
-
-        $userTools = $userWithTools->getToolsOwned();
-
-        $userTools = $repTools->findActiveTools($userTools);
+    
+        // Fetch only active tools of the logged-in user
+        $userTools = $repTools->findActiveTools($user);
 
 
         // Initialize a flag for active borrowings

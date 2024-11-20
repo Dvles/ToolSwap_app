@@ -18,12 +18,23 @@ class ToolRepository extends ServiceEntityRepository
         parent::__construct($registry, Tool::class);
     }
 
+
+    public function findActiveTools(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.isDisabled = false') 
+            ->andWhere('t.owner = :user') 
+            ->setParameter('user', $user) 
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Find tools that are available for display on the frontend.
      * 
      * @return Tool[] Returns an array of available Tool objects.
      */
-    public function findActiveTools(): array
+    public function findAllActiveTools(): array
     {
         return $this->createQueryBuilder('t')
             ->where('t.isDisabled = false')  // Only get tools that are not disabled
@@ -67,34 +78,33 @@ class ToolRepository extends ServiceEntityRepository
     public function findByFilters(?bool $isFree, ?int $category, ?string $community): array
     {
         $qb = $this->createQueryBuilder('t');
-        
+
         // Filter by "isFree" (priceDay = 0 for free tools)
         if ($isFree !== null) {
             if ($isFree) {
                 $qb->andWhere('t.priceDay = 0');
-            } 
+            }
             //dd($qb->getQuery()->getResult()); // Check results after "isFree" filter
         }
 
-        
+
         // Filter by category if provided
         if ($category !== null) {
             $qb->leftJoin('t.toolCategory', 'c')
-               ->andWhere('c.id = :category')
-               ->setParameter('category', $category);
-               //dd($qb->getQuery()->getResult()); // Check results after "category" filter
+                ->andWhere('c.id = :category')
+                ->setParameter('category', $category);
+            //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
-        
+
         // Filter by community if provided
         if ($community !== null) {
             $qb->leftJoin('t.owner', 'u')
-               ->andWhere('u.community = :community')
-               ->setParameter('community', $community);
-               //dd($qb->getQuery()->getResult()); // Check results after "category" filter
+                ->andWhere('u.community = :community')
+                ->setParameter('community', $community);
+            //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
 
-    
+
         return $qb->getQuery()->getResult();
     }
-    
 }
