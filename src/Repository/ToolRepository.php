@@ -18,6 +18,19 @@ class ToolRepository extends ServiceEntityRepository
         parent::__construct($registry, Tool::class);
     }
 
+    /**
+     * Find tools that are available for display on the frontend.
+     * 
+     * @return Tool[] Returns an array of available Tool objects.
+     */
+    public function findActiveTools(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.isDisabled = false')  // Only get tools that are not disabled
+            ->getQuery()
+            ->getResult();
+    }
+
 
 
     public function countToolsOwnedByOwner(User $owner): int

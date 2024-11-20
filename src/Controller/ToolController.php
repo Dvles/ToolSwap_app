@@ -254,7 +254,7 @@ class ToolController extends AbstractController
 
 
     #[Route('/tool/display/user', name: 'tool_display_user')]
-    public function toolDisplayUser(ManagerRegistry $doctrine, BorrowToolRepository $borrowToolRep)
+    public function toolDisplayUser(ManagerRegistry $doctrine, ToolRepository $repTools, BorrowToolRepository $borrowToolRep)
     {
         $user = $this->getUser();
 
@@ -268,8 +268,10 @@ class ToolController extends AbstractController
         // Fetch the user with their tools using a Doctrine query to ensure the relation is loaded
         $userWithTools = $em->getRepository(User::class)->find($user->getId());
 
-        // Check if tools are fetched
         $userTools = $userWithTools->getToolsOwned();
+
+        $userTools = $repTools->findActiveTools($userTools);
+
 
         // Initialize a flag for active borrowings
         $activeBorrowToolsIds = [];
@@ -363,12 +365,7 @@ class ToolController extends AbstractController
     }
 
     #[Route('/tool/single/{tool_id}/delete/', name: 'tool_delete')]
-    public function toolDelete(
-        Request $request,
-        ToolRepository $repTools,
-        EntityManagerInterface $em,
-        BorrowToolRepository $borrowToolRep,
-        ToolAvailabilityRepository $toolAvailabilityRep
+    public function toolDelete(Request $request, ToolRepository $repTools, EntityManagerInterface $em, BorrowToolRepository $borrowToolRep, ToolAvailabilityRepository $toolAvailabilityRep
     ) {
         $tool_id = $request->get('tool_id');
         $tool = $repTools->find($tool_id);
