@@ -2,7 +2,7 @@
 @import 'bootstrap';
 
 body {
-    background-color: rgb(255, 250, 240);
+    background-color: rgb(247, 242, 233);
     font-family: Arial, Helvetica, sans-serif !important;
     padding-top: 100px; /* Adjust this value based on the height of your navbar */
 }
@@ -18,7 +18,7 @@ body {
 
 .prominent-link:hover {
     background-color: rgb(43, 43, 43);
-    color: rgb(255, 177, 177);
+    color: rgb(255, 248, 235);
 }
 
 /* Custom "Go" button for the search bar */
@@ -69,4 +69,11 @@ body {
 .main-container {
     padding-top: 70px; /* Adjust according to navbar height */
     max-width: 80%;
+}
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
