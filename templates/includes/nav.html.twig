@@ -1,27 +1,54 @@
-<nav>
-    {# liens sans connexion #}
-    <a href="{{ path('tool_display_all') }}" style="color: black; font-weight: bold; font-size: 18px;text-decoration: none">TOOLSWAP©</a>      
-    {# Search Bar in Navigation #}
-    <form class="form-inline" action="{{ path('tool_search') }}" method="get" style="display: inline;">
-        <input class="form-control mr-2" type="search" placeholder="Search tools" aria-label="Search" name="keyword" required>
-        <button class="btn btn-outline-success" type="submit">Go</button>
-    </form>
-    {# liens pour l'admin #}
-    {% if is_granted('ROLE_USER') %}
-        <a href="{{ path ('tool_upload')}}">+ Outils</a> |
-        <a href="{{ path ('tool_display_user')}}">Mes Outils</a> |
-        <a href="{{ path ('tool_borrow_display')}}">Mes Emprunts</a> |
-        <a href="{{ path ('tool_borrow_lending_display')}}">Mes Prêts</a> |
-        <a href=" {{ path ('my_profile')}}">Profil</a> |
-    {% else %}
-        <a href=" {{ path ('register')}} ">S'inscrire</a>
-    {% endif %}
+<nav class="navbar navbar-expand-lg fixed-top" style="background-color: #ed7a07;">
+    <div class="container-fluid">
+        {# Logo and Search Bar #}
+        <a class="navbar-brand fw-bold text-white" href="{{ path('tool_display_all') }}" style="font-size: 18px;">TOOLSWAP©</a>
 
-    {# liens pour tout user#}
-    {% if app.user %}
-        <a href=" {{ path ('app_logout')}} ">Déconnexion</a>
-    {% else %}
-        <a href=" {{ path ('app_login')}} ">Connexion</a>
-    {% endif %}
-    
+        <form class="d-flex ms-3" action="{{ path('tool_search') }}" method="get">
+            <input class="form-control me-2" type="search" placeholder="Trouver outil" aria-label="Search" name="keyword" required>
+            <button class="btn btn-outline-light custom-go-button" type="submit">Go!</button>
+        </form>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {# Links for Admins #}
+                {% if is_granted('ROLE_USER') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line right-border " href="{{ path('tool_upload') }}">+ Outils</a>
+                    </li>
+                    <li><hr class="dropdown-divider bg-white"></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line" href="{{ path('tool_display_user') }}">Mes Outils</a> 
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line" href="{{ path('tool_borrow_display') }}">Mes Emprunts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line" href="{{ path('tool_borrow_lending_display') }}">Mes Prêts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line" href="{{ path('my_profile') }}">Profil</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white hover-line" href="{{ path('register') }}">S'inscrire</a>
+                    </li>
+                {% endif %}
+
+                {# Connection/Deconnection links #}
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-dark text-white mx-2 prominent-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-dark text-white mx-2 prominent-link" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 </nav>
