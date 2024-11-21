@@ -95,6 +95,42 @@ body {
 }
 
 
+.btn-custom-orange:hover {
+    background-color: #212121;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+}
+
+.whitebtn {
+    background-color: #ff88192d;
+    border: 2px solid #ff8719;
+    color: #ca6200;
+    font-weight: bold;
+    width: 100%;
+}
+
+
+.whitebtn:hover {
+    background-color: #212121;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+}
+
+.alink{
+    color: #dd7c22;
+}
+.alink:hover{
+    color: #ff8719;
+    text-decoration: underline;
+
+}
+
+.alink-right{
+    text-align: right;
+}
+
 
 /* Flexbox layout to ensure footer is pushed to the bottom */
 .wrapper {
@@ -114,5 +150,21 @@ footer {
     background-color: #e8e8e8;
     padding: 20px 0;
     text-align: center;
+}
+
+.empty-space{
+min-height: 100px;
+}
+
+.remove-space{
+    margin-bottom: -100px;
+    }
+
+/* Enforce consistent button size and prevent text wrapping */
+.custom-btn {
+    min-width: 150px; /* Ensures buttons are at least this width */
+    max-width: 150px; /* Ensures all buttons stay the same size */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    text-align: center; /* Centers the text in the button */
 }
 

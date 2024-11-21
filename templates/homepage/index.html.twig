@@ -1,12 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ToolSwap{% endblock %}
+{% block title %}ToolSwap
+{% endblock %}
 
 {% block body %}
-<h1>Bievenue à ToolSwap</h1>
 
-{% if app.user %}
-    <p>Bonjour, {{ app.user.firstName }}!</p>
-{% endif %}
+<div class="remove-space">
+</div>
+	<section class="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+		<div class="container text-center">
+			<h1 class="mb-4">Bonjour,
+				{{ app.user.firstName }}!</h1>
+			<h3>Voici vos contributions <strong>ToolSwap</strong></h3>
 
+			<!-- Borrowing/Lending Counts -->
+			<div class="mb-4">
+                <h4>
+				<strong><span style="color:#ff8719;">{{ borrowedToolsCount }}</span></strong>
+				emprunt(s)<br>
+				<strong><span style="color:#ff8719;">{{ lentToolsCount }}</span></strong>
+				prêt(s)<br>
+				<strong><span style="color:#ff8719;">{{ toolsOwnedByOwnerCount }}</span></strong>
+				outil(s) disponible(s)<br><br>
+                </h4>
+			</div>
+
+			<a href="{{ path('tool_upload') }}" class="btn  btn-lg custom-btn whitebtn" >Ajouter outil</a> <br><br>
+
+
+			<!-- Buttons -->
+			<div class="d-flex justify-content-center gap-3">
+				<a href="{{ path('tool_display_user') }}" class="btn btn-custom-orange btn-lg custom-btn ">Mes outils</a>
+				<a href="{{ path('tool_borrow_display') }}" class="btn btn-custom-orange btn-lg custom-btn">Emprunts</a>
+				<a href="{{ path('tool_borrow_lending_display') }}" class="btn btn-custom-orange btn-lg custom-btn">Prêts</a>
+			</div>
+		</div>
+	</section>
 {% endblock %}
