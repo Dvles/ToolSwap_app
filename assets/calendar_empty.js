@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .then(response => {
                         console.log("Availability successfully added:", response.data);
                         alert("Availabilities saved successfully!");
-                    })
+                        window.location.href = `/tool/add/availability/${toolId}/success`;                    })
                     .catch(error => {
                         console.error("Error saving availabilities:", error);
                         alert("Error saving availabilities. Please try again.");

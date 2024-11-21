@@ -75,7 +75,10 @@ class ToolAvailabilityController extends AbstractController
             $createdIds[] = $toolAvailability->getId(); // Collect created IDs for UI
 
             // Return a response (you can return the new availability's ID or just a success message)
-            return $this->json(['id' => $toolAvailability->getId()], Response::HTTP_CREATED);
+            //return $this->json(['id' => $toolAvailability->getId()], Response::HTTP_CREATED);
+            return $this->redirectToRoute('tool_add_availability_success', ['tool_id' => $tool_id]);
+
+
         }
 
         return $this->render('tool_availability/tool_add_availability.html.twig', [
@@ -270,6 +273,14 @@ class ToolAvailabilityController extends AbstractController
     public function toolUpdateAvailabilitySuccess($tool_id)
     {
         return $this->render('tool_availability/tool_update_availability_success.html.twig', [
+            'tool_id' => $tool_id,
+        ]);
+    }
+
+    #[Route('tool/add/availability/{tool_id}/success', name: 'tool_add_availability_success')]
+    public function toolAddAvailabilitySuccess($tool_id)
+    {
+        return $this->render('tool_availability/tool_add_availability_success.html.twig', [
             'tool_id' => $tool_id,
         ]);
     }
