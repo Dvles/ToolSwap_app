@@ -1,35 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Inscription ToolSwap{% endblock %}
 
 {% block body %}
-    <h1>Inscription</h1>
+<section class="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+    <div class="container py-0"> <!-- Remove py-5 and use py-0 for no padding -->
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px; padding: 3rem;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Deviens un.e ToolSwapper!</h3>
 
-    {{ form_errors(registrationForm) }}
+                        <!-- Display errors -->
+                        {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.firstName, {
-            label: 'Prénom'
-        }) }}
-        {{ form_row(registrationForm.lastName, {
-            label: 'Nom'
-        }) }}
-        {{ form_row(registrationForm.email, {
-            label: 'Email'
-        }) }}
-        {{ form_row(registrationForm.phoneNumber, {
-            label: 'Téléphone'
-        }) }}
-        {{ form_row(registrationForm.community, {
-            label: 'Commune'
-        }) }}
-        {{ form_row(registrationForm.image, {
-            label: 'Image de profil'
-        }) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.firstName, {
+                                        'label': 'Prénom',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.lastName, {
+                                        'label': 'Nom',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-        <button type="submit" class="btn">Connecter</button>
-    {{ form_end(registrationForm) }}
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.email, {
+                                        'label': 'Email',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.phoneNumber, {
+                                        'label': 'Téléphone',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.community, {
+                                        'label': 'Commune',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.image, {
+                                        'label': 'Image de profil',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(registrationForm.plainPassword, {
+                                        'label': 'Mot de passe',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-2">
+                                <button type="submit" class="btn" style="background-color: #ff8719; color: white; font-weight: bold;">S'inscrire</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

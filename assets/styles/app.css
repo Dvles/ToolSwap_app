@@ -1,11 +1,19 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap';
 
+/* Ensure that html and body take up the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     background-color: rgb(253, 250, 246);
     font-family: Arial, Helvetica, sans-serif !important;
     padding-top: 100px; /* Adjust this value based on the height of your navbar */
 }
+
+
 
 /* Updated background color for navbar */
 .navbar {
@@ -78,8 +86,33 @@ body {
 }
 
 
-footer {
-    position: fixed;
-    bottom: 0;
+
+.btn-custom-orange {
+    background-color: #ff8719;
+    color: white;
+    font-weight: bold;
     width: 100%;
 }
+
+
+
+/* Flexbox layout to ensure footer is pushed to the bottom */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* This ensures the footer is at the bottom when content is short */
+}
+
+/* Content area will grow and take available space */
+.content {
+    flex-grow: 1;
+    padding-bottom: 50px; /* Add padding to ensure content doesn't overlap the footer */
+}
+
+/* Style the footer (no changes needed to position) */
+footer {
+    background-color: #e8e8e8;
+    padding: 20px 0;
+    text-align: center;
+}
+
