@@ -168,3 +168,9 @@ min-height: 100px;
     text-align: center; /* Centers the text in the button */
 }
 
+.max-width{
+    max-width: 80%;
+}
+.hidden{
+    visibility: none;
+}
