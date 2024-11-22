@@ -15,6 +15,7 @@
                         {{ form_errors(registrationForm) }}
 
                         <form method="post" enctype="multipart/form-data">
+                            {{ form_start(registrationForm) }}
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     {{ form_row(registrationForm.firstName, {
@@ -72,6 +73,7 @@
                             <div class="mt-4 pt-2 text-center">
                                 <button type="submit" class="btn" style="background-color: #ff8719; color: white; font-weight: bold; ">S'inscrire</button>
                             </div>
+                            {{ form_end(registrationForm) }}
                         </form>
                     </div>
                 </div>
