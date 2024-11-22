@@ -17,24 +17,24 @@
                 {# Links for Admins #}
                 {% if is_granted('ROLE_USER') %}
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line right-border " href="{{ path('tool_upload') }}">+ Outils</a>
+                        <a class="nav-link text-white hover-line right-border fw-bold" href="{{ path('tool_upload') }}">+ Outils</a>
                     </li>
                     <li><hr class="dropdown-divider bg-white"></li>
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line" href="{{ path('tool_display_user') }}">Mes Outils</a> 
+                        <a class="nav-link text-white hover-line fw-bold" href="{{ path('tool_display_user') }}">Mes Outils</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line" href="{{ path('tool_borrow_display') }}">Mes Emprunts</a>
+                        <a class="nav-link text-white hover-line fw-bold" href="{{ path('tool_borrow_display') }}">Mes Emprunts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line" href="{{ path('tool_borrow_lending_display') }}">Mes Prêts</a>
+                        <a class="nav-link text-white hover-line fw-bold" href="{{ path('tool_borrow_lending_display') }}">Mes Prêts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line" href="{{ path('my_profile') }}">Profil</a>
+                        <a class="nav-link text-white hover-line fw-bold" href="{{ path('my_profile') }}">Profil</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link text-white hover-line" href="{{ path('register') }}">S'inscrire</a>
+                        <a class="nav-link text-white hover-line fw-bold" href="{{ path('register') }}">S'inscrire</a>
                     </li>
                 {% endif %}
 
