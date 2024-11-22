@@ -1,123 +1,139 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	{{ tool.name }}
+    {{ tool.name }}
 {% endblock %}
 
 {% block body %}
+<div class="container mt-4" style="padding-bottom: 150px;">
+    <div class="row">
+        <!-- Tool Details -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold">{{ tool.name }}</h3>
+                    <p class="card-text">{{ tool.owner.community }}</p>
+                    <p class="card-text"><strong>État: </strong>{{ tool.toolCondition }}</p>
+                    <p class="card-text">{{ tool.description }}</p>
+                    <p class="card-text">
+                        <strong>
+                            {% if tool.priceDay == 0 %}
+                                <span style="color: #ff8719;">GRATUIT</span>
+                            {% else %}
+                                {{ tool.priceDay }} €
+                            {% endif %}
+                        </strong>
+                        / jour
+                    </p>
 
-	<h1>{{ tool.name }}</h1>
+                    {% if isOwner %}
+                        <button type="button" class="btn btn-custom-orange mb-2" style="width: auto;" onclick="location.href='{{ path('tool_update', {'tool_id': tool.id}) }}'">Modifier détails</button>
+                        <button type="button" class="btn btn-secondary mb-2" style="width: auto;" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">Modifier disponibilités</button>
+                        <button type="button" class="btn btn-danger mb-2" style="width: auto;"
+                            {% if activeBorrowTool %}
+                                onclick="showModal({{ tool.id }})"
+                            {% elseif pastBorrowTool %}
+                                onclick="location.href='{{ path('tool_disable', {'tool_id': tool.id}) }}'"
+                            {% else %}
+                                onclick="location.href='{{ path('tool_delete', {'tool_id': tool.id}) }}'"
+                            {% endif %}
+                        >Supprimer</button>
+                    {% else %}
+                        <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
+                            <button type="button" class="btn btn-custom-orange mb-2" style="width: auto;">Emprunter</button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-	<div class="tool-detail">
-		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
-		<p>
-			<em>{{ tool.owner.community }}</em>
-		</p>
-		<p>
-			<strong>état:
-			</strong>
-			{{ tool.toolCondition }}</p>
-		<p>{{ tool.description }}</p>
-		<p>
-			<strong>{{ tool.priceDay }}</strong>
-			€ / jour</p>
-	</div>
+        <!-- Comments Section -->
+        <div class="col-md-6">
+            <h2 class="fw-bold">Avis</h2>
+            {% if toolReviews %}
+                {% for toolReview in toolReviews %}
+                    <div class="mb-3 p-3 border rounded">
+                        <a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}" style="text-decoration: none; color: #333;">
+                            <strong>{{ toolReview.reviewer }}</strong>
+                        </a>
+                        <span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ toolReview.rating }}/5</span>
+                        <p class="mt-2 mb-0">{{ toolReview.comment }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>L'outil n'a pas encore de commentaires.</p>
+            {% endif %}
+        </div>
+    </div>
 
-	{% if isOwner %}
-		<button id="btnToolUpdate" type="button" onclick="location.href='{{ path('tool_update', {'tool_id': tool.id}) }}'">modifier détails</button>
-
-		<button id="btnToolUpdateAvail" type="button" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">modifier disponibilités</button>
-
-		<button id="btnDelete" type="button" {% if activeBorrowTool %} onclick="showModal({{ tool.id }})" {% elseif pastBorrowTool %} onclick="location.href='{{ path('tool_disable', {'tool_id': tool.id}) }}'" {% else %} onclick="location.href='{{ path('tool_delete', {'tool_id': tool.id}) }}'" {% endif %}>
-			supprimer
-		</button>
-	{% else %}
-		<a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}">
-			<button id="btnBorrowTool2" type="button">Emprunter</button>
-		</a>
-	{% endif %}
-
-	{# Modal for Deleting Tool with Active Borrowings #}
-	{% if activeBorrowTool %}
-
-		<div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
-			<div class="modal-position">
-
-				<div class="modal-content">
-					<div class="modal-header">
-						<h3>Attention</h3>
-						<button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
-					</div>
-					<div class="modal-body">
-						<p>Vous ne pouvez pas supprimer l'outil
-							<span>{{ tool.name }}</span>
-							car il a un ou plusieurs emprunts actifs.</p>
-						<p>Veuillez annuler les emprunts avant de supprimer l'outil.<br>
-							<a href="{{ path('coming_soon')}} " style="font-size: 12px">
-								<span>Comment faire?<span></a><br>
-								</p>
-								<p>
-									<a href="{{ path('tool_borrow_lending_display') }}">
-										<button id="btnUpdate2" type="button">Voir mes prêts</button>
-									</a>
-								</p>
-							</div>
-						</p>
-					</p>
-				</div>
-
-			</div>
-		</div>
-	{% endif %}
-
-	<br><br>
-	<h2>Commentaires</h2>
-
-	{% if toolReviews %}
-		{% for toolReview in toolReviews %}
-			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}">
-				<strong>{{ toolReview.reviewer }}</strong>
-			</a>
-			|
-			{{ toolReview.rating }}/ 5
-			<p>{{ toolReview.comment }}</p>
-			<br><br>
-		{% endfor %}
-	{% else %}
-		L'outil n'a pas encore de commentaires.
-	{% endif %}
+    <!-- Modal for Active Borrow Tool -->
+    {% if activeBorrowTool %}
+    <div id="deleteToolModal{{ tool.id }}" class="custom-modal" style="display:none;">
+        <div class="modal-position">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Attention</h3>
+                    <button type="button" class="close-modal" onclick="closeModal({{ tool.id }})">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Vous ne pouvez pas supprimer l'outil <span>{{ tool.name }}</span> car il a un ou plusieurs emprunts actifs.</p>
+                    <p>Veuillez annuler les emprunts avant de supprimer l'outil.<br>
+                        <a href="{{ path('coming_soon')}}" style="font-size: 12px">
+                            <span>Comment faire?<span></a><br>
+                    </p>
+                    <p>
+                        <a href="{{ path('tool_borrow_lending_display') }}">
+                            <button id="btnUpdate2" type="button">Voir mes prêts</button>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
 
 {% endblock %}
 
 {% block javascripts %}
-	 <script>
-							function showModal(toolId) {
-								const modal = document.getElementById(`deleteToolModal${toolId}`);
-								if (modal) {
-									modal.style.display = "block"; // Show the modal
-								}
-							}
-						
-							function closeModal(toolId) {
-								const modal = document.getElementById(`deleteToolModal${toolId}`);
-								if (modal) {
-									modal.style.display = "none"; // Close the modal
-								}
-							}
-						
-							// Close modal when clicking outside of it
-							window.onclick = function(event) {
-								const modals = document.querySelectorAll('.custom-modal');
-								modals.forEach(modal => {
-									if (event.target === modal) {
-										modal.style.display = "none"; // Close modal when clicking outside
-									}
-								});
-							};
-					</script>
+<script>
+    function showModal(toolId) {
+        const modal = document.getElementById(`deleteToolModal${toolId}`);
+        if (modal) {
+            modal.style.display = "block"; // Show the modal
+        }
+    }
 
-	<style>
-		/* Modal Background */
+    function closeModal(toolId) {
+        const modal = document.getElementById(`deleteToolModal${toolId}`);
+        if (modal) {
+            modal.style.display = "none"; // Close the modal
+        }
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modals = document.querySelectorAll('.custom-modal');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = "none"; // Close modal when clicking outside
+            }
+        });
+    };
+</script>
+<style>
+    a:hover strong {
+        text-decoration: underline;
+    }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5em;
+        border-radius: 0.5rem;
+    }
+
+/* Modal Background */
 		.custom-modal {
 			position: fixed;
 			top: 0;
