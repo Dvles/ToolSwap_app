@@ -5,55 +5,79 @@
 {% endblock %}
 
 {% block body %}
-
-    <h2>{{ user.firstName }}</h2>
-
-    <strong>Commune:</strong> {{ user.community }} <br>
-    <strong>{{ borrowedToolsCount }}</strong> emprunt(s) <br>
-    <strong>{{ lentToolsCount }}</strong> prêt(s) <br>
-     <strong>{{ toolsOwnedByOwnerCount }}</strong> outil(s) disponible(s)<br>
-
-    {% if freeToolsOwnedByOwnerCount != 0 %}
-        <strong>{{ freeToolsOwnedByOwnerCount }}</strong> outils gratuitement disponibles<br>
-    {% endif %}
-    <br>
-
-    <h3>Avis</h3>
-        {% if reviews|length > 0 %}
+    <div class="container mt-4" style="padding-bottom: 150px; width: 80%; gap: 30px;">
+        <div class="row">
             
-                {% for review in reviews|slice(0, 3) %}
-                        <a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}"><strong>{{ review.userLeavingReview.firstName }}</strong></a> | {{ review.rating }} / 5<br>
-                        {{ review.comments }}
-                        <br><br>
-                {% endfor %}
-            
-            {% if reviews|length > 3 %}
-                <a href="">Voir plus</a>
-            {% endif %}
-        {% else %}
-            <p>Pas d'avis disponibles pour cet utilisateur.</p>
-        {% endif %}
-    <br>
+            <!-- Left Column: User Card and Contributions -->
+            <div class="col-md-6 mb-4" style="background-color: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <!-- Placeholder Image -->
+                <img src="https://via.placeholder.com/150" alt="Profile Picture" style="border-radius: 50%; width: 150px; height: 150px; margin-bottom: 20px;">
+                
+                <h2 class="fw-bold">{{ user.firstName }}</h2>
+                <strong>Commune:</strong> {{ user.community }} <br>
+                <strong>{{ borrowedToolsCount }}</strong> emprunt(s) <br>
+                <strong>{{ lentToolsCount }}</strong> prêt(s) <br>
+                <strong>{{ toolsOwnedByOwnerCount }}</strong> outil(s) disponible(s)<br>
 
-    <h3>Outils</h3>
-    {% if tools|length > 0 %}
-        {% for tool in tools|slice(0, 3) %}
-            <div class="tool-item">
-                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
-                <h4>{{ tool.name }}</h4>
-                <p>
-                    <strong>{{ tool.priceDay }}</strong> € / jour
-                </p>
-                <h5>
-                    <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">détails</a>
-                </h5>
+                {% if freeToolsOwnedByOwnerCount != 0 %}
+                    <strong>{{ freeToolsOwnedByOwnerCount }}</strong> outils gratuitement disponibles<br>
+                {% endif %}
+                <br>
+
+                <!-- Contact, Commenter, Signaler Buttons -->
+                <div class="d-flex gap-2">
+                    <button class="btn btn-custom-orange" style="width: auto;" onclick="location.href='{{ path('coming_soon') }}'">Contact</button>
+                    <button class="btn whitebtn" style="width: auto;" onclick="location.href='{{ path('coming_soon') }}'">Commenter</button>
+                    <button class="btn btn-danger" style="width: auto;"  onclick="location.href='{{ path('coming_soon') }}'">Signaler</button>
+                </div>
             </div>
-        {% endfor %}
-        {% if tools|length > 3 %}
-            <a href="">Voir tout ses outils</a>
-        {% endif %}
-    {% else %}
-        <p>L'utilisateur n'a pas encore partagé d'outils.</p>
-    {% endif %}
 
+            <!-- Right Column: Avis and Outils -->
+            <div class="col-md-6 mb-4" style="padding-left:30px;">
+                
+                <!-- Avis (Reviews) -->
+                <h3 class="fw-bold">Avis</h3>
+                {% if reviews|length > 0 %}
+                    {% for review in reviews|slice(0, 3) %}
+                        <div class="mb-3 p-3 border rounded">
+                            <a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
+                                <strong>{{ review.userLeavingReview.firstName }}</strong>
+                            </a>
+                            <span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }} / 5</span>
+                            <p class="mt-2 mb-0">{{ review.comments }}</p>
+                        </div>
+                    {% endfor %}
+                    {% if reviews|length > 3 %}
+                        <a href="#">Voir plus</a>
+                    {% endif %}
+                {% else %}
+                    <p>Pas d'avis disponibles pour cet utilisateur.</p>
+                {% endif %}
+                <br>
+
+                <!-- Outils (Tools) -->
+                <h3 class="fw-bold">Outils</h3>
+                {% if tools|length > 0 %}
+                    {% for tool in tools|slice(0, 3) %}
+                        <div class="tool-item mb-3">
+                            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
+                            <h4>{{ tool.name }}</h4>
+                            <p>
+                                <strong>{{ tool.priceDay }}</strong> € / jour
+                            </p>
+                            <h5>
+                                <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">détails</a>
+                            </h5>
+                        </div>
+                    {% endfor %}
+                    {% if tools|length > 3 %}
+                        <a href="#">Voir tout ses outils</a>
+                    {% endif %}
+                {% else %}
+                    <p>L'utilisateur n'a pas encore partagé d'outils.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
 {% endblock %}
