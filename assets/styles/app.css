@@ -30,7 +30,7 @@ body {
 }
 
 .prominent-link:hover {
-    background-color: rgb(43, 43, 43);
+    background-color: rgb(58, 58, 58) !important;
     color: rgb(255, 248, 235);
 }
 
