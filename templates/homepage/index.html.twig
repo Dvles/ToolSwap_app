@@ -15,13 +15,13 @@
 
 
 			{% if tools is empty %}
-		<p>
-			Vous n'avez pas encore de contributions ToolSwap!
-		</p>
+		<h2>
+			Que voulez-vous faire aujourd'hui?
+		</h2><br>
 		<a href="{{ path('tool_display_all') }}">
-			<button type="button" class="btn btn-custom-orange btn-lg custom-btn">Rechercher outil</button>
+			<button type="button" class="btn btn-custom-orange btn-lg " style="width: auto;">Rechercher</button>
 		</a>
-		<a href="{{ path('tool_upload') }}" class="btn  btn-lg custom-btn whitebtn" >Ajouter outil</a> <br><br>
+		<a href="{{ path('tool_upload') }}" class="btn  btn-lg whitebtn" style="width: auto;" >Ajouter outil</a> <br><br>
 
 
 	{% else %}
