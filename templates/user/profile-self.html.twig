@@ -1,118 +1,129 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Profil - {{ user.firstName }}
+	Profil -
+	{{ user.firstName }}
 {% endblock %}
 
-{% block body %}<div class="container mt-4" style="padding-bottom: 150px; width: 80%; gap: 30px;">
-    <div class="row">
-        <!-- Left Column: User Details Form -->
-        <div class="col-md-6 mb-4" style="background-color: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <h2 class="fw-bold">Bonjour, {{ user.firstName }}!</h2><br>
+{% block body %}
+	<div class="container mt-4" style="padding-bottom: 150px; width: 80%; gap: 30px;">
+		<div
+			class="row">
+			<!-- Left Column: User Details Form -->
+			<div class="col-md-6 mb-4" style="background-color: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+				<h2 class="fw-bold">Bonjour,
+					{{ user.firstName }}!</h2><br>
 
-            {{ form_start(form) }}
+				{{ form_start(form) }}
 
-            <!-- Email -->
-            <div class="mb-3">
-                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.email, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- Email -->
+				<div class="mb-3">
+					{{ form_label(form.email, 'Email', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.email, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- First Name -->
-            <div class="mb-3">
-                {{ form_label(form.firstName, 'Prénom', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.firstName, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- First Name -->
+				<div class="mb-3">
+					{{ form_label(form.firstName, 'Prénom', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.firstName, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- Last Name -->
-            <div class="mb-3">
-                {{ form_label(form.lastName, 'Nom', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.lastName, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- Last Name -->
+				<div class="mb-3">
+					{{ form_label(form.lastName, 'Nom', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.lastName, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- Phone Number -->
-            <div class="mb-3">
-                {{ form_label(form.phoneNumber, 'Téléphone', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.phoneNumber, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- Phone Number -->
+				<div class="mb-3">
+					{{ form_label(form.phoneNumber, 'Téléphone', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.phoneNumber, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- Image -->
-            <div class="mb-3">
-                {{ form_label(form.image, 'Photo de profil (URL)', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.image, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- Image -->
+				<div class="mb-3">
+					{{ form_label(form.image, 'Photo de profil (URL)', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.image, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- Community -->
-            <div class="mb-3">
-                {{ form_label(form.community, 'Région', {'label_attr': {'class': 'fw-bold'}}) }}<br>
-                {{ form_widget(form.community, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
-            </div>
+				<!-- Community -->
+				<div class="mb-3">
+					{{ form_label(form.community, 'Région', {'label_attr': {'class': 'fw-bold'}}) }}<br>
+					{{ form_widget(form.community, {'attr': {'disabled': 'disabled', 'class': 'editable-field', 'style': 'width: 100%;'}}) }}<br><br>
+				</div>
 
-            <!-- Save and Edit Buttons -->
-            <div>
-                <button id="btnEdit" type="button" class="btn btn-custom-orange" style="width: auto;">Modifier</button>
-                <button id="btnSave" type="submit" class="btn whitebtn" style="display: none; width: auto;">Enregistrer</button>
-            </div>
+				<!-- Save and Edit Buttons -->
+				<div class="d-flex justify-content-start gap-2">
+					<button id="btnEdit" type="button" class="btn btn-custom-orange" style="width: auto;">Modifier</button>
+					<button id="btnSave" type="submit" class="btn whitebtn" style="display: none; width: auto;">Enregistrer</button>
+					<button type="button" class="btn btn-danger" style="width: auto;" onclick="location.href='{{ path('coming_soon') }}'">Supprimer</button>
+				</div>
 
-            {{ form_end(form) }}
-        </div>
+				{{ form_end(form) }}
+			</div>
 
-        <!-- Right Column: Profile Statistics and Reviews -->
-        <div class="col-md-6 mb-4" style="padding-left: 30px;">
-            <!-- PART B: Profile Statistics -->
-            <h3 class="fw-bold">Contributions</h3>
-            <strong>{{ borrowedToolsCount }}</strong> emprunt(s)<br>
-            <strong>{{ lentToolsCount }}</strong> prêt(s)<br>
-            <strong>{{ toolsOwnedByOwnerCount }}</strong> outil(s) disponible(s)<br>
 
-            {% if freeToolsOwnedByOwnerCount != 0 %}
-                <strong>{{ freeToolsOwnedByOwnerCount }}</strong> outils gratuitement disponibles<br>
-            {% endif %}
-            <br>
+			<!-- Right Column: Profile Statistics and Reviews -->
+			<div
+				class="col-md-6 mb-4" style="padding-left: 30px;">
+				<!-- PART B: Profile Statistics -->
+				<h3 class="fw-bold">Contributions</h3>
+				<strong>{{ borrowedToolsCount }}</strong>
+				emprunt(s)<br>
+				<strong>{{ lentToolsCount }}</strong>
+				prêt(s)<br>
+				<strong>{{ toolsOwnedByOwnerCount }}</strong>
+				outil(s) disponible(s)<br>
 
-            <hr>
+				{% if freeToolsOwnedByOwnerCount != 0 %}
+					<strong>{{ freeToolsOwnedByOwnerCount }}</strong>
+					outils gratuitement disponibles<br>
+				{% endif %}
+				<br>
 
-            <!-- Reviews -->
-            <h3 class="fw-bold">Avis</h3>
-            {% if reviews|length > 0 %}
-                {% for review in reviews|slice(0, 3) %}
-                    <div class="mb-3 p-3 border rounded">
-                        <a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
-                            <strong>{{ review.userLeavingReview.firstName }}</strong>
-                        </a>
-                        <span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }} / 5</span>
-                        <p class="mt-2 mb-0">{{ review.comments }}</p>
-                    </div>
-                {% endfor %}
+				<hr>
 
-                {% if reviews|length > 3 %}
-                    <a href="{{ path('coming_soon') }}">Voir plus</a>
-                {% endif %}
-            {% else %}
-                <p>Pas d'avis disponibles pour cet utilisateur.</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
+				<!-- Reviews -->
+				<h3 class="fw-bold">Avis</h3>
+				{% if reviews|length > 0 %}
+					{% for review in reviews|slice(0, 3) %}
+						<div class="mb-3 p-3 border rounded">
+							<a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
+								<strong>{{ review.userLeavingReview.firstName }}</strong>
+							</a>
+							<span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }}
+								/ 5</span>
+							<p class="mt-2 mb-0">{{ review.comments }}</p>
+						</div>
+					{% endfor %}
+
+					{% if reviews|length > 3 %}
+						<a href="{{ path('coming_soon') }}">Voir plus</a>
+					{% endif %}
+				{% else %}
+					<p>Vous n'avez pas encore reçu(e) d'avis.</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 
 
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const editButton = document.getElementById('btnEdit');
-            const saveButton = document.getElementById('btnSave');
-            const editableFields = document.querySelectorAll('.editable-field');
-    
-            editButton.addEventListener('click', () => {
-                // Enable all fields
-                editableFields.forEach(field => field.removeAttribute('disabled'));
-    
-                // Show the save button, hide the edit button
-                editButton.style.display = 'none';
-                saveButton.style.display = 'inline-block';
-            });
-        });
-    </script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+const editButton = document.getElementById('btnEdit');
+const saveButton = document.getElementById('btnSave');
+const editableFields = document.querySelectorAll('.editable-field');
+
+editButton.addEventListener('click', () => { // Enable all fields
+editableFields.forEach(field => field.removeAttribute('disabled'));
+
+// Show the save button, hide the edit button
+editButton.style.display = 'none';
+saveButton.style.display = 'inline-block';
+});
+});
+	</script>
 {% endblock %}
