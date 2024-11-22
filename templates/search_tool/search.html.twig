@@ -12,36 +12,41 @@
 				{{ keyword }}
 			</strong>:</h2>
 		<ul>
-			{% for tool in tools %}
-				<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
-				<h3>{{ tool.name }}</h3>
-				<p>{{ tool.owner.community }}</p>
-				<p>
-					{% if tool.priceDay == 0 %}
-						<strong>gratuit</strong>
-					{% else %}
-						<strong>{{ tool.priceDay }}
-							€
-						</strong>/ jour
-					{% endif %}
-				</p>
-				<button id="btnToolUpdate" type="button" onclick="location.href='{{ path('tool_display_single', {'tool_id': tool.id}) }}'">
-					voir outil
-				</button>
+			<div class="container" style="max-width: 80%; margin: 0 auto; padding-bottom: 100px;">
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        {% for tool in tools %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ tool.name }}</h5>
+                        <p class="card-text">{{ tool.owner.community }}</p>
+                        <p class="card-text">
+                            {% if tool.priceDay == 0 %}
+                                <strong>
+                                    <span style="color:#ff8719;">GRATUIT</span>
+                                </strong>
+                            {% else %}
+                                <strong>{{ tool.priceDay }} €</strong> / jour
+                            {% endif %}
+                        </p>
+                        <div class="d-flex">
+                            <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange" style="max-width: 40%; margin-right: 15px;">Voir outil</a>
+                            {% if app.user is not null and app.user.id != tool.owner.id %}
+                                <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}" class="btn btn-success">Emprunter</a>
+                            {% elseif app.user is not null and app.user.id == tool.owner.id %}
+                                <button class="btn btn-secondary" disabled title="Vous ne pouvez pas emprunter votre propre outil">Emprunter</button>
+{% else %}
+    <a href="{{ path('app_login') }}" class="btn btn-secondary" title="Veuillez vous connecter pour emprunter un outil">Emprunter</a>
+{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-				{% if app.user.id != tool.owner.id %}
-					<button id="btnBorrowTool2" type="button" onclick="location.href='{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}'">
-						Emprunter
-					</button>
-				{% elseif app.user.id == tool.owner.id %}
-					<button id="btnBorrowTool2" type="button" disabled title="Vous ne pouvez pas emprunter votre propre outil">
-						Emprunter
-					</button>
-				{% endif %}
-
-
-				<br><br>
-			{% endfor %}
 		</ul>
 	{% else %}
 		<p>No tools found.</p>
