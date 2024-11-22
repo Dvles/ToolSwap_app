@@ -60,7 +60,7 @@
         <!-- Right Column: Profile Statistics and Reviews -->
         <div class="col-md-6 mb-4" style="padding-left: 30px;">
             <!-- PART B: Profile Statistics -->
-            <h3>Contributions</h3>
+            <h3 class="fw-bold">Contributions</h3>
             <strong>{{ borrowedToolsCount }}</strong> emprunt(s)<br>
             <strong>{{ lentToolsCount }}</strong> prêt(s)<br>
             <strong>{{ toolsOwnedByOwnerCount }}</strong> outil(s) disponible(s)<br>
@@ -73,7 +73,7 @@
             <hr>
 
             <!-- Reviews -->
-            <h3>Avis</h3>
+            <h3 class="fw-bold">Avis</h3>
             {% if reviews|length > 0 %}
                 {% for review in reviews|slice(0, 3) %}
                     <div class="mb-3 p-3 border rounded">
