@@ -33,27 +33,30 @@
 	<br>
 
 <!-- Tool Cards -->
-<div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-    {% for tool in tools %}
-    <div class="col-md-3 mb-4">
-        <div class="card shadow-sm">
-            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-            <div class="card-body">
-                <h5 class="card-title">{{ tool.name }}</h5>
-                <p class="card-text">{{ tool.owner.community }}</p>
-                <p class="card-text">
-                    {% if tool.priceDay == 0 %}
-                        <strong><span style="color:#ff8719;">GRATUIT</span></strong>
-                    {% else %}
-                        <strong>{{ tool.priceDay }} €</strong> / jour
-                    {% endif %}
-                </p>
-                <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange">+</a>
+<div class="container" style="max-width: 80%; margin: 0 auto;">
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        {% for tool in tools %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ tool.name }}</h5>
+                    <p class="card-text">{{ tool.owner.community }}</p>
+                    <p class="card-text">
+                        {% if tool.priceDay == 0 %}
+                            <strong><span style="color:#ff8719;">GRATUIT</span></strong>
+                        {% else %}
+                            <strong>{{ tool.priceDay }} €</strong> / jour
+                        {% endif %}
+                    </p>
+                    <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange">+</a>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
+
 
 
 
