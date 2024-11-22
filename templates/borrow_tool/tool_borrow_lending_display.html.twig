@@ -4,8 +4,15 @@
 {% endblock %}
 
 {% block body %}
+
+	<div>
 	<h2>Mes prêts</h2>
-	<br>
+    <div>
+        <a href="#active-borrow" class="btn btn-custom-orange" style="width: auto;">Prêts actifs</a>
+        <a href="#completed-borrow" class="btn btn-custom-orange" style="width: auto; background-color: darkgrey !important;">Prêts passés</a>
+    </div>
+</div>
+<br>
 
 	{% if borrowTools is empty %}
 		<p>Vous n'avez pas encore prêté d'outils.</p>
@@ -14,6 +21,8 @@
 			class="tool-list">
 
 			<!-- Active Tools (Pending) Section -->
+						    <div id="active-borrow">
+
 			<h3>
 				<strong>Prêts actifs</strong>
 			</h3>
@@ -54,8 +63,13 @@
 					</div>
 				{% endif %}
 			{% endfor %}
+			</div>
 
 			<!-- Completed Tools Section -->
+			<div id="completed-borrow">
+			<br><br><br><br><br><br>
+							    
+
 			<br>
 			<h3>
 				<strong>Prêts complétés</strong>
@@ -105,4 +119,5 @@
 			{% endfor %}
 		</div>
 	{% endif %}
+	</div>
 {% endblock %}
