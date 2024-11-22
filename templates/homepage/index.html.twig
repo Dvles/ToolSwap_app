@@ -11,6 +11,21 @@
 		<div class="container text-center">
 			<h1 class="mb-4">Bonjour,
 				{{ app.user.firstName }}!</h1>
+
+
+
+			{% if tools is empty %}
+		<p>
+			Vous n'avez pas encore de contributions ToolSwap!
+		</p>
+		<a href="{{ path('tool_display_all') }}">
+			<button type="button" class="btn btn-custom-orange btn-lg custom-btn">Rechercher outil</button>
+		</a>
+		<a href="{{ path('tool_upload') }}" class="btn  btn-lg custom-btn whitebtn" >Ajouter outil</a> <br><br>
+
+
+	{% else %}
+
 			<h3>Voici vos contributions <strong>ToolSwap</strong></h3>
 
 			<!-- Borrowing/Lending Counts -->
@@ -35,5 +50,7 @@
 				<a href="{{ path('tool_borrow_lending_display') }}" class="btn btn-custom-orange btn-lg custom-btn">Prêts</a>
 			</div>
 		</div>
+	{% endif %}
+
 	</section>
 {% endblock %}

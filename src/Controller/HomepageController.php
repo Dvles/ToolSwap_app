@@ -16,31 +16,35 @@ class HomepageController extends AbstractController
     public function index( ManagerRegistry $doctrine, ToolRepository $toolRepository, BorrowToolRepository $borrowToolRepository): Response
     {
         $user = $this->getUser();
-        $tools = $user->getToolsOwned();
-        // repository method to get the count
-        $borrowedToolsCount = $borrowToolRepository->countBorrowedToolsByBorrower($user);
-        $lentToolsCount = $borrowToolRepository->countBorrowedToolsByOwner($user);
-        $toolsOwnedByOwnerCount = $toolRepository->countToolsOwnedByOwner($user);
-        $freeToolsOwnedByOwnerCount = $toolRepository->countFreeToolsOwnedByOwner($user);
+        if ($user) {
 
+            $tools = $user->getToolsOwned();
+            // repository method to get the count
+            $borrowedToolsCount = $borrowToolRepository->countBorrowedToolsByBorrower($user);
+            $lentToolsCount = $borrowToolRepository->countBorrowedToolsByOwner($user);
+            $toolsOwnedByOwnerCount = $toolRepository->countToolsOwnedByOwner($user);
+            $freeToolsOwnedByOwnerCount = $toolRepository->countFreeToolsOwnedByOwner($user);
+    
+    
+            $reviews = $user->getReviewsReceived();
+            $vars = [
+                'user' => $user,
+                'tools' => $tools,
+                'reviews' => $reviews,
+                'borrowedToolsCount' => $borrowedToolsCount,
+                'toolsOwnedByOwnerCount' => $toolsOwnedByOwnerCount,
+                'freeToolsOwnedByOwnerCount' => $freeToolsOwnedByOwnerCount,
+                'lentToolsCount' => $lentToolsCount
+    
+            ];
+            
+            return $this->render('homepage/index.html.twig', $vars);
 
-        $reviews = $user->getReviewsReceived();
-        $vars = [
-            'user' => $user,
-            'tools' => $tools,
-            'reviews' => $reviews,
-            'borrowedToolsCount' => $borrowedToolsCount,
-            'toolsOwnedByOwnerCount' => $toolsOwnedByOwnerCount,
-            'freeToolsOwnedByOwnerCount' => $freeToolsOwnedByOwnerCount,
-            'lentToolsCount' => $lentToolsCount
+        } else {
 
-        ];
+            return $this->redirectToRoute('tool_display_all');
 
-        //dd($user);
-        //dd($tools);
-        //dd($reviews);
-        
-        return $this->render('homepage/index.html.twig', $vars);
+        } 
     }
 
     #[Route('/coming/soon', name: 'coming_soon')]
