@@ -1,32 +1,50 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Coming soon{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Coming soon
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
 
-        {% block javascripts %}
+		{% block javascripts %}
 
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% include "/includes/nav.html.twig" %}
-        {% block body %}
-        <div style="text-align:center; margin:320px;">
-        <h1 style="font-size: 60px; text-align: center;">٩(◕‿◕)۶</h1><br>
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</head>
+	<body>
+		{% include "/includes/nav.html.twig" %}
+		{% block body %}
+			<div style=" text-align: center;margin:140px;">
+				<h1 style="font-size: 60px; text-align: center;">٩(◕‿◕)۶</h1><br>
+				<h1 style="font-size: 30px; text-align: center;">
+					<strong>Coming Soon</strong><br><br>
+				</h1>
 
+				<p>
 
-        <h1 style="font-size: 30px; text-align: center;"><strong>Coming Soon</strong></h1>
-        </div>
-        
-        
-        
-        {% endblock %}
-    </body>
-    <footer>{% include "/includes/footer.html.twig" %}
-        </footer>
+					Finaliser CRUD/Delete : User<br>
+					Finaliser CRUD/Read : Tools<br>
+					Penser à la fonctionalité : "modifier status"
+					<br>
+					Finaliser styles<br><br>
+					<strong>Extra:</strong><br>
+
+					Ajouter fonctionalité : "image upload"<br>
+					Ajouter fonctionalité : "search by prince Range (tool)"<br>
+					Ajouter fonctionalité : "similar tools"<br>
+					Ajouter fonctionalité : "Alertes"<br>
+					Ajouter fonctionalité : "Star Ratings"<br>
+					Créer entité "tool_requests"<br>
+					Optimiser/finaliser vue : styles comme layout initial<br>
+				</p>
+			</div>
+		{% endblock %}
+	</body>
+	<footer>{% include "/includes/footer.html.twig" %}
+	</footer>
 </html>
