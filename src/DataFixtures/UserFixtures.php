@@ -64,23 +64,27 @@ class UserFixtures extends Fixture
                 $firstName = $fakerNl->firstName();
                 $lastName = $fakerNl->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
-                $city = $bxlMunicipalities[mt_rand(0,12)];
+                $city = $bxlMunicipalities[mt_rand(0, count($bxlMunicipalities) - 1)];
+
             } elseif ($i % 7 === 0){
                 $firstName = $fakerRw->firstName();
                 $lastName = $fakerRw->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
-                $city = $bxlMunicipalities[mt_rand(0,12)];
+                $city = $bxlMunicipalities[mt_rand(0, count($bxlMunicipalities) - 1)];
+
 
             } elseif ($i % 11 === 0 ) {
                 $firstName = $fakerIt->firstName();
                 $lastName = $fakerIt->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
-                $city = $bxlMunicipalities[mt_rand(0,12)];
+                $city = $bxlMunicipalities[mt_rand(0, count($bxlMunicipalities) - 1)];
+
             } else {
                 $firstName = $fakerBe->firstName();
                 $lastName = $fakerBe->lastName();
                 $email = ($firstName . '.' . $lastName . $i . "@gmail.com");
-                $city = $bxlMunicipalities[mt_rand(0,12)];
+                $city = $bxlMunicipalities[mt_rand(0, count($bxlMunicipalities) - 1)];
+
             }
 
             // email treatment
