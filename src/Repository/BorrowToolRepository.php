@@ -50,7 +50,7 @@ class BorrowToolRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    
+
     public function countPendingBorrowToolsByBorrower(User $user, \DateTime $currentDate)
     {
         return $this->createQueryBuilder('bt')
@@ -62,5 +62,30 @@ class BorrowToolRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    
+
+    public function countCompletedBorrowToolsByLender(User $lender, \DateTime $currentDate): int
+    {
+        return $this->createQueryBuilder('bt')
+            ->select('COUNT(DISTINCT bt.id)')
+            ->join('bt.toolBeingBorrowed', 'tool') // Assuming this is the relation between BorrowTool and Tool
+            ->where('tool.owner = :lender')
+            ->andWhere('bt.endDate < :currentDate') // Completed borrow tools have ended
+            ->setParameter('lender', $lender)
+            ->setParameter('currentDate', $currentDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countPendingBorrowToolsByLender(User $lender, \DateTime $currentDate): int
+    {
+        return $this->createQueryBuilder('bt')
+            ->select('COUNT(DISTINCT bt.id)')
+            ->join('bt.toolBeingBorrowed', 'tool') // Assuming this is the relation between BorrowTool and Tool
+            ->where('tool.owner = :lender')
+            ->andWhere('bt.endDate > :currentDate') // Pending borrow tools haven't ended yet
+            ->setParameter('lender', $lender)
+            ->setParameter('currentDate', $currentDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
