@@ -311,53 +311,64 @@ class BorrowToolController extends AbstractController
     #[Route('/tool/borrow/display', name: 'tool_borrow_display')]
     public function borrowToolUser(ManagerRegistry $doctrine)
     {
-
         $user = $this->getUser();
-
+    
         if (!$user) {
             throw $this->createAccessDeniedException('No user is logged in.');
         }
-
+    
         // Fetch the EntityManager
         $em = $doctrine->getManager();
-
+    
         // Fetch the user with their borrows using a Doctrine query to ensure the relation is loaded
         $toolOfBorrowTools = $em->getRepository(User::class)->find($user->getId());
-
+    
         // Check if tools are fetched
         $BorrowTools = $toolOfBorrowTools->getBorrowTools();
-
+    
         // Prepare borrowTool object data to avoid lazy loading and errors
         $borrowToolsData = [];
+    
+        // Get the current date for comparison
+        $currentDate = new \DateTime();
+    
+        // Separate completed and pending borrow tools counts using the repository methods
+        $borrowToolRepository = $doctrine->getRepository(BorrowTool::class);
+    
+        // Completed borrow tools: endDate < currentDate
+        $completedBorrowToolsCount = $borrowToolRepository->countCompletedBorrowToolsByBorrower($user, $currentDate);
+        
+        // Pending borrow tools: endDate > currentDate
+        $pendingBorrowToolsCount = $borrowToolRepository->countPendingBorrowToolsByBorrower($user, $currentDate);
+    
         foreach ($BorrowTools as $BorrowTool) {
-
             $start = (clone $BorrowTool->getStartDate());
             $end = (clone $BorrowTool->getEndDate());
-
+    
             // Calculate the difference between start and end dates
             $dateInterval = $start->diff($end);
             $days = $dateInterval->days; // Get the total number of days
-
+    
             // handle cases where startDate = endDate
             if ($days === 0) {
                 $days = 1;
             }
-
+    
             // fetch tool
             $tool = $BorrowTool->getToolBeingBorrowed();
             $toolId = $tool->getId(); // Directly get the tool ID
-
+    
             // fetch owner
             $ownerId = $tool->getOwner();
             $owner = $em->getRepository(User::class)->find($ownerId);
-
+    
             // Fetch the 'isDisabled' status for the tool
             $isDisabled = $tool->isDisabled();
-
-
+    
             $borrowToolsData[] = [
                 'id' => $BorrowTool->getId(),
                 'tool' => $tool->getName(),
+                'imageTool' => $tool->getImageTool(),
                 'start' => $start->format('d-m-Y'),
                 'end' => $end->format('d-m-Y'),
                 'status' => $BorrowTool->getStatus()->value,
@@ -365,10 +376,10 @@ class BorrowToolController extends AbstractController
                 'owner' => $owner->getFirstName(),
                 'ownerId' => $owner->getId(),
                 'toolId' => $toolId,
-                'isDisabled' => $isDisabled
-
+                'isDisabled' => $isDisabled,
             ];
         }
+    
 
         //dd($borrowToolsData);
 
@@ -378,7 +389,9 @@ class BorrowToolController extends AbstractController
         });
 
 
-        $vars = ['borrowTools' => $borrowToolsData];
+        $vars = ['borrowTools' => $borrowToolsData,
+        'completedBorrowToolsCount' => $completedBorrowToolsCount,
+        'pendingBorrowToolsCount' => $pendingBorrowToolsCount];
 
         return $this->render('borrow_tool/tool_borrow_display.html.twig', $vars);
     }
@@ -431,7 +444,9 @@ class BorrowToolController extends AbstractController
                     $toolId = $tool->getId(); // Directly get the tool ID
 
                     // Fetch the 'isDisabled' status for the tool
-                    $isDisabled = $tool->isDisabled(); 
+                    $isDisabled = $tool->isDisabled();
+
+
 
                     $borrowToolsData[] = [
                         'userBorrower' => $borrowTool->getUserBorrower()->getFirstName(),
