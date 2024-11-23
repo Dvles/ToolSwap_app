@@ -1,20 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commenter outil{% endblock %}
+{% block title %}Commenter un Outil{% endblock %}
 
 {% block body %}
-    <h1>Commenter outil</h1>
+<section class="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+    <div class="container py-0">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px; padding: 1rem;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center fw-bold">Commenter un Outil</h3>
 
-    {{ form_start(form) }}
+                        <!-- Display errors -->
+                        {{ form_errors(form) }}
 
-    {{ form_label(form.rating) }}<br>
-    {{ form_widget(form.rating) }}<br>
+                        <form method="post">
+                            {{ form_start(form) }}
 
-    {{ form_label(form.comment) }}<br>
-    {{ form_widget(form.comment) }}<br>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    {{ form_row(form.rating, {
+                                        'label': 'Note',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-    <input type="submit" value="Insérer">
-    
-    {{ form_end(form) }}
-    
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    {{ form_row(form.comment, {
+                                        'label': 'Commentaire',
+                                        'attr': {'class': 'form-control form-control-lg', 'rows': 4}
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-2 text-center">
+                                <button type="submit" class="btn" style="background-color: #ff8719; color: white; font-weight: bold;">Insérer</button>
+                            </div>
+
+                            {{ form_end(form) }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
