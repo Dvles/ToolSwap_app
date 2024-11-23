@@ -4,7 +4,9 @@
 {% endblock %}
 
 {% block body %}
-	<h2 class="fw-bold" style="text-align: center; margin: 50px 0;">Mes outils</h2>
+	<h2 class="fw-bold" style="text-align: center; margin-top: 50px;">Mes outils</h2>
+	
+
 
 	<div class="tool-list" style="width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
 		{% if tools is empty %}
@@ -13,6 +15,7 @@
 				<button type="button">Upload outil</button>
 			</a>
 		{% else %}
+			<h3 style="margin-bottom: 50px;"><strong>{{ userToolsCount }}</strong> outil(s) disponible(s)</h3>
 			<ul class="list-group" style="margin-bottom: 100px;">
 				{% for tool in tools %}
 					<li class="list-group-item" style="display: flex; flex-direction: row; gap: 20px; ">

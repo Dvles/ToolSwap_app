@@ -306,6 +306,9 @@ class ToolController extends AbstractController
             }
         }
 
+        
+
+
 
         //dd($activeBorrowToolsIds);
         //dd($activeBorrowTools);
@@ -318,6 +321,7 @@ class ToolController extends AbstractController
             'borrowTools' => $borrowTools,
             'tool_id' => $tool_id,
             'pastBorrowToolsIds' => $pastBorrowToolsIds,
+            'userToolsCount' => $repTools->countToolsOwnedByOwner($user)
 
         ];
 
