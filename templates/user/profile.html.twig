@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="container mt-4" style="padding-bottom: 150px; width: 80%; gap: 30px;">
-        <div class="row">
+        <div class="row align-items-start"> <!-- Prevent vertical stretching here -->
             
             <!-- Left Column: User Card and Contributions -->
             <div class="col-md-6 mb-4" style="background-color: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -32,8 +32,8 @@
                 </div>
             </div>
 
-            <!-- Right Column: Avis and Outils -->
-            <div class="col-md-6 mb-4" style="padding-left:30px;">
+            <!-- Right Column: Avis (Reviews) and Outils (Tools) -->
+            <div class="col-md-6 mb-4">
                 
                 <!-- Avis (Reviews) -->
                 <h3 class="fw-bold">Avis</h3>
@@ -58,20 +58,24 @@
                 <!-- Outils (Tools) -->
                 <h3 class="fw-bold">Outils</h3>
                 {% if tools|length > 0 %}
-                    {% for tool in tools|slice(0, 3) %}
-                        <div class="tool-item mb-3">
-                            <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
-                            <h4>{{ tool.name }}</h4>
-                            <p>
-                                <strong>{{ tool.priceDay }}</strong> € / jour
-                            </p>
-                            <h5>
-                                <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}">détails</a>
-                            </h5>
-                        </div>
-                    {% endfor %}
-                    {% if tools|length > 3 %}
-                        <a href="#">Voir tout ses outils</a>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> <!-- Grid for tools -->
+                        {% for tool in tools|slice(0, 6) %}
+                            <div class="col">
+                                <div class="card shadow-sm" style="height: 100%;">
+                                    <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ tool.name }}</h5>
+                                        <p class="card-text">
+                                            <strong>{{ tool.priceDay }}</strong> € / jour
+                                        </p>
+                                        <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if tools|length > 6 %}
+                        <a href="#" class="btn btn-link mt-3">Voir tout ses outils</a>
                     {% endif %}
                 {% else %}
                     <p>L'utilisateur n'a pas encore partagé d'outils.</p>
