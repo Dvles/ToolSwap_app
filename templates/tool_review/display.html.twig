@@ -1,33 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ tool.name }} Avis{% endblock %}
+{% block title %}
+	{{ tool.name }}
+{% endblock %}
 
 {% block body %}
+	<div class="container mt-4" style="padding-bottom: 150px;">
+		<div
+			class="row">
+			<!-- Tool Details -->
+			<div class="col-md-6 mb-4">
+				<div class="card shadow-sm">
+					<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+					<div class="card-body">
+						<h3 class="card-title fw-bold">{{ tool.name }}</h3>
+						<p class="card-text">{{ tool.owner.community }}</p>
+						<p class="card-text">
+							<strong>État:
+							</strong>
+							{{ tool.toolCondition }}</p>
+						<p class="card-text">{{ tool.description }}</p>
+						<p class="card-text">
+							<strong>
+								{% if tool.priceDay == 0 %}
+									<span style="color: #ff8719;">GRATUIT</span>
+								{% else %}
+									{{ tool.priceDay }}
+									€
+								{% endif %}
+							</strong>
+							/ jour
+						</p>
+						<!-- "Retour" Button Section -->
+						<div class="d-flex justify-content-start">
+							<button type="button" class="btn btn-custom-orange w-auto" onclick="history.back()">Retour</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    <h2>{{ tool.name }} | Avis</h2>
 
-    <div class="tool-list">
-            <div class="tool-item">
-                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;" />            
-
-            </div>  
-    </div>
-    <ul>
-    {% for toolReview in toolReviews %}
-
-        <li>
-
-        <h4>            			<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}">
-				<strong>{{ toolReview.reviewer }}</strong>
-			</a>| {{ toolReview.rating }} / 5</H4>
-        <p>{{ toolReview.comment }}</p>
-        </li>
-
-    {% endfor %}
-    <ul>
-    
-    <a href="{{ path('tool_display_user', {'tool_id': tool.id}) }}">
-        <button type="button">retour</button>
-    </a>
-
+			<!-- Comments Section -->
+			<div class="col-md-6">
+				<h2 class="fw-bold">Avis</h2>
+				{% if toolReviews %}
+					{% for toolReview in toolReviews %}
+						<div class="mb-3 p-3 border rounded">
+							<a href="{{ path('user_profile', {'user_id': toolReview.reviewerId}) }}" style="text-decoration: none; color: #333;">
+								<strong>{{ toolReview.reviewer }}</strong>
+							</a>
+							<span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ toolReview.rating }}/5</span>
+							<p class="mt-2 mb-0">{{ toolReview.comment }}</p>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p>L'outil n'a pas encore de commentaires.</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
