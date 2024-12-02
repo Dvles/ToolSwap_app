@@ -3,28 +3,32 @@
 {% block title %}Emprunt créé{% endblock %}
 
 {% block body %}
+<div class="container d-flex flex-column justify-content-center align-items-center text-center" style="height: 72vh;">
+    <div class="card shadow-lg p-4 text-center" style="max-width: 600px;">
+        <h1 class="fw-bold mb-3">Nouvel emprunt!</h1>
+        <p class="lead mb-4">Successfully processed borrow request for Tool ID: <span class="fw-bold">{{ tool_id }}</span></p>
+        <p class="text-muted">Vous serez redirigé(e) automatiquement dans <span id="countdown" class="fw-bold">5</span> secondes...</p>
 
-<div style="height: 72vh;">
-    <h1>Nouvel emrpunt!</h1>
-    <p>Successfully processed borrow request for Tool ID: {{ tool_id }}</p>
-
-    <p>Vous serez redirigé(e) automatiquement dans 5 secondes...</p>
-    <h3 id="countdown" >5</h3>
-
-    <script>
-        let countdown = 5;
-        const countdownElement = document.getElementById('countdown');
-
-        setInterval(() => {
-            if (countdown > 1) {
-                countdown--;
-                countdownElement.textContent = countdown;
-            } else {
-                window.location.href = '{{ path('tool_borrow_display') }}'; // Redirect after countdown
-            }
-        }, 1000); // 1 second interval
-    </script>
-
+        <!-- Centered Loading Spinner -->
+        <div class="d-flex justify-content-center mt-3">
+            <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script>
+    let countdown = 5;
+    const countdownElement = document.getElementById('countdown');
+
+    setInterval(() => {
+        if (countdown > 1) {
+            countdown--;
+            countdownElement.textContent = countdown;
+        } else {
+            window.location.href = '{{ path('tool_borrow_display') }}'; // Redirect after countdown
+        }
+    }, 1000); // 1 second interval
+</script>
 {% endblock %}
