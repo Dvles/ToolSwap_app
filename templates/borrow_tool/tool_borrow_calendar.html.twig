@@ -1,58 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Emprunter
-	{{ tool.name }}
-{% endblock %}
-
+{% block title %}Emprunter {{ tool.name }}{% endblock %}
 
 {% block stylesheets %}
-	{{ parent() }}
-	{{ encore_entry_link_tags('calendar') }}
+    {{ parent() }}
+    {{ encore_entry_link_tags('calendar') }}
 {% endblock %}
 
 {% block javascripts %}
-	{{ parent() }}
-	{{ encore_entry_script_tags('calendar_select') }}
+    {{ parent() }}
+    {{ encore_entry_script_tags('calendar_select') }}
 {% endblock %}
 
-
 {% block body %}
-	<h1>{{ tool.name }}</h1>
-
-	<div class="tool-detail">
-		<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;">
-		<p>
-			<em>{{ tool.owner.community }}</em>
-		</p>
-		<p>
-			<strong>état:</strong>
-			{{ tool.toolCondition }}
-		</p>
-		<p>{{ tool.description }}</p>
-		<p>
-			<strong>{{ tool.priceDay }}</strong>
-			€ / jour
-		</p>
-	</div>
-	<br><br>
-	<h2>Emprunter</h2>
-
-	<div id="availabilityCalendar" 
-		data-calendar='{{ toolAvailabilitiesJSON|raw }}' 
-		data-tool-id="{{ tool.id }}" 
-		data-tool-name="{{ tool.name }}" 
-		class="calendar"></div>
-
-	<button id="confirmLink" class="btn btn-primary">Confirmer</button>
-    <button id="btnCheck2" class="btn btn-primary">Console check</button>
+<div class="container mt-4" style="padding-bottom: 150px;">
+    <div class="row">
+        <!-- Tool Details -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold">{{ tool.name }}</h3>
+                    <p class="card-text">{{ tool.owner.community }}</p>
+                    <p class="card-text"><strong>État: </strong>{{ tool.toolCondition }}</p>
+                    <p class="card-text">{{ tool.description }}</p>
+                    <p class="card-text">
+                        <strong>
+                            {% if tool.priceDay == 0 %}
+                                <span style="color: #ff8719;">GRATUIT</span>
+                            {% else %}
+                                {{ tool.priceDay }} €
+                            {% endif %}
+                        </strong>
+                        / jour
+                    </p>
+					<button type="button" class="btn btn-custom-orange mb-2" style="width: auto;" onclick="location.href='{{ path('tool_display_single', {'tool_id': tool.id}) }}'">Retour</button>
+                </div>
+            </div>
+        </div>
 
 
 
+        <!-- Calendar Section -->
+        <div class="col-md-6">
+            <h2 class="fw-bold">Disponibilités</h2>
+            <div id="availabilityCalendar" 
+                 data-calendar='{{ toolAvailabilitiesJSON|raw }}' 
+                 data-tool-id="{{ tool.id }}" 
+                 data-tool-name="{{ tool.name }}" 
+                 class="calendar"></div>
 
-	 <script>
-		var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
-		console.log('tool availabilities from view:', toolAvailabilities); // Check the data structure
-	</script>
+            <button id="confirmLink" class="btn btn-custom-orange mt-3" style="width: auto;">Confirmer</button>
+            <button id="btnCheck2" class="btn btn-secondary mt-3" style="width: auto;">Console Check</button>
+        </div>
+    </div>
+</div>
 
-
+<script>
+    var toolAvailabilities = {{ toolAvailabilitiesJSON|raw }};
+    console.log('tool availabilities from view:', toolAvailabilities); // Check the data structure
+</script>
 {% endblock %}
