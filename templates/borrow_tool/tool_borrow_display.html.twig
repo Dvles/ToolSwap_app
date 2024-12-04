@@ -5,33 +5,33 @@
 
 {% block body %}
 
-	<div id="toolHeader" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch;">
-		<h2 class="fw-bold sticky-top" style="text-align: center; margin-top: 50px;">
-			Mes emprunts
-		</h2>
-		{% if borrowTools is empty %}
-			<p style="text-align: center; margin-top: 20px;">Vous n'avez pas encore emprunté d'outils.</p>
-			<a href="{{ path('tool_display_all') }}" style="display: flex; justify-content: center;">
-				<button type="button" class="btn btn-custom-orange">
-					Rechercher outil
-				</button>
-			</a>
-		{% else %}
-			<!-- Anchor links + details -->
-			<div class="sticky-anchor-links" style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; align-items: center; padding: 10px;">
-				<div style="display: flex; flex-direction: column; align-items: center;">
-					<button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button"  data-target="active">
-						Actifs
-					</button>
-				</div>
-				<div style="display: flex; flex-direction: column; align-items: center;">
-					<button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button" data-target="past">
-						Passé
-					</button>
-				</div>
-			</div>
-		{% endif %}
-	</div>
+<div id="toolHeader" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch; position: sticky; top: 0; z-index: 1020; background-color: white; padding: 10px 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+    <h2 class="fw-bold" style="text-align: center; margin: 0;">
+        Mes emprunts
+    </h2>
+    {% if borrowTools is empty %}
+        <p style="text-align: center; margin-top: 20px;">Vous n'avez pas encore emprunté d'outils.</p>
+        <a href="{{ path('tool_display_all') }}" style="display: flex; justify-content: center;">
+            <button type="button" class="btn btn-custom-orange">
+                Rechercher outil
+            </button>
+        </a>
+    {% else %}
+        <div class="sticky-anchor-links" style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; align-items: center; padding: 10px;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button" data-target="active">
+                    Actifs
+                </button>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button" data-target="past">
+                    Passé
+                </button>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
 	{% if borrowTools is not empty %}
 
 		<div class="tool-list" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch;">
@@ -152,24 +152,25 @@
 
 
 	<style>
-		body {
-			scroll-padding: 150px;
-		}
+body {
+    scroll-padding-top: 80px; /* Adjust to match the height of #toolHeader */
+}
 
-		#toolHeader {
-			position: sticky; /* Use sticky for better responsiveness */
-			top: 0; /* Position at the top of the viewport */
-			z-index: 1020; /* Ensure it remains above other content */
-			background-color: white; /* Avoid transparency issues */
-			max-width: 75%; /* Center the content */
-			margin: 0 auto; /* Horizontal centering */
-			display: flex;
-			flex-direction: column;
-			align-items: stretch;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for separation */
-			padding-top: 10px; /* Adjust for spacing */
-			padding-bottom: 10px;
-		}
+#toolHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: white;
+    max-width: 75%;
+    margin: 0 auto;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for separation */
+}
+
+#toolHeader h2 {
+    margin: 0; /* Prevent margin pushing sticky content */
+    text-align: center;
+}
 	</style>
 	<script>
 		document.addEventListener("DOMContentLoaded", () => {
