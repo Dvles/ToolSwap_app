@@ -5,140 +5,190 @@
 
 {% block body %}
 
-
-	<h2 class="fw-bold sticky-top" style="text-align: center; margin-top: 50px;">Mes emprunts</h2>
-
-	<div class="tool-list" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch;">
+	<div id="toolHeader" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch;">
+		<h2 class="fw-bold sticky-top" style="text-align: center; margin-top: 50px;">
+			Mes emprunts
+		</h2>
 		{% if borrowTools is empty %}
 			<p style="text-align: center; margin-top: 20px;">Vous n'avez pas encore emprunté d'outils.</p>
 			<a href="{{ path('tool_display_all') }}" style="display: flex; justify-content: center;">
-				<button type="button" class="btn btn-custom-orange">Rechercher outil</button>
+				<button type="button" class="btn btn-custom-orange">
+					Rechercher outil
+				</button>
 			</a>
 		{% else %}
 			<!-- Anchor links + details -->
 			<div class="sticky-anchor-links" style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; align-items: center; padding: 10px;">
 				<div style="display: flex; flex-direction: column; align-items: center;">
-					<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="window.location.hash = 'activeBorrowTools'">Actifs</button>
+					<button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button"  data-target="active">
+						Actifs
+					</button>
 				</div>
 				<div style="display: flex; flex-direction: column; align-items: center;">
-					<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="window.location.hash = 'pastBorrowTools'">Passé</button>
+					<button class="btn btn-custom-orange toggle-btn" style="width: auto;" type="button" data-target="past">
+						Passé
+					</button>
 				</div>
+			</div>
+		{% endif %}
+	</div>
+	{% if borrowTools is not empty %}
+
+		<div class="tool-list" style="max-width: 75%; margin: 0 auto; display: flex; flex-direction: column; align-items: stretch;">
+			<!-- Active Borrowings -->
+			<div id="activeBorrowTools" class="toggle-section">
+				<h3 style="margin-top: 50px; margin-bottom: 20px; text-align: left;">
+					<strong>
+						Emprunts actifs
+					</strong>
+					<span style="font-size: 14px">
+						<strong>{{ pendingBorrowToolsCount }}</strong>
+						emprunt(s) en cours
+					<span>
+				</h3>
+				<ul class="list-group" style="margin-bottom: 50px; padding: 0;">
+					{% for borrowTool in borrowTools %}
+						{% if borrowTool.status == "pending" %}
+							<li class="list-group-item" style="display: flex; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid #ddd; margin-bottom: 10px;">
+								<div id="tool-image" style="flex-shrink: 0;">
+									{% if borrowTool.imageTool is defined %}
+										<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
+									{% else %}
+										<img src="{{ asset('images/default_tool_image.jpg') }}" alt="Default Tool Image" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
+									{% endif %}
+								</div>
+								<div id="tool-info" style="flex: 1; display: flex; flex-direction: column;">
+									<h3 class="fw-bold">{{ borrowTool.tool }}</h3>
+									<p style="font-size: 12px; margin-bottom: 10px;">Appartient à
+										<a href="{{ path('user_profile', {'user_id': borrowTool.ownerId}) }}">
+											<strong>{{ borrowTool.owner }}</strong>
+										</a>
+									</p>
+									<div style="display: flex; justify-content: space-between;">
+										<div>
+											<p>
+												<strong>Durée:</strong>
+												{{ borrowTool.days }}
+												jour(s)</p>
+											<p>
+												<strong>Début:</strong>
+												{{ borrowTool.start }}</p>
+											<p>
+												<strong>Fin:</strong>
+												{{ borrowTool.end }}</p>
+										</div>
+										<p style="text-align: right;">
+											<strong>Statut:</strong>
+											{{ borrowTool.status }}</p>
+									</div>
+									<div style="margin-top: 10px; display: flex; gap: 10px;">
+										<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('coming_soon') }}'">Modifier statut</button>
+										<button class="btn  whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil a été supprimé par l'utilisateur" {% endif %}>Voir outil</button>
+									</div>
+								</div>
+							</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
 			</div>
 
 
-			<!-- Active Borrowings -->
-			<h3 id="activeBorrowTools" style="margin-top: 50px; margin-bottom: 20px; text-align: left;">
-				<strong>Emprunts actifs</strong>
-				<span style="font-size: 14px">
-					<strong>{{ pendingBorrowToolsCount }}</strong>
-					emprunt(s) en cours
-					<span></h3>
-					<ul class="list-group" style="margin-bottom: 50px; padding: 0;">
-						{% for borrowTool in borrowTools %}
-							{% if borrowTool.status == "pending" %}
-								<li class="list-group-item" style="display: flex; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid #ddd; margin-bottom: 10px;">
-									<div id="tool-image" style="flex-shrink: 0;">
-										{% if borrowTool.imageTool is defined %}
-											<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
-										{% else %}
-											<img src="{{ asset('images/default_tool_image.jpg') }}" alt="Default Tool Image" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
-										{% endif %}
-									</div>
-									<div id="tool-info" style="flex: 1; display: flex; flex-direction: column;">
-										<h3 class="fw-bold">{{ borrowTool.tool }}</h3>
-										<p style="font-size: 12px; margin-bottom: 10px;">Appartient à
-											<a href="{{ path('user_profile', {'user_id': borrowTool.ownerId}) }}">
-												<strong>{{ borrowTool.owner }}</strong>
-											</a>
-										</p>
-										<div style="display: flex; justify-content: space-between;">
-											<div>
-												<p>
-													<strong>Durée:</strong>
-													{{ borrowTool.days }}
-													jour(s)</p>
-												<p>
-													<strong>Début:</strong>
-													{{ borrowTool.start }}</p>
-												<p>
-													<strong>Fin:</strong>
-													{{ borrowTool.end }}</p>
-											</div>
-											<p style="text-align: right;">
-												<strong>Statut:</strong>
-												{{ borrowTool.status }}</p>
-										</div>
-										<div style="margin-top: 10px; display: flex; gap: 10px;">
-											<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('coming_soon') }}'">Modifier statut</button>
-											<button class="btn  whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil a été supprimé par l'utilisateur" {% endif %}>Voir outil</button>
-										</div>
-									</div>
-								</li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-
-					<!-- Completed Borrowings -->
-					<div id="pastBorrowTools"></div>
-
-					<h3 style="margin-top: 100px; margin-bottom: 20px; text-align: left;">
-						<strong>Emprunts complétés</strong>
-						<span style="font-size: 14px">
-							<strong>{{ completedBorrowToolsCount }}</strong>
-							emprunt(s) complété(s)
-							<span></h3>
-							<ul class="list-group" style="margin-bottom: 50px; padding: 0;">
-								{% for borrowTool in borrowTools %}
-									{% if borrowTool.status == "completed" %}
-										<li class="list-group-item" style="display: flex; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid #ddd; margin-bottom: 10px;">
-											<div id="tool-image" style="flex-shrink: 0;">
-												{% if borrowTool.imageTool is defined %}
-													<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
-												{% else %}
-													<img src="{{ asset('images/default_tool_image.jpg') }}" alt="Default Tool Image" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
-												{% endif %}
-											</div>
-											<div id="tool-info" style="flex: 1; display: flex; flex-direction: column;">
-												<h3 class="fw-bold">{{ borrowTool.tool }}</h3>
-												<p style="font-size: 12px; margin-bottom: 10px;">Appartient à
-													<a href="{{ path('user_profile', {'user_id': borrowTool.ownerId}) }}">
-														<strong>{{ borrowTool.owner }}</strong>
-													</a>
-												</p>
-												<div style="display: flex; justify-content: space-between;">
-													<div>
-														<p>
-															<strong>Durée:</strong>
-															{{ borrowTool.days }}
-															jour(s)</p>
-														<p>
-															<strong>Début:</strong>
-															{{ borrowTool.start }}</p>
-														<p>
-															<strong>Fin:</strong>
-															{{ borrowTool.end }}</p>
-													</div>
-													<p style="text-align: right;">
-														<strong>Statut:</strong>
-														{{ borrowTool.status }}</p>
-												</div>
-												<div style="margin-top: 10px; display: flex; gap: 10px;">
-													<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('tool_review_add', {tool_id: borrowTool.toolId}) }}'">noter outil</button>
-													<button class="btn  whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil a été supprimé par l'utilisateur" {% endif %}>Voir outil</button>
-												</div>
-											</div>
-										</li>
+			<!-- Completed Borrowings -->
+			<div id="pastBorrowTools" class="toggle-section d-none">
+				<h3 style="margin-top: 100px; margin-bottom: 20px; text-align: left;">
+					<strong>Emprunts complétés</strong>
+					<span style="font-size: 14px">
+						<strong>{{ completedBorrowToolsCount }}</strong>
+						emprunt(s) complété(s)
+					<span>
+				</h3>
+				<ul class="list-group" style="margin-bottom: 50px; padding: 0;">
+					{% for borrowTool in borrowTools %}
+						{% if borrowTool.status == "completed" %}
+							<li class="list-group-item" style="display: flex; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid #ddd; margin-bottom: 10px;">
+								<div id="tool-image" style="flex-shrink: 0;">
+									{% if borrowTool.imageTool is defined %}
+										<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
+									{% else %}
+										<img src="{{ asset('images/default_tool_image.jpg') }}" alt="Default Tool Image" style="width: 150px; height: 150px; object-fit: cover; border-radius: 5px;"/>
 									{% endif %}
-								{% endfor %}
-							</ul>
+								</div>
+								<div id="tool-info" style="flex: 1; display: flex; flex-direction: column;">
+									<h3 class="fw-bold">{{ borrowTool.tool }}</h3>
+									<p style="font-size: 12px; margin-bottom: 10px;">Appartient à
+										<a href="{{ path('user_profile', {'user_id': borrowTool.ownerId}) }}">
+											<strong>{{ borrowTool.owner }}</strong>
+										</a>
+									</p>
+									<div style="display: flex; justify-content: space-between;">
+										<div>
+											<p>
+												<strong>Durée:</strong>
+												{{ borrowTool.days }}
+												jour(s)</p>
+											<p>
+												<strong>Début:</strong>
+												{{ borrowTool.start }}</p>
+											<p>
+												<strong>Fin:</strong>
+												{{ borrowTool.end }}</p>
+										</div>
+										<p style="text-align: right;">
+											<strong>Statut:</strong>
+											{{ borrowTool.status }}</p>
+									</div>
+									<div style="margin-top: 10px; display: flex; gap: 10px;">
+										<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('tool_review_add', {tool_id: borrowTool.toolId}) }}'">noter outil</button>
+										<button class="btn  whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil a été supprimé par l'utilisateur" {% endif %}>Voir outil</button>
+									</div>
+								</div>
+							</li>
 						{% endif %}
-					</div>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
 
-					<style>
 
-						body{
-							scroll-padding:150px; 
-						}
-					</style>
+	<style>
+		body {
+			scroll-padding: 150px;
+		}
 
-				{% endblock %}
+		#toolHeader {
+			position: sticky; /* Use sticky for better responsiveness */
+			top: 0; /* Position at the top of the viewport */
+			z-index: 1020; /* Ensure it remains above other content */
+			background-color: white; /* Avoid transparency issues */
+			max-width: 75%; /* Center the content */
+			margin: 0 auto; /* Horizontal centering */
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for separation */
+			padding-top: 10px; /* Adjust for spacing */
+			padding-bottom: 10px;
+		}
+	</style>
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			const buttons = document.querySelectorAll(".toggle-btn");
+			const sections = document.querySelectorAll(".toggle-section");
+
+			buttons.forEach(button => {
+				button.addEventListener("click", () => {
+					const target = button.dataset.target;
+
+					// Hide all sections
+					sections.forEach(section => section.classList.add("d-none"));
+
+					// Show the targeted section
+					document.getElementById(`${target}BorrowTools`).classList.remove("d-none");
+				});
+			});
+		});
+	
+	</script>
+
+{% endblock %}
