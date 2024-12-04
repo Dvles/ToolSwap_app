@@ -1,123 +1,91 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes prêts
-{% endblock %}
+{% block title %}Mes prêts{% endblock %}
 
 {% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sticky Header -->
+        <div id="header" class="col-md-3 sticky-top bg-light py-3">
+            <h2 class="mb-3">Mes prêts</h2>
+            <div class="btn-group" role="group">
+                <button id="toggle-active" class="btn btn-custom-orange" onclick="toggleSection('active-borrow')">Prêts actifs</button>
+                <button id="toggle-completed" class="btn btn-custom-grey" onclick="toggleSection('completed-borrow')">Prêts passés</button>
+            </div>
+        </div>
 
-	<div>
-	<h2>Mes prêts</h2>
-    <div>
-        <a href="#active-borrow" class="btn btn-custom-orange" style="width: auto;">Prêts actifs</a>
-        <a href="#completed-borrow" class="btn btn-custom-orange" style="width: auto; background-color: darkgrey !important;">Prêts passés</a>
+        <!-- Tool Lists -->
+        <div class="col-md-9">
+            {% if borrowTools is empty %}
+                <p class="text-muted">Vous n'avez pas encore prêté d'outils.</p>
+            {% else %}
+                <!-- Active Tools Section -->
+                <div id="active-borrow" class="tool-list">
+                    <h3><strong>Prêts actifs</strong></h3>
+                    {% for borrowTool in borrowTools %}
+                        {% if borrowTool.status == "pending" %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ borrowTool.tool }}</h4>
+                                    <p class="card-text">
+                                        <span>Prêté à <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}"><strong>{{ borrowTool.userBorrower }}</strong></a></span>
+                                    </p>
+                                    <p><strong>Durée:</strong> {{ borrowTool.days }} jour(s)</p>
+                                    <p><strong>Début:</strong> {{ borrowTool.start }}</p>
+                                    <p><strong>Fin:</strong> {{ borrowTool.end }}</p>
+                                    <p><strong>Statut:</strong> {{ borrowTool.status }}</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" onclick="location.href='{{ path('coming_soon') }}'">Modifier statut</button>
+                                        <button class="btn btn-secondary" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>Voir outil</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Completed Tools Section -->
+                <div id="completed-borrow" class="tool-list d-none">
+                    <h3><strong>Prêts complétés</strong></h3>
+                    {% for borrowTool in borrowTools %}
+                        {% if borrowTool.status == "completed" %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ borrowTool.tool }}</h4>
+                                    <p class="card-text">
+                                        <span>Prêté à <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}"><strong>{{ borrowTool.userBorrower }}</strong></a></span>
+                                    </p>
+                                    <p><strong>Durée:</strong> {{ borrowTool.days }} jour(s)</p>
+                                    <p><strong>Début:</strong> {{ borrowTool.start }}</p>
+                                    <p><strong>Fin:</strong> {{ borrowTool.end }}</p>
+                                    <p><strong>Statut:</strong> {{ borrowTool.status }}</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-warning" onclick="location.href='{{ path('lender_reviews_left_display', {user_id: borrowTool.userBorrowerId }) }}'">Avis</button>
+                                        <button class="btn btn-info" onclick="location.href='{{ path('lender_review_add', {user_id: borrowTool.userBorrowerId }) }}'">Commenter</button>
+                                        <button class="btn btn-primary" onclick="location.href='{{ path('coming_soon') }}'" disabled>Modifier statut</button>
+                                        <button class="btn btn-secondary" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>Voir outil</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
-<br>
 
-	{% if borrowTools is empty %}
-		<p>Vous n'avez pas encore prêté d'outils.</p>
-	{% else %}
-		<div
-			class="tool-list">
+<script>
+    function toggleSection(sectionId) {
+        const sections = ['active-borrow', 'completed-borrow'];
+        sections.forEach(id => {
+            document.getElementById(id).classList.toggle('d-none', id !== sectionId);
+        });
 
-			<!-- Active Tools (Pending) Section -->
-						    <div id="active-borrow">
-
-			<h3>
-				<strong>Prêts actifs</strong>
-			</h3>
-			{% for borrowTool in borrowTools %}
-				{% if borrowTool.status == "pending" %}
-					<div class="tool-item">
-						<h3>{{ borrowTool.tool }}
-							<span style="font-size: 12px;">| Prêté à
-								<a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
-									<strong>{{ borrowTool.userBorrower }}</strong>
-								</a>
-							</span>
-						</h3>
-
-						<p>
-							<strong>Durée:</strong>
-							{{ borrowTool.days }}
-							jour(s)</p>
-						<p>
-							<strong>Début:</strong>
-							{{ borrowTool.start }}</p>
-						<p>
-							<strong>Fin:</strong>
-							{{ borrowTool.end }}</p>
-
-						<p>
-							<strong>Statut:</strong>
-							{{ borrowTool.status }}</p>
-
-							<button type="button" onclick="location.href='{{ path('coming_soon') }}'">
-								modifier statut
-							</button>
-						<button type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>
-							voir outil
-						</button>
-
-						<br><br><br>
-					</div>
-				{% endif %}
-			{% endfor %}
-			</div>
-
-			<!-- Completed Tools Section -->
-			<div id="completed-borrow">
-			<br><br><br><br><br><br>
-							    
-
-			<br>
-			<h3>
-				<strong>Prêts complétés</strong>
-			</h3>
-			{% for borrowTool in borrowTools %}
-				{% if borrowTool.status == "completed" %}
-					<div class="tool-item">
-						<h3>{{ borrowTool.tool }}
-							<span style="font-size: 12px;">| Prêté à
-								<a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
-									<strong>{{ borrowTool.userBorrower }}</strong>
-								</a>
-							</span>
-						</h3>
-
-						<p>
-							<strong>Durée:</strong>
-							{{ borrowTool.days }}
-							jour(s)</p>
-						<p>
-							<strong>Début:</strong>
-							{{ borrowTool.start }}</p>
-						<p>
-							<strong>Fin:</strong>
-							{{ borrowTool.end }}</p>
-
-						<p>
-							<strong>Statut:</strong>
-							{{ borrowTool.status }}</p>
-
-						{% if borrowTool.status == "completed" %}
-							<button type="button" onclick="location.href='{{ path('lender_reviews_left_display', {user_id: borrowTool.userBorrowerId }) }}'">Avis</button>
-							<button type="button" onclick="location.href='{{ path('lender_review_add', {user_id: borrowTool.userBorrowerId }) }}'">commenter</button>
-						{% endif %}
-
-						<button type="button" onclick="location.href='{{ path('coming_soon') }}'" {% if borrowTool.status == "completed" %} disabled {% endif %}>
-							modifier statut
-						</button>
-
-						<button type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId }) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>
-							voir outil
-						</button>
-
-						<br><br><br>
-					</div>
-				{% endif %}
-			{% endfor %}
-		</div>
-	{% endif %}
-	</div>
+        document.getElementById('toggle-active').classList.toggle('btn-custom-orange', sectionId === 'active-borrow');
+        document.getElementById('toggle-active').classList.toggle('btn-custom-grey', sectionId !== 'active-borrow');
+        document.getElementById('toggle-completed').classList.toggle('btn-custom-orange', sectionId === 'completed-borrow');
+        document.getElementById('toggle-completed').classList.toggle('btn-custom-grey', sectionId !== 'completed-borrow');
+    }
+</script>
 {% endblock %}
