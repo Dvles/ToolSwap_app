@@ -4,10 +4,10 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container-fluid" style="margin-botton: 5%;">
+	<div class="container-fluid tools" style="margin-botton: 5%;">
 		<div class="row">
 			<!-- Sticky Header -->
-			<div id="header" class="col-md-3 sticky-top bg-light py-3">
+			<div id="stickyTitles" class="col-md-3 sticky-top bg-light py-3">
 				<h2 class="mb-3">Mes prêts</h2>
 				<div class="btn-group" role="group">
 					<button id="toggle-active" class="btn btn-custom-orange" onclick="toggleSection('active-borrow')">Prêts actifs</button>
@@ -168,6 +168,24 @@
 	<style>
 
 
+		/* Ensure the sticky header stays at the top */
+		#stickyTitles {
+			position: sticky;
+			top: 0;
+			z-index: 10; /* Make sure it's above the content */
+		}
+
+		/* Ensure no overflow on parent container that would prevent sticky behavior */
+		.container-fluid.tools {
+			padding-top: 100px; /* Adjust this based on the header height */
+			overflow: visible; /* Ensure the overflow doesn't interfere with sticky */
+		}
+
+		/* You can adjust the sticky column width or padding as needed */
+		.col-md-3 {
+			padding-right: 0; /* Optional, based on the layout */
+		}
+
 		img {
 			width: 150px;
 			height: 150px;
@@ -176,9 +194,11 @@
 		}
 
 		button.btn:disabled {
-			cursor: not-allowed; 
-			opacity: 0.4; 
+			cursor: not-allowed;
+			opacity: 0.4;
 		}
+
+
 
 	</style>
 	<script>
