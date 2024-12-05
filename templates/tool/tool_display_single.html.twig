@@ -29,7 +29,7 @@
 
                     {% if isOwner %}
                         <button type="button" class="btn btn-custom-orange mb-2" style="width: auto;" onclick="location.href='{{ path('tool_update', {'tool_id': tool.id}) }}'">Modifier détails</button>
-                        <button type="button" class="btn btn-secondary mb-2" style="width: auto;" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">Modifier disponibilités</button>
+                        <button type="button" class="btn whitebtn mb-2" style="width: auto;" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">Modifier disponibilités</button>
                         <button type="button" class="btn btn-danger mb-2" style="width: auto;"
                             {% if activeBorrowTool %}
                                 onclick="showModal({{ tool.id }})"
