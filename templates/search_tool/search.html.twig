@@ -33,13 +33,13 @@
                             {% endif %}
                         </p>
                         <div class="d-flex">
-                            <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange" style="max-width: 40%; margin-right: 15px;">Voir outil</a>
+                            <a href="{{ path('tool_display_single', {'tool_id': tool.id}) }}" class="btn btn-custom-orange" style="width: auto; margin-right: 15px;">Voir outil</a>
                             {% if app.user is not null and app.user.id != tool.owner.id %}
-                                <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}" class="btn btn-success">Emprunter</a>
+                                <a href="{{ path('tool_borrow_calendar', {'tool_id': tool.id}) }}" class="btn whitebtn"  style="width: auto" >Emprunter</a>
                             {% elseif app.user is not null and app.user.id == tool.owner.id %}
-                                <button class="btn btn-secondary" disabled title="Vous ne pouvez pas emprunter votre propre outil">Emprunter</button>
+                                <button class="btn whitebtn" style="width: auto" disabled title="Vous ne pouvez pas emprunter votre propre outil">Emprunter</button>
 {% else %}
-    <a href="{{ path('app_login') }}" class="btn btn-secondary" title="Veuillez vous connecter pour emprunter un outil">Emprunter</a>
+    <a href="{{ path('app_login') }}" class="btn whitebtn"  style="width: auto" title="Veuillez vous connecter pour emprunter un outil">Emprunter</a>
 {% endif %}
                         </div>
                     </div>
