@@ -12,7 +12,7 @@ ToolSwap is a community-based application that facilitates the lending and borro
 - Reviews: Add reviews and ratings for tools, as well as for borrowers and lenders.
 
 ## Tech Stack
-- Frontend: HTML/CSS, Bootstrap, JavaScript (Full Calendar)
+- Frontend: HTML/CSS, Bootstrap, JavaScript (Full Calendar, SweetAlert2)
 - Backend: PHP, Symfony
 - Database: MySQL
 - Additional Tools: Webpack
@@ -33,7 +33,7 @@ ToolSwap est une application communautaire qui facilite le prêt et l'emprunt d'
 - Avis : Ajoutez des évaluations et des commentaires pour les outils, les emprunteurs et les prêteurs.
 
 ## Technologies
-- Frontend : HTML/CSS, Bootstrap, JavaScript (Full Calendar)
+- Frontend : HTML/CSS, Bootstrap, JavaScript (Full Calendar, SweetAlert2)
 - Backend : PHP, Symfony
 - Base de Données : MySQL
 - Outils Complémentaires : Webpack
