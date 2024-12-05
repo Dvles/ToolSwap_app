@@ -29,10 +29,9 @@
                             {% if tool.priceDay == 0 %}
                                 <span style="color: #ff8719;">GRATUIT</span>
                             {% else %}
-                                {{ tool.priceDay }} €
+                                {{ tool.priceDay }} € / jour
                             {% endif %}
                         </strong>
-                        / jour
                     </p>
 					<button type="button" class="btn btn-custom-orange mb-2" style="width: auto;" onclick="location.href='{{ path('tool_display_single', {'tool_id': tool.id}) }}'">Retour</button>
                 </div>

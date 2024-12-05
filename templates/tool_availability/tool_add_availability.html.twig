@@ -1,27 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter disponibilités {{ tool.name }} {% endblock %}
+{% block title %}Ajouter disponibilités
+	{{ tool.name }}
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('calendar') }}
+	{{ parent() }}
+	{{ encore_entry_link_tags('calendar') }}
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('calendar_empty') }}
+	{{ parent() }}
+	{{ encore_entry_script_tags('calendar_empty') }}
 {% endblock %}
 
 {% block body %}
-    <h1>Ajouter disponibilités</h1>
-    <p>Clicker sur les dates de disponibilités</p>
-    <p>Re-cliquer pour effacer</p>
 
-    <div id="availabilityCalendar" 
-         data-tool-id="{{ tool.id }}" 
-         data-tool-name="{{ tool.name }}" 
-         data-calendar=""  
-         class="calendar"></div> 
+<div class="container mt-4" style="padding-bottom: 150px;">
+    <div class="row">
+        <!-- Tool Details -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ tool.imageTool }}" alt="{{ tool.name }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold">{{ tool.name }}</h3>
+                    <p class="card-text">{{ tool.owner.community }}</p>
+                    <p class="card-text"><strong>État: </strong>{{ tool.toolCondition }}</p>
+                    <p class="card-text">{{ tool.description }}</p>
+                    <p class="card-text">
+                        <strong>
+                            {% if tool.priceDay == 0 %}
+                                <span style="color: #ff8719;">GRATUIT</span>
+                            {% else %}
+                                {{ tool.priceDay }} €/ jour
+                            {% endif %}
+                        </strong>
+                        
+                    </p>
+                     <button type="button" class="btn btn-danger mb-2" style="width: auto;" onclick="location.href='{{ path('tool_delete', {'tool_id': tool.id}) }}'"
+                        >Annuler</button>
+                </div>
+            </div>
+        </div>
 
-<button id="confirmAvailabilities" class="btn btn-primary">Confirmer disppnibilités</button>
+	<!-- Calendar Section -->
+        <div class="col-md-6">
+            <h2 class="fw-bold">Ajouter disponibilités</h2>
+            <div id="availabilityCalendar" 
+                data-tool-id="{{ tool.id }}" 
+                data-tool-name="{{ tool.name }}" 
+                data-calendar="" 
+                class="calendar"></div>
+            <button id="confirmAvailabilities" class="btn btn-custom-orange mt-3" style="width: auto;">Confirmer</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

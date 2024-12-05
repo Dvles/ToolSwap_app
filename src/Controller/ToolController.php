@@ -61,8 +61,14 @@ class ToolController extends AbstractController
                 $em->persist($tool);
                 $em->flush();
 
+                $vars = [
+                    'tool_id' => $tool->getId(),
+                    'tool' => $tool
+
+                ];
+
                 // Redirect to the tool availability page, passing the tool ID
-                return $this->redirectToRoute('tool_add_availability', ['tool_id' => $tool->getId()]);
+                return $this->redirectToRoute('tool_add_availability',$vars);
             }
         }
 
