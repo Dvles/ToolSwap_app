@@ -3,29 +3,77 @@
 {% block title %}Modifier outil{% endblock %}
 
 {% block body %}
-    <h1>Modifier outil</h1>
+<section class="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+    <div class="container py-0">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px; padding: 1rem;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center fw-bold">Modifier outil</h3>
 
-    {{ form_start(form) }}
+                        <!-- Display errors -->
+                        {{ form_errors(form) }}
 
-    {{ form_label(form.name) }}<br>
-    {{ form_widget(form.name) }}<br>
+                        <form method="post" enctype="multipart/form-data">
+                            {{ form_start(form) }}
 
-    {{ form_label(form.description) }}<br>
-    {{ form_widget(form.description) }}<br>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(form.name, {
+                                        'label': 'Nom de l\'outil',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(form.toolCondition, {
+                                        'label': 'État de l\'outil',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-    {{ form_label(form.toolCondition) }}<br>
-    {{ form_widget(form.toolCondition) }}<br>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    {{ form_row(form.description, {
+                                        'label': 'Description',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-    {{ form_label(form.priceDay) }}<br>
-    {{ form_widget(form.priceDay) }}<br>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(form.priceDay, {
+                                        'label': 'Prix par jour (€)',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    {{ form_row(form.imageTool, {
+                                        'label': 'Image de l\'outil',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-    {{ form_label(form.imageTool) }}<br>
-    {{ form_widget(form.imageTool) }}<br>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    {{ form_row(form.toolCategory, {
+                                        'label': 'Catégorie',
+                                        'attr': {'class': 'form-control form-control-lg'}
+                                    }) }}
+                                </div>
+                            </div>
 
-    {{ form_label(form.toolCategory) }}<br>
-    {{ form_widget(form.toolCategory) }}<br><br>
-
-    <input type="submit" value="modifier">
-    
-    {{ form_end(form) }}
+                            <div class="mt-4 pt-2 text-center">
+                                <input type="submit" class="btn" style="background-color: #ff8719; color: white; font-weight: bold;" value="modifier">
+                            </div>
+                            {{ form_end(form) }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
