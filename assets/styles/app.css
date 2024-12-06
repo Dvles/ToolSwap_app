@@ -136,7 +136,7 @@ body {
 .wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* This ensures the footer is at the bottom when content is short */
+    min-height: 100vh; 
 }
 
 /* Content area will grow and take available space */
