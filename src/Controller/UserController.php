@@ -78,6 +78,7 @@ class UserController extends AbstractController
         $reviews = $user->getReviewsReceived();
         $vars = [
             'user' => $user,
+            'user_id' => $user->getId(),
             'tools' => $tools,
             'reviews' => $reviews,
             'borrowedToolsCount' => $borrowedToolsCount,

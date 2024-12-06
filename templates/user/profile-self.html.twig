@@ -7,8 +7,7 @@
 
 {% block body %}
 	<div class="container mt-4" style="padding-bottom: 150px; width: 80%; gap: 30px;">
-		<div
-			class="row">
+		<div class="row align-items-start">
 			<!-- Left Column: User Details Form -->
 			<div class="col-md-6 mb-4" style="background-color: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<h2 class="fw-bold">Bonjour,
@@ -85,24 +84,38 @@
 
 				<!-- Reviews -->
 				<h3 class="fw-bold">Avis</h3>
-				{% if reviews|length > 0 %}
-					{% for review in reviews|slice(0, 3) %}
-						<div class="mb-3 p-3 border rounded">
-							<a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
-								<strong>{{ review.userLeavingReview.firstName }}</strong>
-							</a>
-							<span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }}
-								/ 5</span>
-							<p class="mt-2 mb-0">{{ review.comments }}</p>
-						</div>
-					{% endfor %}
+{% if reviews|length > 0 %}
+    <!-- Display the first three reviews -->
+    {% for review in reviews|slice(0, 3) %}
+        <div class="mb-3 p-3 border rounded">
+            <a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
+                <strong>{{ review.userLeavingReview.firstName }}</strong>
+            </a>
+            <span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }} / 5</span>
+            <p class="mt-2 mb-0">{{ review.comments }}</p>
+        </div>
+    {% endfor %}
 
-					{% if reviews|length > 3 %}
-						<a href="{{ path('coming_soon') }}">Voir plus</a>
-					{% endif %}
-				{% else %}
-					<p>Vous n'avez pas encore reçu(e) d'avis.</p>
-				{% endif %}
+    <!-- If there are more than three reviews, add a 'Voir plus' button -->
+    {% if reviews|length > 3 %}
+        <button id="loadMoreReviews" class="btn btn-custom-orange" style="width: auto;">Voir plus</button>
+        <div id="extraReviews" style="display: none;">
+            {% for review in reviews|slice(3) %}
+                <div class="mb-3 p-3 border rounded">
+                    <a href="{{ path('user_profile', {'user_id': review.userLeavingReview.id}) }}" style="text-decoration: none; color: #333;">
+                        <strong>{{ review.userLeavingReview.firstName }}</strong>
+                    </a>
+                    <span class="badge text-white" style="background-color: #ff8719; margin-left: 10px;">{{ review.rating }} / 5</span>
+                    <p class="mt-2 mb-0">{{ review.comments }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% else %}
+    <!-- Fallback message if no reviews are present -->
+    <p>Vous n'avez pas encore reçu(e) d'avis.</p>
+{% endif %}
+
 			</div>
 		</div>
 	</div>
@@ -111,21 +124,32 @@
 {% endblock %}
 
 {% block javascripts %}
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-const editButton = document.getElementById('btnEdit');
-const saveButton = document.getElementById('btnSave');
-const editableFields = document.querySelectorAll('.editable-field');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loadMoreButton = document.getElementById('loadMoreReviews');
+            const extraReviews = document.getElementById('extraReviews');
 
-editButton.addEventListener('click', () => { // Enable all fields
-editableFields.forEach(field => field.removeAttribute('disabled'));
+            if (loadMoreButton) {
+                loadMoreButton.addEventListener('click', () => {
+                    if (extraReviews.style.display === 'none') {
+                        extraReviews.style.display = 'block';
+                        loadMoreButton.style.display = 'none'; // Hide the button after showing the reviews
+                    }
+                });
+            }
 
-// Show the save button, hide the edit button
-editButton.style.display = 'none';
-saveButton.style.display = 'inline-block';
-});
-});
-	</script>
+            const editButton = document.getElementById('btnEdit');
+            const saveButton = document.getElementById('btnSave');
+            const editableFields = document.querySelectorAll('.editable-field');
+
+            editButton.addEventListener('click', () => {
+                editableFields.forEach(field => field.removeAttribute('disabled'));
+                editButton.style.display = 'none';
+                saveButton.style.display = 'inline-block';
+            });
+        });
+    </script>
+
 {% endblock %}
 
 
