@@ -78,7 +78,7 @@
 										<div class="modal-body">
 											<p>Vous ne pouvez pas supprimer l'outil
 												<span>{{ tool.name }}</span>
-												car il a un ou plusieurs emprunts actif(s):
+												car il a un ou plusieurs emprunts actif(s).
 											</p>
 											<ul id="borrowToolsList{{ tool.id }}">
 												{% for borrowTool in borrowTools|slice(0, 5) %}
