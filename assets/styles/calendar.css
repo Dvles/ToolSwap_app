@@ -15,11 +15,10 @@
 .btn-primary, .btn-secondary {
     width: auto;
 }
-
+/* Calendar toolbar buttons */
 #availabilityCalendar > div.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr > div:nth-child(3) > div > button.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active, #availabilityCalendar > div.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr > div:nth-child(3) > div > button.fc-timeGridWeek-button.fc-button.fc-button-primary, #availabilityCalendar > div.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr > div:nth-child(3) > div > button.fc-timeGridDay-button.fc-button.fc-button-primary
 {
    display: none;
-   visibility: hidden;
 }
 
 #fc-dom-1 {
