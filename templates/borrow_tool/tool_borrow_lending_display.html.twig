@@ -1,217 +1,229 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes prêts
-{% endblock %}
+{% block title %}Mes prêts{% endblock %}
 
 {% block body %}
-	<div class="container-fluid tools" style="margin-botton: 5%;">
-		<div class="row">
-			<!-- Sticky Header -->
-			<div id="stickyTitles" class="col-md-3 sticky-top bg-light py-3">
-				<h2 class="mb-3">Mes prêts</h2>
-				<div class="btn-group" role="group">
-					<button id="toggle-active" class="btn btn-custom-orange" onclick="toggleSection('active-borrow')">Prêts actifs</button>
-					<button id="toggle-completed" class="btn btn-custom-grey" onclick="toggleSection('completed-borrow')">Prêts passés</button>
-				</div>
-			</div>
+<div class="container-fluid tools" style="margin-bottom: 5%;">
+    <div class="row">
+        <!-- Sticky Sidebar with Toggle Buttons -->
+        <div id="stickyTitles" class="col-md-3 sticky-top bg-light py-3">
+            <h2 class="mb-3">Mes prêts</h2>
+            <div class="btn-group" role="group">
+                <button id="toggle-active" class="btn btn-custom-orange" onclick="toggleSection('active-borrow')">Prêts actifs</button>
+                <button id="toggle-completed" class="btn whitebtn" onclick="toggleSection('completed-borrow')">Prêts passés</button>
+            </div>
+        </div>
 
-			<!-- Tool Lists -->
-			<div class="col-md-9" >
-				{% if borrowTools is empty %}
-					<p class="text-muted">Vous n'avez pas encore prêté d'outils.</p>
-				{% else %}
-					<!-- Active Tools Section -->
-					<div id="active-borrow" class="tool-list">
-						<h3>
-							<strong>Actifs</strong>
-						</h3>
-						{% for borrowTool in borrowTools %}
-							{% if borrowTool.status == "pending" %}
-								<div class="card mb-3">
-									<div
-										class="row g-0">
-										<!-- Column 1: Tool Image -->
-										<div class="col-md-4">
-											<div id="tool-image" class="p-3">
-												{% if borrowTool.imageTool is defined %}
-													<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
-												{% else %}
-													<img src="https://via.placeholder.com/500x500" alt="Default Tool Image" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
-												{% endif %}
-											</div>
-										</div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            {% if borrowTools is empty %}
+                <p class="text-muted">Vous n'avez pas encore prêté d'outils.</p>
+            {% else %}
+                <!-- Active Tools Section -->
+                <div id="active-borrow" class="tool-list">
+                    <h3 class="sticky-top py-2"><strong>Actifs</strong></h3>
+                    <div class="scrollable-list">
+                        {% for borrowTool in borrowTools %}
+                            {% if borrowTool.status == "pending" %}
+                                <div id="card" class="card mb-3">
+                                    <div class="row g-0">
+                                        <!-- Tool Image -->
+                                        <div class="col-md-4">
+                                            <div id="tool-image" class="p-3">
+                                                {% if borrowTool.imageTool is defined %}
+                                                    <img src="{{ borrowTool.imageTool }}" 
+                                                         alt="{{ borrowTool.tool }}" 
+                                                         class="img-fluid rounded" 
+                                                         style="width: 100%; height: auto; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="https://via.placeholder.com/500x500" 
+                                                         alt="Default Tool Image" 
+                                                         class="img-fluid rounded" 
+                                                         style="width: 100%; height: auto; object-fit: cover;">
+                                                {% endif %}
+                                            </div>
+                                        </div>
 
-										<!-- Column 2: Tool Details -->
-										<div class="col-md-8">
-											<div
-												id="tool-info" class="card-body">
-												<!-- Row 1 -->
-												<div
-													class="row">
-													<!-- Column 1: Tool Details -->
-													<div class="col-md-6">
-														<h4 class="card-title fw-bold">{{ borrowTool.tool }}</h4>
-														<p>
-															<strong>Durée:</strong>
-															{{ borrowTool.days }}
-															jour(s)</p>
-														<p>
-															<strong>Début:</strong>
-															{{ borrowTool.start }}</br>
-														
-															<strong>Fin:</strong>
-															{{ borrowTool.end }}
-														</p>
-													</div>
-													<!-- Column 2: Borrower Details -->
-													<div class="col-md-6" style="text-align:right">
-														<p>
-															<strong>Prêté à:</strong>
-															<a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
-																<strong>{{ borrowTool.userBorrower }}</strong>
-															</a>
-														</p>
-														<p>
-															<strong>Statut:</strong>
-															{{ borrowTool.status }}
-														</p>
-													</div>
-												</div>
-												<!-- Row 2 -->
-												<div class="row mt-3">
-													<div class="col-12 d-flex gap-2">
-														<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('coming_soon') }}'">Modifier statut</button>
-														<button class="btn  whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>Voir outil</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							{% endif %}
-						{% endfor %}
-					</div>
+                                        <!-- Tool Details -->
+                                        <div class="col-md-8">
+                                            <div id="tool-info" class="card-body">
+                                                <!-- Tool and Borrower Info -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h4 class="card-title fw-bold">{{ borrowTool.tool }}</h4>
+                                                        <p><strong>Durée:</strong> {{ borrowTool.days }} jour(s)</p>
+                                                        <p>
+                                                            <strong>Début:</strong> {{ borrowTool.start }}<br>
+                                                            <strong>Fin:</strong> {{ borrowTool.end }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-6 text-end">
+                                                        <p>
+                                                            <strong>Prêté à:</strong>
+                                                            <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
+                                                                <strong>{{ borrowTool.userBorrower }}</strong>
+                                                            </a>
+                                                        </p>
+                                                        <p><strong>Statut:</strong> {{ borrowTool.status }}</p>
+                                                    </div>
+                                                </div>
 
+                                                <!-- Action Buttons -->
+                                                <div class="row mt-3">
+                                                    <div class="col-12 d-flex gap-2">
+                                                        <button class="btn btn-custom-orange"  style="width: auto;"
+                                                                type="button" 
+                                                                onclick="location.href='{{ path('coming_soon') }}'">
+                                                            Modifier statut
+                                                        </button>
+                                                        <button class="btn whitebtn" style="width: auto;"
+                                                                type="button" 
+                                                                onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" 
+                                                                {% if borrowTool.isDisabled %} disabled title="L'outil n'est plus disponible" {% endif %}>
+                                                            Voir outil
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-					<!-- Completed Tools Section -->
-					<div id="completed-borrow" class="tool-list">
-						<h3>
-							<strong>Complétés</strong>
-						</h3>
-						{% for borrowTool in borrowTools %}
-							{% if borrowTool.status == "completed" %}
-								<div class="card mb-3">
-									<div class="row g-0">
-										<!-- Column 1: Tool Image -->
-										<div class="col-md-4">
-											<div id="tool-image" class="p-3">
-												{% if borrowTool.imageTool is defined %}
-													<img src="{{ borrowTool.imageTool }}" alt="{{ borrowTool.tool }}" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
-												{% else %}
-													<img src="https://via.placeholder.com/500x500" alt="Default Tool Image" class="img-fluid rounded" style="width: 100%; height: auto; object-fit: cover;">
-												{% endif %}
-											</div>
-										</div>
+                <!-- Completed Tools Section -->
+                <div id="completed-borrow" class="tool-list d-none">
+                    <h3 class="sticky-top bg-white py-2"><strong>Passés</strong></h3>
+                    <div class="scrollable-list">
+                        {% for borrowTool in borrowTools %}
+                            {% if borrowTool.status == "completed" %}
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <!-- Tool Image -->
+                                        <div class="col-md-4">
+                                            <div id="tool-image" class="p-3">
+                                                {% if borrowTool.imageTool is defined %}
+                                                    <img src="{{ borrowTool.imageTool }}" 
+                                                         alt="{{ borrowTool.tool }}" 
+                                                         class="img-fluid rounded" 
+                                                         style="width: 100%; height: auto; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="https://via.placeholder.com/500x500" 
+                                                         alt="Default Tool Image" 
+                                                         class="img-fluid rounded" 
+                                                         style="width: 100%; height: auto; object-fit: cover;">
+                                                {% endif %}
+                                            </div>
+                                        </div>
 
-										<!-- Column 2: Tool Details -->
-										<div class="col-md-8">
-											<div id="tool-info" class="card-body">
-												<!-- Row 1 -->
-												<div class="row">
-													<!-- Column 1: Tool Details -->
-													<div class="col-md-6">
-														<h4 class="card-title fw-bold">{{ borrowTool.tool }}</h4>
-														<p>
-															<strong>Durée:</strong>
-															{{ borrowTool.days }} jour(s)
-														</p>
-														<p>
-															<strong>Début:</strong>
-															{{ borrowTool.start }}</br>
-															<strong>Fin:</strong>
-															{{ borrowTool.end }}
-														</p>
-													</div>
-													<!-- Column 2: Borrower Details -->
-													<div class="col-md-6" style="text-align:right">
-														<p>
-															<strong>Prêté à:</strong>
-															<a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
-																<strong>{{ borrowTool.userBorrower }}</strong>
-															</a>
-														</p>
-														<p>
-															<strong>Statut:</strong>
-															{{ borrowTool.status }}
-														</p>
-													</div>
-												</div>
-												<!-- Row 2 -->
-												<div class="row mt-3">
-													<div class="col-12 d-flex gap-2">
-														<button class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('lender_review_add', {user_id: borrowTool.userBorrowerId }) }}'">Noter emprunteur</button>
-														<button class="btn  whitebtn"  style="width: auto;" type="button" onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'" {% if borrowTool.isDisabled %} disabled tooltip="L'outil n'est plus disponible" {% endif %}>Voir outil</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							{% endif %}
-						{% endfor %}
-					</div>
-				{% endif %}<br><br><br>
-			</div>
-		</div>
-	</div>
+                                        <!-- Tool Details -->
+                                        <div class="col-md-8">
+                                            <div id="tool-info" class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h4 class="card-title fw-bold">{{ borrowTool.tool }}</h4>
+                                                        <p><strong>Durée:</strong> {{ borrowTool.days }} jour(s)</p>
+                                                        <p>
+                                                            <strong>Début:</strong> {{ borrowTool.start }}<br>
+                                                            <strong>Fin:</strong> {{ borrowTool.end }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-6 text-end">
+                                                        <p>
+                                                            <strong>Prêté à:</strong>
+                                                            <a href="{{ path('user_profile', {'user_id': borrowTool.userBorrowerId}) }}">
+                                                                <strong>{{ borrowTool.userBorrower }}</strong>
+                                                            </a>
+                                                        </p>
+                                                        <p><strong>Statut:</strong> {{ borrowTool.status }}</p>
+                                                    </div>
+                                                </div>
 
-	<style>
+                                                <!-- Action Buttons -->
+                                                <div class="row mt-3">
+                                                    <div class="col-12 d-flex gap-2">
+                                                        <button class="btn btn-custom-orange"  style="width: auto;"
+                                                                type="button" 
+                                                                onclick="location.href='{{ path('coming_soon') }}'">
+                                                            Modifier statut
+                                                        </button>
+                                                        <button class="btn whitebtn"  style="width: auto;"
+                                                                type="button" 
+                                                                onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'">
+                                                            Voir outil
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
+<style>
+#stickyTitles {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+}
 
-		/* Ensure the sticky header stays at the top */
-		#stickyTitles {
-			position: sticky;
-			top: 0;
-			z-index: 10; /* Make sure it's above the content */
-		}
+.scrollable-list {
+    max-height: 750px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
 
-		/* Ensure no overflow on parent container that would prevent sticky behavior */
-		.container-fluid.tools {
-			padding-top: 100px; /* Adjust this based on the header height */
-			overflow: visible; /* Ensure the overflow doesn't interfere with sticky */
-		}
+.card img {
+    width: 100%;
+    height: auto;
+	max-height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
 
-		/* You can adjust the sticky column width or padding as needed */
-		.col-md-3 {
-			padding-right: 0; /* Optional, based on the layout */
-		}
+.card-body .btn {
+    white-space: nowrap;
+}
 
-		img {
-			width: 150px;
-			height: 150px;
-			object-fit: cover;
-			border-radius: 5px;
-		}
+.card-body .btn {
+    max-height: 500px;
+}
 
-		button.btn:disabled {
-			cursor: not-allowed;
-			opacity: 0.4;
-		}
+.sticky-top {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+}
 
+.tool-list{
+	margin-top: 1%;
 
+}
 
-	</style>
-	<script>
-		function toggleSection(sectionId) {
-			const sections = ['active-borrow', 'completed-borrow'];
-			sections.forEach(id => {
-				document.getElementById(id).classList.toggle('d-none', id !== sectionId);
-			});
-	
-			document.getElementById('toggle-active').classList.toggle('btn-custom-orange', sectionId === 'active-borrow');
-			document.getElementById('toggle-active').classList.toggle('btn-custom-grey', sectionId !== 'active-borrow');
-			document.getElementById('toggle-completed').classList.toggle('btn-custom-orange', sectionId === 'completed-borrow');
-			document.getElementById('toggle-completed').classList.toggle('btn-custom-grey', sectionId !== 'completed-borrow');
-		}
-	</script>
+</style>
+
+<script>
+function toggleSection(sectionId) {
+    const sections = ['active-borrow', 'completed-borrow'];
+    sections.forEach(id => {
+        document.getElementById(id).classList.toggle('d-none', id !== sectionId);
+    });
+
+    document.getElementById('toggle-active').classList.toggle('btn-custom-orange', sectionId === 'active-borrow');
+    document.getElementById('toggle-active').classList.toggle('whitebtn', sectionId !== 'active-borrow');
+    document.getElementById('toggle-completed').classList.toggle('btn-custom-orange', sectionId === 'completed-borrow');
+    document.getElementById('toggle-completed').classList.toggle('whitebtn', sectionId !== 'completed-borrow');
+}
+</script>
 {% endblock %}
