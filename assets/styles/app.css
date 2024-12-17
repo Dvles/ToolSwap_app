@@ -95,12 +95,22 @@ body {
 }
 
 
-.btn-custom-orange:hover {
-    background-color: #212121;
+.btn-custom-orange:hover, .btn-custom-variation:hover {
+    background-color: #212121 !important;
     color: white;
     font-weight: bold;
     width: 100%;
 }
+
+.btn-custom-variation {
+    background-color: #967251 !important;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+}
+
+
+
 
 .whitebtn {
     background-color: #ff88192d;

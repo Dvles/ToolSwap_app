@@ -24,7 +24,9 @@
 							<img src="{{ tool.imageTool }}" alt="{{ tool.name }}" style="width: 200px; height: 200px;"/>
 						</div>
 
-						<div id="tool-info" style="flex: 1;">
+						<div
+							id="tool-info" style="flex: 1; display: flex; flex-direction: column;">
+							<!-- Tool details -->
 							<div id="tool-details" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
 								<div id="tool-details-left" style="flex: 1;">
 									<h3 class="fw-bold">{{ tool.name }}</h3>
@@ -34,8 +36,7 @@
 								<div id="tool-details-right" style="text-align: right; flex-shrink: 0;">
 									<p>
 										<strong>état:</strong>
-										{{ tool.toolCondition }}
-									</p>
+										{{ tool.toolCondition }}</p>
 									<p>
 										{% if tool.priceDay == 0 %}
 											<strong style="color: #ff8719;">gratuit</strong>
@@ -48,14 +49,15 @@
 								</div>
 							</div>
 
-							<div style="margin-top: 10px;">
-								<button id="btnComment" class="btn btn-custom-orange"  style="width: auto;" type="button" onclick="location.href='{{ path('tool_review_display', {'tool_id': tool.id}) }}'">avis</button>
+							<!-- Buttons aligned at the bottom -->
+							<div style="margin-top: auto; display: flex; gap: 10px;">
+								<button id="btnComment" class="btn btn-custom-variation" style="width: auto;" type="button" onclick="location.href='{{ path('tool_review_display', {'tool_id': tool.id}) }}'">avis</button>
 								<button id="btnUpdate1" class="btn btn-custom-orange" style="width: auto;" type="button" onclick="location.href='{{ path('tool_update', {'tool_id': tool.id}) }}'">modifier détails</button>
-								<button id="btnUpdate2" class="btn whitebtn"style="width: auto;" type="button" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">modifier disponibilités</button>
+								<button id="btnUpdate2" class="btn whitebtn" style="width: auto;" type="button" onclick="location.href='{{ path('tool_availability_update', {'tool_id': tool.id}) }}'">modifier disponibilités</button>
 								{% if tool.id in activeBorrowToolsIds %}
-									<button id="btnDelete" class="btn btn-danger"  style="width: auto;" type="button" onclick="showModal({{ tool.id }})">supprimer</button>
+									<button id="btnDelete" class="btn btn-danger" style="width: auto;" type="button" onclick="showModal({{ tool.id }})">supprimer</button>
 								{% elseif tool.id in pastBorrowToolsIds %}
-									<button id="btnDelete" class="btn btn-danger"  style="width: auto;" type="button" onclick="location.href='{{ path('tool_disable', {'tool_id': tool.id}) }}'">supprimer</button>
+									<button id="btnDelete" class="btn btn-danger" style="width: auto;" type="button" onclick="location.href='{{ path('tool_disable', {'tool_id': tool.id}) }}'">supprimer</button>
 								{% else %}
 									<button id="btnDelete" class="btn btn-danger" style="width: auto;" type="button" onclick="location.href='{{ path('tool_delete', {'tool_id': tool.id}) }}'">supprimer</button>
 								{% endif %}
@@ -119,30 +121,30 @@
 	{% endblock %}
 	{% block javascripts %}
 		 <script>
-							function showModal(toolId) {
-								const modal = document.getElementById(`deleteToolModal${toolId}`);
-									if (modal) {
-										modal.style.display = "block";
-									}
-								}
-							
-								function closeModal(toolId) {
-									const modal = document.getElementById(`deleteToolModal${toolId}`);
-									if (modal) {
-										modal.style.display = "none";
-									}
-								}
-							
-								// Close modal when clicking outside of it
-								window.onclick = function (event) {
-									const modals = document.querySelectorAll('.custom-modal');
-									modals.forEach(modal => {
-										if (event.target === modal) {
-											modal.style.display = "none";
+									function showModal(toolId) {
+										const modal = document.getElementById(`deleteToolModal${toolId}`);
+											if (modal) {
+												modal.style.display = "block";
+											}
 										}
-									});
-								};
-						</script>
+									
+										function closeModal(toolId) {
+											const modal = document.getElementById(`deleteToolModal${toolId}`);
+											if (modal) {
+												modal.style.display = "none";
+											}
+										}
+									
+										// Close modal when clicking outside of it
+										window.onclick = function (event) {
+											const modals = document.querySelectorAll('.custom-modal');
+											modals.forEach(modal => {
+												if (event.target === modal) {
+													modal.style.display = "none";
+												}
+											});
+										};
+								</script>
 
 
 		<style>
