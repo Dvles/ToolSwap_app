@@ -25,11 +25,11 @@
         "@fullcalendar/core": "^6.1.15",
         "@fullcalendar/daygrid": "^6.1.15",
         "@fullcalendar/interaction": "^6.1.15",
+        "@popperjs/core": "^2.11.8",
         "axios": "^1.7.7",
         "bootstrap": "^5.3.3",
         "fullcalendar": "^6.1.15",
         "popper.js": "^1.16.1",
         "sweetalert2": "^11.7.0"
-
     }
 }
