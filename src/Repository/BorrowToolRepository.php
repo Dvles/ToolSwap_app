@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
-use App\Entity\BorrowTool;
+use App\Entity\Tool;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\BorrowTool;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<BorrowTool>
@@ -87,5 +88,16 @@ class BorrowToolRepository extends ServiceEntityRepository
             ->setParameter('currentDate', $currentDate)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    // use this method to display popuplar tools (with +25 borrowTools)
+    public function countBorrowedToolsForTool(Tool $tool): int
+    {
+        return $this->createQueryBuilder('borrowTool')
+            ->select('COUNT(DISTINCT borrowTool.id)')  
+            ->where('borrowTool.toolBeingBorrowed = :tool')  
+            ->setParameter('tool', $tool)  
+            ->getQuery()
+            ->getSingleScalarResult();  
     }
 }
