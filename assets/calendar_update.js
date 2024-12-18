@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
             },
+            locale: 'fr', // Use the French locale
+            buttonText: {
+                today: 'Aujourd\'hui',
+                month: 'Mois',
+                week: 'Semaine',
+                day: 'Jour'
+            },
 
             dateClick: function (info) {
                 const dateStr = info.dateStr;  // Clicked date as a string (e.g., "2024-10-17")
