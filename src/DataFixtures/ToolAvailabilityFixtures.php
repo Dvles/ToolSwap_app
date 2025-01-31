@@ -32,21 +32,13 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
     public function getRandomDate2025()
     {
-        $month = random_int(1, 10);
+        $month = random_int(1, 3);
         switch ($month) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
+            case 2:
                 $maxDay = 31;
                 break;
-            case 2:
-                $maxDay = 28;
-                break;
             default:
-                $maxDay = 30;
+                $maxDay = 28;
                 break;
         }
         $day = random_int(1, $maxDay);
@@ -117,7 +109,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $user1Tool->setToolCondition('neuf');
         $user1Tool->setDescription("Acheté chez Brico l'été derier - Mon échelle All Round est une échelle en aluminium léger qui convient parfaitement au bricolage dans et aux alentours de la maison. Equipée de sangles de sécurité, stabilisateur et roulettes de façade. Comfort de travail supplémentaire grâce à la large (32 mm) surface d'appui horizontale de l'échelon en D. Le stabilisateur empêche tout enfoncement. Garantie encore valable 5 ans - profitons ensemble!");
         $user1Tool->setPriceDay(mt_rand(0, 5));
-        $user1Tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
+        $user1Tool->setImageTool('https://via.placeholder.com/500x500');
         $manager->persist($user1Tool);
 
         $manager->flush();
@@ -130,7 +122,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; // Track used dates for this tool
-            for ($i = 0; $i < 30; $i++) {
+            for ($i = 0; $i < 20; $i++) {
                 do {
                     $date = $this->getRandomDate();
                 } while (in_array($date, $usedStartDates)); // Ensure uniqueness for this tool
@@ -170,7 +162,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities in 2025 for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; 
-            for ($i = 0; $i < 70; $i++) {
+            for ($i = 0; $i < 20; $i++) {
                 do {
                     $date = $this->getRandomDate2025();
                 } while (in_array($date, $usedStartDates)); 
@@ -211,7 +203,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random Past ToolAvailability
         foreach ($tools as $tool) {
             $usedStartDates = []; // Track used dates for this tool
-            for ($i = 0; $i < 15; $i++) {
+            for ($i = 0; $i < 20; $i++) {
                 do {
                     $date = $this->getRandomPastDate();
                 } while (in_array($date, $usedStartDates));
@@ -251,33 +243,10 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
 
         // User 1 ToolAvailability x 10
-        for ($i = 0; $i < 20; $i++) {
-            $usedStartDates = []; 
-            do {
-                $date = $this->getRandomDate2025();
-            } while (in_array($date, $usedStartDates)); 
-
-            $usedStartDates[] = $date;
-
-            $startDate = new \DateTime($date . ' 10:00:00');
-            $endDate = clone $startDate;
-
-            $toolAvailabilityUser1 = new ToolAvailability();
-            $toolAvailabilityUser1->setStart($startDate);
-            $toolAvailabilityUser1->setEnd($endDate);
-            $toolAvailabilityUser1->setBackgroundColor('rgba(255, 179, 71, 1)');
-            $toolAvailabilityUser1->setBorderColor('rgba(255, 140, 0, 1)');
-            $toolAvailabilityUser1->setTextColor('#000000');
-            $toolAvailabilityUser1->setTool($user1Tool);
-            $toolAvailabilityUser1->setUser($user1);
-
-            $manager->persist($toolAvailabilityUser1);
-        }
-
         for ($i = 0; $i < 10; $i++) {
             $usedStartDates = []; 
             do {
-                $date = $this->getRandomPastDate();
+                $date = $this->getRandomDate();
             } while (in_array($date, $usedStartDates)); 
 
             $usedStartDates[] = $date;
