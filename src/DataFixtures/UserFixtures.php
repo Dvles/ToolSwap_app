@@ -101,7 +101,7 @@ class UserFixtures extends Fixture
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
             $user->setCommunity($city);
-            $user->setImage('https://via.placeholder.com/200x200');
+            $user->setImage('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328595/user_placeholder_qqq4rs.webp');
             $manager->persist($user);
         }
 

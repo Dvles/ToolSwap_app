@@ -47,7 +47,7 @@ class ToolController extends AbstractController
                 throw $this->createAccessDeniedException('You must be logged in to add a tool.');
             }
 
-            $tool->setImageTool('https://via.placeholder.com/500x500'); // Placeholder image URL
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp'); // Placeholder image URL
 
 
             if (!$form->isValid()) {

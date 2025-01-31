@@ -135,7 +135,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setDescription($faker->paragraph(1));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
-            $tool->setImageTool('https://via.placeholder.com/500x500');
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
 
             $manager->persist($tool);
         }
@@ -150,7 +150,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setDescription($faker->paragraph(1));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
-            $tool->setImageTool('https://via.placeholder.com/500x500');
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
 
             $manager->persist($tool);
         }
@@ -164,7 +164,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setDescription($faker->paragraph(1));
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
-            $tool->setImageTool('https://via.placeholder.com/500x500');
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
 
             $manager->persist($tool);
         }
@@ -180,7 +180,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setPriceDay(mt_rand(0,2));
             $tool->setDescription('This is a test tool.');
             $tool->setToolCondition('neuf');
-            $tool->setImageTool('https://via.placeholder.com/500x500');
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
             
             $manager->persist($tool);
             
