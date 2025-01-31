@@ -145,11 +145,11 @@
                                                 <!-- Action Buttons -->
                                                 <div class="row mt-3">
                                                     <div class="col-12 d-flex gap-2">
-                                                        <!-- <button class="btn btn-custom-orange"  style="width: auto;"
+                                                        <button class="btn btn-custom-orange" style="width: auto;"
                                                                 type="button" 
-                                                                onclick="location.href='{{ path('coming_soon') }}'">
-                                                            Modifier statut
-                                                        </button> -->
+                                                                onclick="location.href='{{ path('tool_review_add', { tool_id: borrowTool.toolId }) }}'">
+                                                            Commenter Outil
+                                                        </button>
                                                         <button class="btn whitebtn"  style="width: auto;"
                                                                 type="button" 
                                                                 onclick="location.href='{{ path('tool_display_single', {tool_id: borrowTool.toolId}) }}'">
