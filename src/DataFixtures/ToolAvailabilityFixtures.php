@@ -32,13 +32,21 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
     public function getRandomDate2025()
     {
-        $month = random_int(1, 3);
+        $month = random_int(1, 12);
         switch ($month) {
-            case 2:
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
                 $maxDay = 31;
                 break;
-            default:
+            case 2:
                 $maxDay = 28;
+                break;
+            default:
+                $maxDay = 30;
                 break;
         }
         $day = random_int(1, $maxDay);
@@ -122,7 +130,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; // Track used dates for this tool
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 30; $i++) {
                 do {
                     $date = $this->getRandomDate();
                 } while (in_array($date, $usedStartDates)); // Ensure uniqueness for this tool
@@ -162,7 +170,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities in 2025 for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; 
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 50; $i++) {
                 do {
                     $date = $this->getRandomDate2025();
                 } while (in_array($date, $usedStartDates)); 
@@ -243,7 +251,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
 
         // User 1 ToolAvailability x 10
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $usedStartDates = []; 
             do {
                 $date = $this->getRandomDate();
