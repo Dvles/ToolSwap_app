@@ -32,7 +32,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
     public function getRandomDate2025()
     {
-        $month = random_int(1, 12);
+        $month = random_int(1, 10);
         switch ($month) {
             case 1:
             case 3:
@@ -170,7 +170,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities in 2025 for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; 
-            for ($i = 0; $i < 50; $i++) {
+            for ($i = 0; $i < 70; $i++) {
                 do {
                     $date = $this->getRandomDate2025();
                 } while (in_array($date, $usedStartDates)); 
@@ -211,7 +211,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random Past ToolAvailability
         foreach ($tools as $tool) {
             $usedStartDates = []; // Track used dates for this tool
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 15; $i++) {
                 do {
                     $date = $this->getRandomPastDate();
                 } while (in_array($date, $usedStartDates));
@@ -254,7 +254,30 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         for ($i = 0; $i < 20; $i++) {
             $usedStartDates = []; 
             do {
-                $date = $this->getRandomDate();
+                $date = $this->getRandomDate2025();
+            } while (in_array($date, $usedStartDates)); 
+
+            $usedStartDates[] = $date;
+
+            $startDate = new \DateTime($date . ' 10:00:00');
+            $endDate = clone $startDate;
+
+            $toolAvailabilityUser1 = new ToolAvailability();
+            $toolAvailabilityUser1->setStart($startDate);
+            $toolAvailabilityUser1->setEnd($endDate);
+            $toolAvailabilityUser1->setBackgroundColor('rgba(255, 179, 71, 1)');
+            $toolAvailabilityUser1->setBorderColor('rgba(255, 140, 0, 1)');
+            $toolAvailabilityUser1->setTextColor('#000000');
+            $toolAvailabilityUser1->setTool($user1Tool);
+            $toolAvailabilityUser1->setUser($user1);
+
+            $manager->persist($toolAvailabilityUser1);
+        }
+
+        for ($i = 0; $i < 10; $i++) {
+            $usedStartDates = []; 
+            do {
+                $date = $this->getRandomPastDate();
             } while (in_array($date, $usedStartDates)); 
 
             $usedStartDates[] = $date;
