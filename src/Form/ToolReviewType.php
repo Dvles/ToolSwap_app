@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Tool;
 use App\Entity\ToolReview;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
