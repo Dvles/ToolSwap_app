@@ -216,3 +216,8 @@ min-height: 100px;
 }
 
 
+.icon {
+    display: block;
+    max-width: 10px;
+}
+
