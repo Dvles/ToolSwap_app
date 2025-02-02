@@ -4,12 +4,13 @@ namespace App\Form;
 
 use App\Entity\Tool;
 use App\Entity\ToolCategory;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 
 class ToolUploadType extends AbstractType
 {
@@ -58,12 +59,10 @@ class ToolUploadType extends AbstractType
                 'currency' => 'EURO', 
             ])
 
-            ->add('imageTool', null, [
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'Please upload an image of the tool.',
-                    ]),
-                ],
+            ->add('imageTool', FileType::class, [
+                'label' => 'Image de l\'outil',
+                'mapped' => false,  // If you want to handle the file separately from your entity.
+                'required' => false,
             ])
             ->add('toolCategory', EntityType::class, [
                 'class' => ToolCategory::class,
