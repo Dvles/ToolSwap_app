@@ -36,7 +36,7 @@
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" name="_password" id="password" class="form-control form-control-lg" autocomplete="current-password" required>
                                 </div>
-                                <a href="{{ path('coming_soon') }}" class="alink alink-right">Mot de passe oublié?</a>
+                                <a onclick="showModal()" class="alink alink-right">Mot de passe oublié?</a>
                             </div>
 
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -56,4 +56,111 @@
         </div>
     </div>
 </section>
+<!-- Info Modal -->
+<div id="InfoModal" class="custom-modal" style="display:none;">
+    <div class="modal-position">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Attention</h3>
+                <button type="button" class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Cette fonctionnalité n'a pas été mise en place en raison de contraintes de temps. Le projet actuel se concentre sur les points suivants :</p>
+                <ul>
+                    <li>Configuration de la base de données</li>
+                    <li>Ajout des outils</li>
+                    <li>Gestion des disponibilités des outils</li>
+                    <li>Gestion des objets associés au prêt d'outils</li>
+                </ul>
+                <p>Des images par défaut sont automatiquement définies en attendant l'implémentation de l'upload.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showModal() {
+        const modal = document.getElementById('InfoModal');
+        if (modal) {
+            modal.style.display = "block";
+        }
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('InfoModal');
+        if (modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('InfoModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+</script>
+
+<style>
+    .icon {
+        width: 16px;
+        height: 16px;
+        fill: gray;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .icon:hover {
+        fill: #ff8719;
+    }
+
+    /* Modal Styles */
+    .custom-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-position {
+        margin-top: 10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        max-width: 600px;
+        width: 90%;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .close-modal:hover {
+        color: #ff8719;
+    }
+</style>
 {% endblock %}

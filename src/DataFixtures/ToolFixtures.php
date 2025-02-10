@@ -148,7 +148,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setOwner($users[mt_rand(0, count($users)-1)]);
             $tool->setToolCategory($jardinageCategory);
             $tool->setPriceDay(mt_rand(0,10));
-            $tool->setDescription($faker->paragraph(1));
+            $tool->setDescription($faker->paragraph(2));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
 
@@ -161,7 +161,7 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setName($constructionTools[mt_rand(0,14)]);
             $tool->setOwner($users[mt_rand(0, count($users)-1)]);
             $tool->setToolCategory($constructionCategory);
-            $tool->setDescription($faker->paragraph(1));
+            $tool->setDescription($faker->paragraph(2));
             $tool->setPriceDay(mt_rand(0,10));
             $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');

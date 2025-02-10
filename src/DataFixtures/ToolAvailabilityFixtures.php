@@ -109,7 +109,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $user1Tool->setToolCondition('neuf');
         $user1Tool->setDescription("Acheté chez Brico l'été derier - Mon échelle All Round est une échelle en aluminium léger qui convient parfaitement au bricolage dans et aux alentours de la maison. Equipée de sangles de sécurité, stabilisateur et roulettes de façade. Comfort de travail supplémentaire grâce à la large (32 mm) surface d'appui horizontale de l'échelon en D. Le stabilisateur empêche tout enfoncement. Garantie encore valable 5 ans - profitons ensemble!");
         $user1Tool->setPriceDay(mt_rand(0, 5));
-        $user1Tool->setImageTool('https://via.placeholder.com/500x500');
+        $user1Tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
         $manager->persist($user1Tool);
 
         $manager->flush();
