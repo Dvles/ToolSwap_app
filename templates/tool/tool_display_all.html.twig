@@ -4,11 +4,10 @@
 
 {% block body %}
 <div class="container-fluid">
-    
-    <!-- Sticky Filter Sidebar -->
-    <div class="row">
-        <div class="col-md-3">
-            <div class="sticky-top" style="top: 100px;">
+    <div id="tool_filter"class="row">
+        <!-- Sticky Filter Sidebar -->
+        <div class="col-md-3 mb-4 mb-md-0">
+            <div class="sticky-top" style="top: 130px;">
                 <h4 class="fw-bold text-center mb-3">Filtrer les outils</h4>
                 <form method="post" action="{{ path('tool_display_all') }}">
                     {{ form_start(form) }}
@@ -31,7 +30,7 @@
         </div>
 
         <!-- Tool Cards -->
-        <div class="col-md-9">
+        <div id="tool_cards" class="col-md-9 mt-5 mt-md-0"> 
             <div class="container">
                 {% if tools is not empty %}
                     <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
@@ -71,14 +70,37 @@
     </div>
 </div>
 
+
+
 <style>
-/* Ensure the filter form is sticky on large screens */
 @media (min-width: 992px) {
+    #tool_cards{
+        margin-top: 10px !important;
+    }
+    #tool_filter{
+        margin-top: 30px !important;
+    }
+    
+    
     .sticky-top {
         position: -webkit-sticky;
         position: sticky;
         top: 100px;
     }
+
+    .col-md-9 {
+        margin-top: 250px;  /* Increased value for more space */
+    }
+}
+
+@media (max-width: 991px) {
+    .col-md-3 {
+        margin-bottom: 15px;
+    }
+    .col-md-9 {
+        margin-top: 20px; 
+    }
 }
 </style>
+
 {% endblock %}

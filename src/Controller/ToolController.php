@@ -175,8 +175,8 @@ public function toolDisplayAll(
         // Filter tools based on form data, using community name directly
         $tools = $toolRepository->findByFilters(
             $data['isFree'],
-            $data['category'],  // This uses the category ID, as before
-            $data['community'] // Pass community name directly as it's a string
+            $data['category'],  
+            $data['community'] 
         );
     }
 
