@@ -134,7 +134,8 @@ class ToolController extends AbstractController
 
 
     
-    #[Route('tool/display/all', name: 'tool_display_all')]
+// Display and filter method
+#[Route('tool/display/all', name: 'tool_display_all')]
 public function toolDisplayAll(
     Request $request, 
     EntityManagerInterface $em, 
@@ -149,12 +150,12 @@ public function toolDisplayAll(
     // Prepare category and community choices as associative arrays
     $categoryChoices = [];
     foreach ($categories as $category) {
-        $categoryChoices[$category->getName()] = $category->getId();
+        $categoryChoices[$category->getName()] = $category->getId();  // Name as label, ID as value
     }
 
     $communityChoices = [];
     foreach ($communities as $community) {
-        $communityChoices[$community['community']] = $community['community'];
+        $communityChoices[$community['community']] = $community['community'];  // Community name as key and value
     }
 
     // Create the form and handle request
@@ -164,30 +165,26 @@ public function toolDisplayAll(
     ]);
     $form->handleRequest($request);
 
-    // Query tools with filters
-    $queryBuilder = $toolRepository->createQueryBuilder('t');
+    // Initialize tools variable to hold all tools initially
+    $tools = $toolRepository->findAll();
 
     if ($form->isSubmitted() && $form->isValid()) {
+        // Get form data
         $data = $form->getData();
-        if ($data['isFree']) {
-            $queryBuilder->andWhere('t.priceDay = 0');
-        }
-        if ($data['category']) {
-            $queryBuilder->andWhere('t.category = :category')
-                ->setParameter('category', $data['category']);
-        }
-        if ($data['community']) {
-            $queryBuilder->join('t.owner', 'o')
-                ->andWhere('o.community = :community')
-                ->setParameter('community', $data['community']);
-        }
+
+        // Filter tools based on form data, using community name directly
+        $tools = $toolRepository->findByFilters(
+            $data['isFree'],
+            $data['category'],  // This uses the category ID, as before
+            $data['community'] // Pass community name directly as it's a string
+        );
     }
 
     // Paginate results
     $pagination = $paginator->paginate(
-        $queryBuilder->getQuery(), // Use query instead of array
-        $request->query->getInt('page', 1),
-        9 // Items per page
+        $tools, // Use the tools result from the repository (instead of queryBuilder)
+        $request->query->getInt('page', 1), // Get current page from query parameter (default is 1)
+        9 // Items per page (adjust as necessary)
     );
 
     return $this->render('tool/tool_display_all.html.twig', [
@@ -195,6 +192,7 @@ public function toolDisplayAll(
         'form' => $form->createView()
     ]);
 }
+
 
 
     #[Route('/tool/single/{tool_id}', name: 'tool_display_single')]

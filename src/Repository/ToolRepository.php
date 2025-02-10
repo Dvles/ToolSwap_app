@@ -78,33 +78,29 @@ class ToolRepository extends ServiceEntityRepository
     public function findByFilters(?bool $isFree, ?int $category, ?string $community): array
     {
         $qb = $this->createQueryBuilder('t');
-
+    
         // Filter by "isFree" (priceDay = 0 for free tools)
         if ($isFree !== null) {
             if ($isFree) {
                 $qb->andWhere('t.priceDay = 0');
             }
-            //dd($qb->getQuery()->getResult()); // Check results after "isFree" filter
         }
-
-
+    
         // Filter by category if provided
         if ($category !== null) {
-            $qb->leftJoin('t.toolCategory', 'c')
+            $qb->leftJoin('t.toolCategory', 'c')  // Join on 'toolCategory' as per your entity
                 ->andWhere('c.id = :category')
                 ->setParameter('category', $category);
-            //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
-
+    
         // Filter by community if provided
         if ($community !== null) {
             $qb->leftJoin('t.owner', 'u')
                 ->andWhere('u.community = :community')
                 ->setParameter('community', $community);
-            //dd($qb->getQuery()->getResult()); // Check results after "category" filter
         }
-
-
+    
         return $qb->getQuery()->getResult();
     }
+    
 }
