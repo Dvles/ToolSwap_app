@@ -38,16 +38,19 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
         // Tools for 'Électroménager' (Home Appliances as per ToolCategory static fixtures)
         $electromenagerTools = [
             'Sèche-cheveux',           // Hairdryer
+            'Lisseur Babyliss',        // Hairdryer
             'Aspirateur',              // Vacuum cleaner
+            'Air Fryer',               
             'Four à micro-ondes',      // Microwave oven
             'Grille-pain',             // Toaster
             'Mixeur',                  // Blender
             'Cafetière',               // Coffee maker
             'Fer à repasser',          // Iron
-            'Furêt',                   // Washing machine
+            'Furêt',                   // Turet
             'Réfrigérateur',           // Refrigerator
             'Ventilateur',             // Fan
             'Friteuse',                // Deep fryer
+            'Friteus Duo',             // Deep fryer
             'Bouilloire électrique',   // Electric kettle
             'Cuisinière électrique',   // Electric stove
             'Centrifugeuse',           // Juicer
@@ -63,7 +66,12 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             'Extracteur de jus',       // Juice extractor
             'Fondue',                  // Fondue machine
             'Pasta maker',             // Pasta machine
+            
             'Four à Tarte Flambée',    // Portable Flammenkuche oven
+            'Assiettes (x20)',         // Plates
+            'Assiettes (x8)',          // Plates
+            'Verres (x15)',            // Plates
+            'Verres (x10)',            // Plates
 
 
         ];
@@ -84,7 +92,10 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             'Motoculteur',          // Rototiller
             'Tronçonneuse',         // Chainsaw
             'Griffe de jardin',     // Garden claw
-            'Tamis de jardin',      // Garden sieve
+            'Binette Bosch',        // Hoe
+            'Arrosoir Stanley',     // Watering can
+            'Pioche Brico',         // Pickaxe
+            'Serfouette Brico',      // Weeder
         ];
 
 
@@ -96,28 +107,38 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             'Scie à métaux',         // Hacksaw
             'Pince',                 // Pliers
             'Tournevis',             // Screwdriver
+            'Tournevis Rolson',      // Screwdriver
+            'Tournevis Bosch',      // Screwdriver
             'Mètre ruban',           // Tape measure
             'Clé à molette',         // Adjustable wrench
+            'Clé à molette XXL',         // Adjustable wrench XXL
+            'Polêt', 
             'Ponceuse',              // Sander
+            'Ponceuse Stanley',              // Sander
             'Ciseau à bois',         // Wood chisel
             'Pied de biche',         // Crowbar
             'Truelle',               // Trowel
             'Bétonnière',            // Cement mixer
             'Échafaudage',           // Scaffolding
+            'Échafaudage Bosch',           // Scaffolding
             'Meuleuse',              // Angle grinder
+            'Meuleuse XXL',              // Angle grinder
             'Scie circulaire',       // Circular saw
             'Perforateur',           // Hammer drill
             'Clé à pipe',            // Socket wrench
             'Compresseur',           // Air compressor
+            'Compresseur XXL',           // Air compressor
             'Chiffon abrasif',       // Sandpaper
             'Clé à griffe',          // Pipe wrench
             'Pelle',                 // Shovel
+            'Pelles Duo',          // Shovel
             'Niveau laser',          // Laser level
             'Boulonneuse',           // Impact wrench
             'Cisaille',              // Shears
             'Détecteur de métaux',   // Metal detector
             'Tarière',               // Auger
             'Mèche',                 // Drill bit
+            'Mèche XXL',                 // Drill bit
             'Boite à outils',        // Tool box
 
         ];
@@ -178,8 +199,25 @@ class ToolFixtures extends Fixture implements DependentFixtureInterface
             $tool->setOwner($users[0]);
             $tool->setToolCategory($constructionCategory);
             $tool->setPriceDay(mt_rand(0,2));
-            $tool->setDescription('This is a test tool.');
-            $tool->setToolCondition('neuf');
+            $tool->setDescription('This is a test tool. ' . $faker->paragraph(2));
+            $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
+            $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
+            
+            $manager->persist($tool);
+            
+        }
+
+        // User2 tools x 8 for testing
+        for ($i = 0; $i < 8; $i++){
+
+
+            $tool = new Tool();
+            $tool->setName($constructionTools[mt_rand(0,14)]);
+            $tool->setOwner($users[1]);
+            $tool->setToolCategory($constructionCategory);
+            $tool->setPriceDay(mt_rand(0,6));
+            $tool->setDescription('This is a test tool. ' . $faker->paragraph(2));
+            $tool->setToolCondition($toolConditions[mt_rand(0, count($toolConditions)-1)]);
             $tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
             
             $manager->persist($tool);

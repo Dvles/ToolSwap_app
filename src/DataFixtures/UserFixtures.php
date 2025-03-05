@@ -49,13 +49,14 @@ class UserFixtures extends Fixture
             $hashedPassword = $this->passwordHasher->hashPassword($user, '0000');
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
-            $user->setCommunity("ixelles");
+            $user->setCommunity("Ixelles");
             
             $manager->persist($user);
 
             // Set the reference for user1
             $this->addReference('user' . $i, $user); 
         }
+
 
         // 'realistic users' for display purposes 
         // conditional to generate diverse country with multiple nationalities

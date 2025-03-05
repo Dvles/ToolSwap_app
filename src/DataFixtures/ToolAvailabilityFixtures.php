@@ -32,13 +32,17 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
     public function getRandomDate2025()
     {
-        $month = random_int(1, 3);
+        $month = random_int(1, 6);
         switch ($month) {
             case 2:
-                $maxDay = 31;
-                break;
-            default:
                 $maxDay = 28;
+                break;
+            case 4:
+            case 6:
+                    $maxDay = 30;
+                    break;
+            default:
+                $maxDay = 31;
                 break;
         }
         $day = random_int(1, $maxDay);
@@ -46,9 +50,6 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $dayFormatted = str_pad($day, 2, '0', STR_PAD_LEFT);
         return '2025-' . $monthFormatted . '-' . $dayFormatted;
     }
-
-
-
 
     public function getRandomPastDate()
     {
@@ -81,12 +82,17 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
     public function load(ObjectManager $manager): void
     {
-        // retrieve the user that was created in UserFixtures
+        // retrieve key users created in UserFixtures
         $user1 = $this->getReference('user1');
+        $user2 = $this->getReference('user2');
 
-        // Ensure user1 is found for consistent data handling
+        // Ensure users are found for consistent data handling
         if (!$user1) {
             throw new \Exception("User 1 not found");
+        }
+
+        if (!$user2) {
+            throw new \Exception("User 2 not found");
         }
 
         // Instead of fetching by ID, get it by reference
@@ -103,7 +109,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
 
         // Create user1's tool
         $user1Tool = new Tool();
-        $user1Tool->setName('échelle');
+        $user1Tool->setName('Échelle');
         $user1Tool->setOwner($user1);
         $user1Tool->setToolCategory($toolCategory);
         $user1Tool->setToolCondition('neuf');
@@ -111,6 +117,17 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         $user1Tool->setPriceDay(mt_rand(0, 5));
         $user1Tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
         $manager->persist($user1Tool);
+
+        // Create user2's tool
+        $user2Tool = new Tool();
+        $user2Tool->setName('Niveau laser');
+        $user2Tool->setOwner($user2);
+        $user2Tool->setToolCategory($toolCategory);
+        $user2Tool->setToolCondition('vieux');
+        $user2Tool->setDescription("Ce laser en croix de Sencys possède un rayon rouge et projette des lignes horizontales et verticales. Il est un peu vieux, mais peut toujours servir! Je suis à la retraite en construction et il est temps qu'il profite à quelqu'un! =)");
+        $user2Tool->setPriceDay(0);
+        $user2Tool->setImageTool('https://res.cloudinary.com/dzqge7ico/image/upload/v1738328316/ToolSwap_placeholder_cxpuyz.webp');
+        $manager->persist($user2Tool);
 
         $manager->flush();
 
@@ -162,7 +179,7 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
         // Random ToolAvailabilities in 2025 for each tool
         foreach ($tools as $tool) {
             $usedStartDates = []; 
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 60; $i++) {
                 do {
                     $date = $this->getRandomDate2025();
                 } while (in_array($date, $usedStartDates)); 
@@ -235,18 +252,18 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
                 $toolAvailability->setTextColor('#000000');
                 $toolAvailability->setTool($tool);
                 $toolAvailability->setUser($user);
-                $toolAvailability->setIsAvailable(false); // Set isAvailable to false
+                $toolAvailability->setIsAvailable(false); 
 
                 $manager->persist($toolAvailability);
             }
         }
 
 
-        // User 1 ToolAvailability x 10
+        // User 1 ToolAvailability 
         for ($i = 0; $i < 10; $i++) {
             $usedStartDates = []; 
             do {
-                $date = $this->getRandomDate();
+                $date = $this->getRandomPastDate();
             } while (in_array($date, $usedStartDates)); 
 
             $usedStartDates[] = $date;
@@ -262,8 +279,82 @@ class ToolAvailabilityFixtures extends Fixture implements DependentFixtureInterf
             $toolAvailabilityUser1->setTextColor('#000000');
             $toolAvailabilityUser1->setTool($user1Tool);
             $toolAvailabilityUser1->setUser($user1);
+            $toolAvailability->setIsAvailable(false); 
+
 
             $manager->persist($toolAvailabilityUser1);
+        }
+
+        $usedStartDates = [];  
+        for ($i = 0; $i < 25; $i++) {
+            do {
+                $date = $this->getRandomDate2025();
+            } while (in_array($date, $usedStartDates)); 
+        
+            $usedStartDates[] = $date; 
+
+            $startDate = new \DateTime($date . ' 10:00:00');
+            $endDate = clone $startDate;
+
+            $toolAvailabilityUser1 = new ToolAvailability();
+            $toolAvailabilityUser1->setStart($startDate);
+            $toolAvailabilityUser1->setEnd($endDate);
+            $toolAvailabilityUser1->setBackgroundColor('rgba(255, 179, 71, 1)');
+            $toolAvailabilityUser1->setBorderColor('rgba(255, 140, 0, 1)');
+            $toolAvailabilityUser1->setTextColor('#000000');
+            $toolAvailabilityUser1->setTool($user1Tool);
+            $toolAvailabilityUser1->setUser($user1);
+
+            $manager->persist($toolAvailabilityUser1);
+        }
+
+
+        // User 2 ToolAvailability 
+        $usedStartDates = [];  
+        for ($i = 0; $i < 25; $i++) {
+            do {
+                $date = $this->getRandomDate2025();
+            } while (in_array($date, $usedStartDates));
+        
+            $usedStartDates[] = $date; 
+
+            $startDate = new \DateTime($date . ' 10:00:00');
+            $endDate = clone $startDate;
+
+            $toolAvailabilityUser2 = new ToolAvailability();
+            $toolAvailabilityUser2->setStart($startDate);
+            $toolAvailabilityUser2->setEnd($endDate);
+            $toolAvailabilityUser2->setBackgroundColor('rgba(255, 179, 71, 1)');
+            $toolAvailabilityUser2->setBorderColor('rgba(255, 140, 0, 1)');
+            $toolAvailabilityUser2->setTextColor('#000000');
+            $toolAvailabilityUser2->setTool($user2Tool);
+            $toolAvailabilityUser2->setUser($user2);
+
+            $manager->persist($toolAvailabilityUser2);
+        }
+
+        for ($i = 0; $i < 15; $i++) {
+            $usedStartDates = []; 
+            do {
+                $date = $this->getRandomPastDate();
+            } while (in_array($date, $usedStartDates)); 
+
+            $usedStartDates[] = $date;
+
+            $startDate = new \DateTime($date . ' 10:00:00');
+            $endDate = clone $startDate;
+
+            $toolAvailabilityUser2 = new ToolAvailability();
+            $toolAvailabilityUser2->setStart($startDate);
+            $toolAvailabilityUser2->setEnd($endDate);
+            $toolAvailabilityUser2->setBackgroundColor('rgba(255, 179, 71, 1)');
+            $toolAvailabilityUser2->setBorderColor('rgba(255, 140, 0, 1)');
+            $toolAvailabilityUser2->setTextColor('#000000');
+            $toolAvailabilityUser2->setTool($user2Tool);
+            $toolAvailability->setIsAvailable(false); 
+            $toolAvailabilityUser2->setUser($user2);
+
+            $manager->persist($toolAvailabilityUser2);
         }
 
         $manager->flush();
